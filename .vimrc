@@ -10,9 +10,12 @@ set shiftwidth=4
 set autoindent
 set hlsearch
 set tags=./tags,/home/mcordial/pyenvs/asurepo/lib/python1.7/site-packages/tags,/home/mcordial/pyenvs/src/tags
-:syntax on
+syntax on
 nmap <silent> <c-t> :TlistToggle<CR>
 nmap <silent> <c-n> :NERDTreeToggle<CR>
+nmap <silent> <c-h> :noh<CR>
+nmap <silent> <c-j> :bn<CR>
+nmap <silent> <c-k> :bp<CR>
 nmap ,s :Gstatus<CR>
 nmap ,c :Gcommit<CR>
 filetype on            " enables filetype detection
