@@ -1,0 +1,6 @@
+[submodule ".emacs.d/vendor/coffee-mode"]
+	path = .emacs.d/vendor/coffee-mode
+	url = git://github.com/defunkt/coffee-mode.git
+[submodule ".emacs.d/vendor/gitsum"]
+	path = .emacs.d/vendor/gitsum
+	url = git://github.com/chneukirchen/gitsum.git
