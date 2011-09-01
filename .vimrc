@@ -13,7 +13,7 @@ set softtabstop=4
 set shiftwidth=4
 set autoindent
 set hlsearch
-set tags=tags,/home/mcordial/pyenvs/asurepo/lib/python2.7/site-packages/tags,/home/mcordial/pyenvs/src/tags
+set tags=tags,/virtualenvs/asurepo/lib/python2.7/site-packages/tags,/virtualenvs/src/tags
 syntax on
 " nmap <silent> <c-t> :TlistToggle<CR>
 nmap <silent> <c-q> :NERDTreeToggle<CR>
