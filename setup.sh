@@ -10,3 +10,6 @@ for f in .* ; do
     ln -sfbn $SCRIPTDIR/$f $HOME/$f
     echo "$SCRIPTDIR/$f --> $HOME/$f"
 done
+
+git submodule init
+git submodule update
