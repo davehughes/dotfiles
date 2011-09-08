@@ -13,3 +13,7 @@ done
 
 git submodule init
 git submodule update
+
+CMDT_RUBY_DIR=$SCRIPTDIR/.vim/bundle/command-t/ruby/command-t
+ruby $CMDT_RUBY_DIR/extconf.rb
+make -C $CMDT_RUBY_DIR
