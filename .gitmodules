@@ -25,3 +25,6 @@
 [submodule ".vim/bundle/quickbuf"]
 	path = .vim/bundle/quickbuf
 	url = git://github.com/vim-scripts/QuickBuf.git
+[submodule ".vim/bundle/grep"]
+	path = .vim/bundle/grep
+	url = git://github.com/vim-scripts/grep.vim.git
