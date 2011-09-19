@@ -7,6 +7,12 @@ for f in .* ; do
     [ $f = '..' ] && continue
     [ $f = '.git' ] && continue
     [ $f = '.gitignore' ] && continue
+    [ $f = '.ssh' ] && continue
+    ln -sfbn $SCRIPTDIR/$f $HOME/$f
+    echo "$SCRIPTDIR/$f --> $HOME/$f"
+done
+
+for f in .ssh/* ; do
     ln -sfbn $SCRIPTDIR/$f $HOME/$f
     echo "$SCRIPTDIR/$f --> $HOME/$f"
 done
