@@ -25,6 +25,10 @@ nmap ,s :Gstatus<CR>
 nmap ,c :Gcommit<CR>
 highlight SpellBad term=underline gui=undercurl guisp=Orange 
 
+" Snipmate settings
+autocmd FileType python set ft=python.django
+autocmd FileType html set ft=htmldjango.html
+
 " Add the virtualenv's site-packages to vim path
 py << EOF
 import os.path

@@ -110,3 +110,6 @@ export PATH=$PATH:/var/lib/gems/1.8/bin
 setxkbmap
 xmodmap -e "remove Lock = Caps_Lock"
 xmodmap -e "keysym Caps_Lock = Prior" # page up
+
+# use vim as default editor
+export EDITOR=/usr/bin/vim
