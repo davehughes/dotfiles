@@ -1,6 +1,7 @@
 #!/bin/sh
 SCRIPT=`readlink -f $0`
 SCRIPTDIR=`dirname $SCRIPT`
+echo "running in $SCRIPTDIR"
 
 for f in .* ; do
     [ $f = '.' ] && continue
@@ -19,7 +20,8 @@ done
 
 git submodule update --init --recursive
 
-CMDT_BASE_DIR=$SCRIPTDIR/.vim/bundle/command-t
-CMDT_RUBY_DIR=$CMDT_BASE_DIR/ruby/command-t
-ruby $CMDT_RUBY_DIR/extconf.rb
-make -C $CMDT_BASE_DIR
+CMDT_BASE=$SCRIPTDIR/.vim/bundle/command-t
+CMDT_RUBY=$CMDT_BASE/ruby/command-t
+cd $CMDT_RUBY
+ruby extconf.rb && make && rm Makefile && rm mkmf.log
+cd $SCRIPTDIR
