@@ -19,6 +19,7 @@ done
 
 git submodule update --init --recursive
 
-CMDT_RUBY_DIR=$SCRIPTDIR/.vim/bundle/command-t/ruby/command-t
+CMDT_BASE_DIR=$SCRIPTDIR/.vim/bundle/command-t
+CMDT_RUBY_DIR=$CMDT_BASE_DIR/ruby/command-t
 ruby $CMDT_RUBY_DIR/extconf.rb
-make -C $CMDT_RUBY_DIR
+make -C $CMDT_BASE_DIR
