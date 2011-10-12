@@ -17,8 +17,7 @@ for f in .ssh/* ; do
     echo "$SCRIPTDIR/$f --> $HOME/$f"
 done
 
-git submodule init
-git submodule update
+git submodule update --init --recursive
 
 CMDT_RUBY_DIR=$SCRIPTDIR/.vim/bundle/command-t/ruby/command-t
 ruby $CMDT_RUBY_DIR/extconf.rb
