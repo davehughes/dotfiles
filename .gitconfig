@@ -1,0 +1,13 @@
+[user]
+	name = David Hughes
+	email = david.s.hughes@asu.edu
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+[color "branch"]
+        current = yellow reverse
+        local = yellow
+        remote = green
+
