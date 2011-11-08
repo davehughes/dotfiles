@@ -108,8 +108,11 @@ export PATH=$PATH:/var/lib/gems/1.8/bin
 
 # remap caps lock so it can be used as the tmux prefix key (see .tmux.conf)
 setxkbmap
-xmodmap -e "remove Lock = Caps_Lock"
-xmodmap -e "keysym Caps_Lock = Prior" # page up
+xmodmap -e "remove Lock = Caps_Lock" >> /dev/null 2>&1
+xmodmap -e "keysym Caps_Lock = Prior" >> /dev/null 2>&1
 
 # use vim as default editor
 export EDITOR=/usr/bin/vim
+
+# source tmuxinator
+[[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator

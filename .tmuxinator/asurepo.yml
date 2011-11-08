@@ -1,0 +1,20 @@
+# ~/.tmuxinator/asurepo.yml
+# you can make as many tabs as you wish...
+
+project_name: asurepo
+project_root: /usr/local/repo
+#rvm: 1.9.2@rails_project
+pre: 
+tabs:
+  - asurepo:
+      layout: even-horizontal
+      panes:
+        - vim
+        - ipython 
+        - 
+  - monitor:
+      layout: even-horizontal
+      panes:
+        - top
+        - tail -f /var/log/asurepo/repo.log
+        - tail -f /usr/local/celery/logs/celeryd.log
