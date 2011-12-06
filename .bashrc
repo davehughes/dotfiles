@@ -107,7 +107,7 @@ export PIP_REQUIRE_VIRTUALENV=true
 export PIP_RESPECT_VIRTUALENV=true
 . virtualenvwrapper.sh
 
-export PATH=$PATH:/var/lib/gems/1.8/bin
+export PATH=$PATH:/var/lib/gems/1.8/bin/
 
 # remap caps lock so it can be used as the tmux prefix key (see .tmux.conf)
 setxkbmap

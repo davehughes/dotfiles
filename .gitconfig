@@ -11,3 +11,5 @@
         local = yellow
         remote = green
 
+[core]
+	editor = /usr/bin/vim
