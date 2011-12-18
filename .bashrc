@@ -85,6 +85,11 @@ alias l='ls -CF'
 alias g='git'
 complete -o default -o nospace -F _git g
 
+# Requires symlinking of clojure (or using the default aptitude version)
+CLOJURE_JAR=/usr/share/java/clojure.jar
+JLINE_JAR=/usr/share/java/jline.jar
+alias clojure="java -cp $JLINE_JAR:$CLOJURE_JAR jline.ConsoleRunner clojure.main"
+
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.

@@ -28,3 +28,6 @@
 [submodule ".vim/bundle/grep"]
 	path = .vim/bundle/grep
 	url = git://github.com/vim-scripts/grep.vim.git
+[submodule ".vim/bundle/vim-clojure"]
+	path = .vim/bundle/vim-clojure
+	url = git://github.com/vim-scripts/VimClojure
