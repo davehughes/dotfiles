@@ -29,6 +29,10 @@ highlight SpellBad term=underline gui=undercurl guisp=Orange
 autocmd FileType python set ft=python.django
 autocmd FileType html set ft=htmldjango.html
 
+" Command-T - bump max-files so virtualenv files don't completely
+" overwhelm other selections.
+let g:CommandTMaxFiles=50000
+
 " Add the virtualenv's site-packages to vim path
 py << EOF
 import os.path
