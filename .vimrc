@@ -33,6 +33,14 @@ autocmd FileType html set ft=htmldjango.html
 " overwhelm other selections.
 let g:CommandTMaxFiles=50000
 
+" VimClojure setup
+let vimclojure#HighlightBuiltins=1
+let vimclojure#HighlightContrib=1
+let vimclojure#DynamicHighlighting=1
+let vimclojure#ParenRainbow=1
+let vimclojure#WantNailgun = 1
+let vimclojure#NailgunClient = $HOME . "/.vim/bin/ng"
+
 " Add the virtualenv's site-packages to vim path
 py << EOF
 import os.path
