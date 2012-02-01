@@ -13,6 +13,8 @@ set softtabstop=4
 set shiftwidth=4
 set autoindent
 set hlsearch
+set backupdir=~/.vim/sessions//
+set directory=~/.vim/sessions//
 set tags=tags,/virtualenvs/asurepo/lib/python2.7/site-packages/tags,/virtualenvs/src/tags
 syntax on
 " nmap <silent> <c-t> :TlistToggle<CR>
