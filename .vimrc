@@ -46,6 +46,12 @@ let vimclojure#NailgunClient = $HOME . "/.vim/bin/ng"
 " neocomplcache setup
 let g:neocomplcache_enable_at_startup = 1
 
+" Easy color chooser bindings
+nmap <silent> <f3> :NEXTCOLOR<cr>
+nmap <silent> <f2> :PREVCOLOR<cr>
+colorscheme aqua
+
+
 " Add the virtualenv's site-packages to vim path
 py << EOF
 import os.path
