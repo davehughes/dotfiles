@@ -15,7 +15,8 @@ set autoindent
 set hlsearch
 set backupdir=~/.vim/sessions//
 set directory=~/.vim/sessions//
-set tags=tags,/virtualenvs/asurepo/lib/python2.7/site-packages/tags,/virtualenvs/src/tags
+set tags=tags,env/lib/tags,env/src/tags
+set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,/usr/local/repo/asurepo/static/**
 syntax on
 " nmap <silent> <c-t> :TlistToggle<CR>
 nmap <silent> <c-q> :NERDTreeToggle<CR>
@@ -26,6 +27,7 @@ nmap <silent> <c-p> :b#<CR>
 nmap ,s :Gstatus<CR>
 nmap ,c :Gcommit<CR>
 highlight SpellBad term=underline gui=undercurl guisp=Orange 
+
 
 " Snipmate settings
 autocmd FileType python set ft=python.django
