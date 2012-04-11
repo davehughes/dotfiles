@@ -46,7 +46,7 @@ let vimclojure#WantNailgun = 1
 let vimclojure#NailgunClient = $HOME . "/.vim/bin/ng"
 
 " neocomplcache setup
-let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_at_startup = 0
 
 " Easy color chooser bindings
 nmap <silent> <f3> :NEXTCOLOR<cr>

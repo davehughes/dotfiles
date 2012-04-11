@@ -124,3 +124,5 @@ export EDITOR=/usr/bin/vim
 
 # source tmuxinator
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
+
+export NODE_PATH=/usr/local/lib/node_modules
