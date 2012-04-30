@@ -26,6 +26,12 @@ nmap ,s :Gstatus<CR>
 nmap ,c :Gcommit<CR>
 highlight SpellBad term=underline gui=undercurl guisp=Orange 
 
+" Map buffer movement
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
 " Snipmate settings
 autocmd FileType python set ft=python.django
 autocmd FileType html set ft=htmldjango.html
