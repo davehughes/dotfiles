@@ -7,8 +7,11 @@ set modelines=0
 set nowrap
 set hidden
 set expandtab
+set ruler
+set number
 set textwidth=0
 set tabstop=8
+set bs=2
 set softtabstop=4
 set shiftwidth=4
 set autoindent
@@ -17,20 +20,18 @@ set backupdir=~/.vim/sessions//
 set directory=~/.vim/sessions//
 set tags=tags,env/lib/tags,env/src/tags
 set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,/usr/local/repo/asurepo/static/**
+
+" Syntax config
 syntax on
+au BufNewFile,BufRead *.less set filetype=less
 
-nmap <silent> <c-h> :noh<CR>
-nmap <silent> <c-j> :bn<CR>
-nmap <silent> <c-k> :bp<CR>
-nmap ,s :Gstatus<CR>
-nmap ,c :Gcommit<CR>
+
+nmap <silent> <C-h> :noh<CR>
+nmap <silent> <C-j> :bn<CR>
+nmap <silent> <C-k> :bp<CR>
+nmap ,gs :Gstatus<CR>
+nmap ,gc :Gcommit<CR>
 highlight SpellBad term=underline gui=undercurl guisp=Orange 
-
-" Map buffer movement
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
 
 " Snipmate settings
 autocmd FileType python set ft=python.django
@@ -56,16 +57,15 @@ nmap <silent> <f3> :NEXTCOLOR<cr>
 nmap <silent> <f2> :PREVCOLOR<cr>
 colorscheme aqua
 
-
 " Add the virtualenv's site-packages to vim path
-py << EOF
-import os.path
-import sys
-import vim
-if 'VIRTUAL_ENV' in os.environ:
-    project_base_dir = os.environ['VIRTUAL_ENV']
-    sys.path.insert(0, project_base_dir)
-    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-    execfile(activate_this, dict(__file__=activate_this))
-EOF
+" py << EOF
+" import os.path
+" import sys
+" import vim
+" if 'VIRTUAL_ENV' in os.environ:
+"     project_base_dir = os.environ['VIRTUAL_ENV']
+"     sys.path.insert(0, project_base_dir)
+"     activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"     execfile(activate_this, dict(__file__=activate_this))
+" EOF
 
