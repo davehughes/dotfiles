@@ -106,14 +106,6 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
  
-export WORKON_HOME=/virtualenv
-export PIP_VIRTUALENV_BASE=$WORKON_HOME
-export PIP_REQUIRE_VIRTUALENV=true
-export PIP_RESPECT_VIRTUALENV=true
-. virtualenvwrapper.sh
-
-export PATH=$PATH:/var/lib/gems/1.8/bin/
-
 # remap caps lock so it can be used as the tmux prefix key (see .tmux.conf)
 setxkbmap
 xmodmap -e "remove Lock = Caps_Lock" >> /dev/null 2>&1
