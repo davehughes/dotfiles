@@ -17,3 +17,5 @@
 [alias]
         lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %C(bold white)%s%Creset %Cgreen(%cr) %C(blue)@%an%Creset' --abbrev-commit --date=relative
 
+[push]
+	default = current

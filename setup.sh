@@ -20,13 +20,6 @@ done
 
 git submodule update --init --recursive
 
-# Build Command-T ruby extension
-CMDT_BASE=$SCRIPTDIR/.vim/bundle/command-t
-CMDT_RUBY=$CMDT_BASE/ruby/command-t
-cd $CMDT_RUBY
-ruby extconf.rb && make && rm Makefile && rm mkmf.log
-cd $SCRIPTDIR
-
 # Build vimclojure-nailgun-client
 cd /tmp
 NGCLIENT_VERSION="2.2.0"
