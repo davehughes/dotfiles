@@ -24,14 +24,15 @@ set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,/usr/local/repo/asurepo/st
 " Syntax config
 syntax on
 au BufNewFile,BufRead *.less set filetype=less
-
+autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 
 nmap <silent> <C-h> :noh<CR>
 nmap <silent> <C-j> :bn<CR>
 nmap <silent> <C-k> :bp<CR>
 nmap ,gs :Gstatus<CR>
 nmap ,gc :Gcommit<CR>
-highlight SpellBad term=underline gui=undercurl guisp=Orange 
+highlight SpellBad term=underline gui=undercurl guisp=Orange
+nmap <Leader>t :TagbarToggle<CR>
 
 " Snipmate settings
 autocmd FileType python set ft=python.django
