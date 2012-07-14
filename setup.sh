@@ -31,5 +31,6 @@ make
 mv ng $SCRIPTDIR/.vim/bin
 cd $SCRIPTDIR
 
-
+# Install flake8 for syntastic vim plugin
+pip install flake8
 
