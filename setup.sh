@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 SCRIPT=`readlink -f $0`
 SCRIPTDIR=`dirname $SCRIPT`
 echo "running in $SCRIPTDIR"
 
+echo "symlinking dotfiles from $SCRIPTDIR to $HOME"
 for f in .* ; do
     [ $f = '.' ] && continue
     [ $f = '..' ] && continue
