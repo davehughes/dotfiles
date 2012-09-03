@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 SCRIPT=`readlink -f $0`
 SCRIPTDIR=`dirname $SCRIPT`
+cd $SCRIPTDIR
 echo "running in $SCRIPTDIR"
 
+echo "symlinking dotfiles from $SCRIPTDIR to $HOME"
 for f in .* ; do
     [ $f = '.' ] && continue
     [ $f = '..' ] && continue
@@ -19,6 +21,7 @@ for f in .ssh/* ; do
 done
 
 git submodule update --init --recursive
+
 
 # Build vimclojure-nailgun-client
 cd /tmp
