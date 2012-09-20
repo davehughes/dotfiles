@@ -77,44 +77,9 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-alias g='git'
-complete -o default -o nospace -F _git g
-
-# Requires symlinking of clojure (or using the default aptitude version)
-CLOJURE_JAR=/usr/share/java/clojure.jar
-JLINE_JAR=/usr/share/java/jline.jar
-alias clojure="java -cp $JLINE_JAR:$CLOJURE_JAR jline.ConsoleRunner clojure.main"
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
- 
-# remap caps lock so it can be used as the tmux prefix key (see .tmux.conf)
-setxkbmap
-xmodmap -e "remove Lock = Caps_Lock" >> /dev/null 2>&1
-xmodmap -e "keysym Caps_Lock = Prior" >> /dev/null 2>&1
-
-# use vim as default editor
-export EDITOR=/usr/bin/vim
-
-# source tmuxinator
-[[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
-
-export NODE_PATH=/usr/local/lib/node_modules
