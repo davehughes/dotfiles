@@ -52,3 +52,9 @@
 [submodule ".vim/bundle/supercollider"]
 	path = .vim/bundle/supercollider
 	url = git://github.com/sbl/scvim.git
+[submodule ".vim/bundle/vim-colors-solarized"]
+	path = .vim/bundle/vim-colors-solarized
+	url = git://github.com/altercation/vim-colors-solarized.git
+[submodule ".tmux.d/tmux-colors-solarized"]
+	path = .tmux.d/tmux-colors-solarized
+	url = git://github.com/seebi/tmux-colors-solarized.git

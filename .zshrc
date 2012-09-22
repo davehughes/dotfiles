@@ -54,11 +54,6 @@ if [ -f ~/.aliases ]; then
     . ~/.aliases
 fi
 
-# remap caps lock so it can be used as the tmux prefix key (see .tmux.conf)
-setxkbmap
-xmodmap -e "remove Lock = Caps_Lock" >> /dev/null 2>&1
-xmodmap -e "keysym Caps_Lock = Prior" >> /dev/null 2>&1
-
 # use vim as default editor
 export EDITOR=/usr/bin/vim
 
@@ -102,3 +97,12 @@ function mkenv {
         pip install -r requirements.txt
     fi
 }
+
+function fixcaps {
+    # remap caps lock so it can be used as the tmux prefix key (see .tmux.conf)
+    setxkbmap
+    xmodmap -e "remove Lock = Caps_Lock" >> /dev/null 2>&1
+    xmodmap -e "keysym Caps_Lock = Prior" >> /dev/null 2>&1
+}
+
+$(fixcaps)
