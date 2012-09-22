@@ -1,0 +1,4 @@
+# Requires symlinking of clojure (or using the default aptitude version)
+CLOJURE_JAR=/usr/share/java/clojure.jar
+JLINE_JAR=/usr/share/java/jline.jar
+alias clojure="java -cp $JLINE_JAR:$CLOJURE_JAR jline.ConsoleRunner clojure.main"
