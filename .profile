@@ -15,26 +15,3 @@ if [ -n "$BASH_VERSION" ]; then
 	. "$HOME/.bashrc"
     fi
 fi
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
-# load aliases
-if [ -f ~/.aliases ]; then
-    . ~/.aliases
-fi
-
-# remap caps lock so it can be used as the tmux prefix key (see .tmux.conf)
-setxkbmap
-xmodmap -e "remove Lock = Caps_Lock" >> /dev/null 2>&1
-xmodmap -e "keysym Caps_Lock = Prior" >> /dev/null 2>&1
-
-# use vim as default editor
-export EDITOR=/usr/bin/vim
-
-# source tmuxinator
-[[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator
-
-export NODE_PATH=/usr/local/lib/node_modules
