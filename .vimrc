@@ -24,6 +24,7 @@ set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,/usr/local/repo/asurepo/st
 " Syntax config
 syntax on
 au BufNewFile,BufRead *.less set filetype=less
+au BufNewFile,BufRead *.zsh-theme set filetype=zsh
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 
 nmap <silent> <C-h> :noh<CR>

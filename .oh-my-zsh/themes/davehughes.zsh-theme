@@ -1,13 +1,5 @@
 EXPECTED_USERS=(d dave dshughe1)
 
-function virtualenv_info {
-    [ $VIRTUAL_ENV ] && echo '('`basename $VIRTUAL_ENV`') '
-}
-
-function box_name {
-    [ -f ~/.box-name ] && cat ~/.box-name || hostname -s
-}
-
 local rvm_ruby=''
 if which rvm-prompt &> /dev/null; then
   rvm_ruby='‹$(rvm-prompt i v g)›%{$reset_color%}'
@@ -16,39 +8,24 @@ else
     rvm_ruby='‹$(rbenv version | sed -e "s/ (set.*$//")›%{$reset_color%}'
   fi
 fi
-local current_dir='${PWD/#$HOME/~}'
-local git_info='$(git_prompt_info)'
 
 typeset -A colors; colors=(
-    connector 088 #031
     reset white
-    user 108
+    user 009
     at 255
-    host 108
-    separator 088
-    path 255
-    # input green
-    # status
+    host 009
+    separator 007
+    path 014
+    env 002
+    repo_name 004
+    repo_branch 003
+    error_code 001
 )
 C=colors
 typeset -A C; C=();
 for key in ${(@k)colors}; do
     C[$key]=$FG[$colors[$key]]
 done
-
-function separator {
-    separators=(► › ❯ ❱);
-    echo "%{$C[separator]%}$separators[2]"
-}
-
-function vcs_section {
-    top_level=`git rev-parse --show-toplevel 2>/dev/null`
-    if [[ "$?" == 0 ]]; then
-        echo `basename $top_level`:$(git_prompt_info)
-    # else
-    #     echo "<not in git>"
-    fi
-}
 
 ZSH_THEME_GIT_PROMPT_ADDED="%{$fg[green]%} ✚"
 ZSH_THEME_GIT_PROMPT_MODIFIED="%{$fg[blue]%} ✹"
@@ -62,36 +39,9 @@ ZSH_THEME_GIT_PROMPT_SUFFIX=""
 ZSH_THEME_GIT_PROMPT_DIRTY=""
 ZSH_THEME_GIT_PROMPT_CLEAN=""
 
-function env_section {
-    # TODO: ruby/rvm
-    # ${rvm_ruby}
-    if [ "$VIRTUAL_ENV" ]; then
-        env_base=`basename $VIRTUAL_ENV`
-        if [[ "$env_base" == "env" ]]; then
-            env_parent=`dirname $VIRTUAL_ENV`
-            echo `basename $env_parent`
-        else
-            echo "$env_base"
-        fi
-    fi
+function box_name {
+    [ -f ~/.box-name ] && cat ~/.box-name || hostname -s
 }
-#    
-#    echo $VIRTUAL_ENV
-#    if [[ "${#VIRTUAL_ENV}" == "0" ]]; then
-#        echo $VIRTUAL_ENV
-#    else
-#        echo "<no virtualenv>"
-#    fi
-#    
-#    # venvbase=`basename $VIRTUAL_ENV`
-#    # basename $VIRTUAL_ENV
-#    # if ( $venvbase == "env" ); then
-#    #     echo "generic"
-#    # else
-#    #     echo "specific"
-#    # fi
-#    # echo " $(separator) $VIRTUAL_ENV"
-#}
 
 function box_section {
     # Output 'user@host' unless user is in EXPECTED_USERS, in which case just
@@ -106,7 +56,65 @@ function box_section {
     echo "$USER_STRING%{$C[host]%}$(box_name)"
 }
 
-PROMPT='$(box_section)%{$reset_color%}› '
+function separator {
+    separators=(► › ❯ ❱);
+    echo "%{$C[separator]%}$separators[2]"
+}
 
-local return_status="%{$fg_bold[red]%}%(?..%?)%{$reset_color%}"
-RPROMPT='%{$C[path]%}${PWD/#$HOME/~}$(vcs_section)$(env_section)${return_status}$(git_prompt_status)%{$reset_color%}'
+function combined_location {
+    # Combine path, virtualenv, and git repository into a minimized location
+    # string
+
+    REPO_BASE=$(git rev-parse --show-toplevel 2>/dev/null)
+    if [[ "$?" == 0 ]]; then
+        REPO_NAME=$(basename $REPO_BASE)
+    fi
+
+    if [ "${+VIRTUAL_ENV}" != "0" ]; then
+        ENV_NAME=$(basename $VIRTUAL_ENV)
+
+        # If virtualenv is generically named, use its parent directory name instead
+        if [[ "$ENV_NAME" == "env" ]]; then
+            ENV_PARENT=$(dirname $VIRTUAL_ENV)
+            ENV_NAME=$(basename $ENV_PARENT)
+        fi
+    fi
+
+    SEGMENTS=()
+    # Add the full environment name if it differs from the repository name, 
+    # or just add a highlight otherwise
+    if [ "$ENV_NAME" ]; then
+        if [[ "$ENV_NAME" == "$REPO_NAME" ]]; then
+            ENV_HIGHLIGHT="%{$C[env]%}★ %{$reset_color%}"
+        else
+            SEGMENTS+=("%{$C[env]%}$ENV_NAME")
+        fi
+    fi
+
+    if [ "$REPO_NAME" ]; then
+        SEGMENTS+=("$ENV_HIGHLIGHT%{$C[repo_name]%}$REPO_NAME%{$C[separator]%}:%{$C[repo_branch]%}$(git_prompt_info)")
+    fi
+
+    # Set location string relative to current repo and home directories
+    LPATH=${PWD}
+    if [ "$REPO_NAME" ]; then
+        LPATH=${LPATH/#$REPO_BASE/}
+        LPATH=${LPATH/\//}
+    fi
+    
+    LPATH="${LPATH/#$HOME/~}"
+
+    ## Add the path segment if it has non-zero length
+    if [ "${#LPATH}" != "0" ]; then
+        SEGMENTS+=("%{$C[path]%}$LPATH")
+    fi
+
+    ## Join segments with separators - man, am I terrible at zsh scripting!
+    echo "$(echo "${(j:^:)SEGMENTS}" | sed "s/\^/ $(separator) /g")$(git_prompt_status)"
+}
+
+PROMPT='$(box_section)%{$C[separator]%}› %{$reset_color%}'
+
+local return_status="%{$C[error_code]%}%(?.. [%?])%{$reset_color%}"
+#RPROMPT='%{$C[path]%}${PWD/#$HOME/~}$(vcs_section)$(env_section)$(git_prompt_status)${return_status}%{$reset_color%}'
+RPROMPT='$(combined_location)${return_status}%{$reset_color%}'

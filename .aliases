@@ -4,4 +4,4 @@ JLINE_JAR=/usr/share/java/jline.jar
 alias clojure="java -cp $JLINE_JAR:$CLOJURE_JAR jline.ConsoleRunner clojure.main"
 
 # Always load tmux in 256 color mode
-#alias tmux="tmux -2"
+alias tmux="tmux -2"
