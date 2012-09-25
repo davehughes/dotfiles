@@ -67,6 +67,8 @@ export NODE_PATH=/usr/local/lib/node_modules
 # tell virtualenv not to change the prompt
 export VIRTUAL_ENV_DISABLE_PROMPT=true
 
+export VIMCLOJURE_SERVER_JAR=~/bin/ng-server.jar
+
 function findenv() {
     # recursively look in ancestor directories to $PWD for a directory called 'env'
     # with a 'bin/activate' file and try to source it

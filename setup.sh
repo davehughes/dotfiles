@@ -20,6 +20,10 @@ for f in .ssh/* ; do
     echo "$SCRIPTDIR/$f --> $HOME/$f"
 done
 
+# symlink bin directory
+ln -sfbn $SCRIPTDIR/bin $HOME/bin
+echo "$SCRIPTDIR/bin --> $HOME/bin"
+
 git submodule update --init --recursive
 
 

@@ -46,7 +46,6 @@ let vimclojure#HighlightContrib=1
 let vimclojure#DynamicHighlighting=1
 let vimclojure#ParenRainbow=1
 let vimclojure#WantNailgun = 1
-let vimclojure#NailgunClient = $HOME . "/.vim/bin/ng"
 
 " neocomplcache setup
 let g:neocomplcache_enable_at_startup = 0
