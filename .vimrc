@@ -27,9 +27,10 @@ au BufNewFile,BufRead *.less set filetype=less
 au BufNewFile,BufRead *.zsh-theme set filetype=zsh
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 
-nmap <silent> <C-h> :noh<CR>
-nmap <silent> <C-j> :bn<CR>
-nmap <silent> <C-k> :bp<CR>
+nmap <silent> <C-h> :bp<CR>
+nmap <silent> <C-l> :bn<CR>
+nmap <silent> <C-j> :wincmd w<CR>
+nmap <silent> <C-k> :wincmd W<CR>
 nmap ,gs :Gstatus<CR>
 nmap ,gc :Gcommit<CR>
 highlight SpellBad term=underline gui=undercurl guisp=Orange
@@ -38,10 +39,6 @@ nmap <Leader>t :TagbarToggle<CR>
 " Snipmate settings
 autocmd FileType python set ft=python.django
 autocmd FileType html set ft=htmldjango.html
-
-" Command-T - bump max-files so virtualenv files don't completely
-" overwhelm other selections.
-let g:CommandTMaxFiles=50000
 
 " VimClojure setup
 let vimclojure#HighlightBuiltins=1
