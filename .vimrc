@@ -36,9 +36,9 @@ nmap ,gc :Gcommit<CR>
 highlight SpellBad term=underline gui=undercurl guisp=Orange
 nmap <Leader>t :TagbarToggle<CR>
 
-" Snipmate settings
-autocmd FileType python set ft=python.django
-autocmd FileType html set ft=htmldjango.html
+" UltiSnips setup
+let g:UltiSnipsSnippetDirectories=["bundle/ultisnips/UltiSnips", "snippets"]
+let g:UltiSnipsEditSplit="horizontal"
 
 " VimClojure setup
 let vimclojure#HighlightBuiltins=1
@@ -57,6 +57,12 @@ colorscheme solarized
 " Easy color chooser bindings
 nmap <silent> <f3> :NEXTCOLOR<cr>
 nmap <silent> <f2> :PREVCOLOR<cr>
+
+" Automatically reload this file when it changes
+augroup myvimrc
+    au!
+    au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
+augroup END
 
 " Add the virtualenv's site-packages to vim path
 " py << EOF
