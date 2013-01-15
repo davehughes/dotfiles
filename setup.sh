@@ -11,17 +11,17 @@ for f in .* ; do
     [ $f = '.git' ] && continue
     [ $f = '.gitignore' ] && continue
     [ $f = '.ssh' ] && continue
-    ln -sfbn $SCRIPTDIR/$f $HOME/$f
+    ln -sfn $SCRIPTDIR/$f $HOME/$f
     echo "$SCRIPTDIR/$f --> $HOME/$f"
 done
 
 for f in .ssh/* ; do
-    ln -sfbn $SCRIPTDIR/$f $HOME/$f
+    ln -sfn $SCRIPTDIR/$f $HOME/$f
     echo "$SCRIPTDIR/$f --> $HOME/$f"
 done
 
 # symlink bin directory
-ln -sfbn $SCRIPTDIR/bin $HOME/bin
+ln -sfn $SCRIPTDIR/bin $HOME/bin
 echo "$SCRIPTDIR/bin --> $HOME/bin"
 
 git submodule update --init --recursive
