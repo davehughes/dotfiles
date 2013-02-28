@@ -11,6 +11,9 @@ ZSH_THEME="davehughes"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# Don't rename the terminal, it's likely a tmux window that I already named
+DISABLE_AUTO_TITLE=true
+
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
 
