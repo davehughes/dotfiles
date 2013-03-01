@@ -1,6 +1,4 @@
 filetype off
-call pathogen#runtime_append_all_bundles()
-call pathogen#helptags()
 filetype plugin indent on
 set nocompatible
 set modelines=0
@@ -21,6 +19,29 @@ set directory=~/.vim/sessions//
 set tags=tags,env/lib/tags,env/src/tags
 set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,/usr/local/repo/asurepo/static/**
 
+" Vundle configuration and packages
+set rtp+=~/.vim/bundle/vundle
+call vundle#rc()
+Bundle 'gmarik/vundle'
+Bundle 'kien/ctrlp.vim'
+Bundle 'Shougo/neocomplcache'
+Bundle 'scrooloose/syntastic'
+Bundle 'majutsushi/tagbar'
+Bundle 'SirVer/ultisnips'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'tpope/vim-commentary'
+Bundle 'tpope/vim-fugitive'
+Bundle 'altercation/vim-colors-solarized'
+Bundle 'grep.vim'
+Bundle 'QuickBuf'
+Bundle 'taglist.vim'
+Bundle 'VimClojure'
+Bundle 'sudo.vim'
+Bundle 'ScrollColors'
+Bundle 'Colour-Sampler-Pack'
+Bundle 'spacehi.vim'
+Bundle 'groenewege/vim-less'
+
 " Syntax config
 syntax on
 au BufNewFile,BufRead *.less set filetype=less
@@ -37,8 +58,8 @@ highlight SpellBad term=underline gui=undercurl guisp=Orange
 nmap <Leader>t :TagbarToggle<CR>
 
 " UltiSnips setup
-let g:UltiSnipsSnippetDirectories=["bundle/ultisnips/UltiSnips", "snippets"]
-let g:UltiSnipsEditSplit="horizontal"
+"let g:UltiSnipsSnippetDirectories=["bundle/ultisnips/UltiSnips", "snippets"]
+"let g:UltiSnipsEditSplit="horizontal"
 
 " VimClojure setup
 let vimclojure#HighlightBuiltins=1

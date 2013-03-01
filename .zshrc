@@ -60,7 +60,7 @@ if [ -f ~/.aliases ]; then
 fi
 
 # use vim as default editor
-export EDITOR=/usr/bin/vim
+export EDITOR=/usr/local/bin/vim
 
 # source tmuxinator
 [[ -s $HOME/.tmuxinator/scripts/tmuxinator ]] && source $HOME/.tmuxinator/scripts/tmuxinator

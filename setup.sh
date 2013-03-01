@@ -1,7 +1,9 @@
-#!/bin/bash
-SCRIPT=`readlink -f $0`
+#!/bin/zsh
+#SCRIPT=`readlink -f $0`
+SCRIPT=`stat -f $0`
 SCRIPTDIR=`dirname $SCRIPT`
-cd $SCRIPTDIR
+
+pushd $SCRIPTDIR
 echo "running in $SCRIPTDIR"
 
 echo "symlinking dotfiles from $SCRIPTDIR to $HOME"
@@ -26,18 +28,16 @@ echo "$SCRIPTDIR/bin --> $HOME/bin"
 
 git submodule update --init --recursive
 
-
 # Build vimclojure-nailgun-client
-cd /tmp
+pushd /tmp
 NGCLIENT_VERSION="2.2.0"
 NGCLIENT_PACKAGE="vimclojure-nailgun-client"
 wget -O "$NGCLIENT_PACKAGE.zip" "http://kotka.de/projects/vimclojure/$NGCLIENT_PACKAGE-$NGCLIENT_VERSION.zip"
 unzip -o "$NGCLIENT_PACKAGE.zip"
-cd $NGCLIENT_PACKAGE
+pushd $NGCLIENT_PACKAGE
 make
 mv ng $SCRIPTDIR/.vim/bin
-cd $SCRIPTDIR
+popd
+popd
 
-# Install flake8 for syntastic vim plugin
-pip install flake8
-
+popd

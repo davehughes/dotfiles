@@ -1,51 +1,9 @@
-[submodule ".vim/bundle/vim-fugitive"]
-	path = .vim/bundle/vim-fugitive
-	url = git://github.com/tpope/vim-fugitive.git
-[submodule ".vim/bundle/taglist"]
-	path = .vim/bundle/taglist
-	url = git://github.com/vim-scripts/taglist.vim.git
-[submodule ".vim/bundle/vim-coffee-script"]
-	path = .vim/bundle/vim-coffee-script
-	url = https://github.com/kchmck/vim-coffee-script.git
-[submodule ".vim/bundle/quickbuf"]
-	path = .vim/bundle/quickbuf
-	url = git://github.com/vim-scripts/QuickBuf.git
-[submodule ".vim/bundle/grep"]
-	path = .vim/bundle/grep
-	url = git://github.com/vim-scripts/grep.vim.git
-[submodule ".vim/bundle/vim-clojure"]
-	path = .vim/bundle/vim-clojure
-	url = git://github.com/vim-scripts/VimClojure
-[submodule ".vim/bundle/vim-commentary"]
-	path = .vim/bundle/vim-commentary
-	url = git://github.com/tpope/vim-commentary.git
-[submodule ".vim/bundle/neocomplcache"]
-	path = .vim/bundle/neocomplcache
-	url = git://github.com/Shougo/neocomplcache.git
-[submodule ".vim/bundle/ctrlp"]
-	path = .vim/bundle/ctrlp
-	url = git://github.com/kien/ctrlp.vim.git
-[submodule ".vim/bundle/vim-orgmode"]
-	path = .vim/bundle/vim-orgmode
-	url = https://github.com/jceb/vim-orgmode
-[submodule ".vim/bundle/vim-speeddating"]
-	path = .vim/bundle/vim-speeddating
-	url = git://github.com/tpope/vim-speeddating.git
-[submodule ".vim/bundle/syntastic"]
-	path = .vim/bundle/syntastic
-	url = git://github.com/scrooloose/syntastic.git
-[submodule ".vim/bundle/tagbar"]
-	path = .vim/bundle/tagbar
-	url = git://github.com/majutsushi/tagbar.git
-[submodule ".vim/bundle/vim-colors-solarized"]
-	path = .vim/bundle/vim-colors-solarized
-	url = git://github.com/altercation/vim-colors-solarized.git
+[submodule ".vim/bundle/vundle"]
+	path = .vim/bundle/vundle
+	url = git://github.com/gmarik/vundle.git
 [submodule ".solarized/tmux-colors-solarized"]
 	path = .solarized/tmux-colors-solarized
 	url = git://github.com/seebi/tmux-colors-solarized
 [submodule ".solarized/gnome-terminal-colors-solarized"]
 	path = .solarized/gnome-terminal-colors-solarized
 	url = git://github.com/sigurdga/gnome-terminal-colors-solarized.git
-[submodule ".vim/bundle/ultisnips"]
-	path = .vim/bundle/ultisnips
-	url = git://github.com/SirVer/ultisnips
