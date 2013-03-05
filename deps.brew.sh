@@ -2,7 +2,7 @@
 brew install ruby
 brew install rubygems
 brew install ruby-build
-brew install ./brew/vim.rb --env=std
+brew install ./brew/vim.rb --env=std --with-features=big
 brew install tmux
 brew install zsh
 brew install ctags-exuberant

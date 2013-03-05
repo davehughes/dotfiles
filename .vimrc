@@ -41,6 +41,7 @@ Bundle 'ScrollColors'
 Bundle 'Colour-Sampler-Pack'
 Bundle 'spacehi.vim'
 Bundle 'groenewege/vim-less'
+Bundle 'airblade/vim-gitgutter'
 
 " Syntax config
 syntax on
@@ -70,6 +71,9 @@ let vimclojure#WantNailgun = 1
 
 " neocomplcache setup
 let g:neocomplcache_enable_at_startup = 0
+
+" Git gutter
+autocmd VimEnter * EnableGitGutterLineHighlights
 
 " Solarized color scheme and color/theme tools
 set background=dark
