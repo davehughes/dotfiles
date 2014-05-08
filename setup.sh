@@ -25,6 +25,7 @@ elif [ "$OS" == "Linux" ]; then
 else
     echo "Unrecognized OS: $OS" && exit 1
 fi
+echo "Package manager: $PACKAGE_MANAGER"
 
 function install_brew_packages() {
     echo "Installing OSX packages..."
@@ -89,7 +90,7 @@ SCRIPTDIR=$(dirname $SCRIPT)
 pushd $SCRIPTDIR
 
 echo "running in $SCRIPTDIR"
-INSTALL_PACKAGES = "install_${PACKAGE_MANAGER}_packages"
+INSTALL_PACKAGES="install_${PACKAGE_MANAGER}_packages"
 eval ${INSTALL_PACKAGES}
 install_common_packages
 install_vundle
