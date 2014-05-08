@@ -1,0 +1,47 @@
+# ~/.tmuxinator/fundersclub.yml
+
+name: fundersclub
+root: ~/projects/fc-app-root/fundersclub
+
+# Optional tmux socket
+# socket_name: foo
+
+# Runs before everything. Use it to start daemons etc.
+# pre: sudo /etc/rc.d/mysqld start
+
+# Runs in each window and pane before window/pane specific commands. Useful for setting up interpreter versions.
+pre_window: findenv && clear
+
+# Pass command line options to tmux. Useful for specifying a different tmux.conf.
+# tmux_options: -f ~/.tmux.mac.conf
+
+windows:
+  - backend:
+      layout: 1c9e,206x74,0,0{103x74,0,0,72,102x74,104,0[102x37,104,0,75,102x36,104,38,76]}
+      panes:
+        - vim
+        - vim
+        - ./manage.py shell
+  - frontend:
+      layout: 1c9e,206x74,0,0{103x74,0,0,72,102x74,104,0[102x37,104,0,75,102x36,104,38,76]}
+      panes:
+        - vim
+        - vim thefundersclub/client/less/site.less
+        - # shell
+  - client:
+      layout: 1c9e,206x74,0,0{103x74,0,0,72,102x74,104,0[102x37,104,0,75,102x36,104,38,76]}
+      panes:
+        - vim thefundersclub/client/coffee/investor-profiles.coffee
+        - vim thefundersclub/client/less/site.less
+        - fc-grunt && fc-grunt watch
+  - shell:
+      layout: 8536,227x75,0,0{113x75,0,0[113x37,0,0,97,113x37,0,38,99],113x75,114,0[113x37,114,0,98,113x37,114,38,100]}
+      panes:
+        - ./manage.py runserver 0.0.0.0:8000
+        - # shell
+  - remote:
+      layout: 1c9e,206x74,0,0{103x74,0,0,72,102x74,104,0[102x37,104,0,75,102x36,104,38,76]}
+      panes:
+        - # shell
+        - # shell
+        - # shell

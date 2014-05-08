@@ -1,3 +1,8 @@
+if test -z $TMUX && [[ $TERM != "screen-256color" ]]; then
+    exec tmux
+fi
+
+
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
@@ -13,6 +18,8 @@ ZSH_THEME="davehughes"
 
 # Don't rename the terminal, it's likely a tmux window that I already named
 DISABLE_AUTO_TITLE=true
+
+setopt nocorrectall
 
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
@@ -32,13 +39,16 @@ DISABLE_AUTO_TITLE=true
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git pip python vagrant npm supervisor)
+plugins=(gitfast pip python vagrant npm supervisor autojump lol osx tmux tmuxinator)
 
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
-export PATH=/home/dshughe1/.rbenv/bin:/home/dshughe1/.rvm/gems/ruby-1.9.3-p194/bin:/home/dshughe1/.rvm/gems/ruby-1.9.3-p194@global/bin:/home/dshughe1/.rvm/rubies/ruby-1.9.3-p194/bin:/home/dshughe1/.rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:~/bin
 EXPECTED_USERS=(d dave dshughe1)
+
+# Enable autojump completion
+autoload -U compinit && compinit
 
 # Print the current color palette
 function palette {
@@ -53,6 +63,9 @@ function palette {
 if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
+
+PATH=/usr/local/share/python:/usr/local/Cellar/ruby/2.0.0-p0/bin:$PATH
+PATH=/usr/local/Cellar/python/2.7.6/Frameworks/Python.framework/Versions/2.7:$PATH
 
 # load aliases
 if [ -f ~/.aliases ]; then
@@ -114,6 +127,13 @@ function mkenv {
     fi
 }
 
+DOCKER_ROOT=~/projects/docker
+function docker-build {
+    pushd $DOCKER_ROOT/$1 >> /dev/null
+    docker build -t $1 .
+    popd >> /dev/null
+}
+
 function decap {
     # remap caps lock so it can be used as the tmux prefix key (see .tmux.conf)
     setxkbmap
@@ -127,3 +147,8 @@ function DECAP {
 }
 
 # decap false
+# Load local shell config
+LOCAL_SHELL_CONFIG=~/.local.zshrc
+if [[ -f  $LOCAL_SHELL_CONFIG ]]; then
+    source $LOCAL_SHELL_CONFIG
+fi

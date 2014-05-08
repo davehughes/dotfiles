@@ -5,3 +5,15 @@ alias clojure="java -cp $JLINE_JAR:$CLOJURE_JAR jline.ConsoleRunner clojure.main
 
 # Always load tmux in 256 color mode
 alias tmux="tmux -2"
+
+# Make autojump faster
+# alias j="autojump"
+
+# Turn off zsh autocorrect in certain places
+alias ack="nocorrect ack "
+alias tox="nocorrect tox "
+alias lein="nocorrect lein "
+alias grunt="nocorrect grunt "
+alias lessc="nocorrect lessc "
+alias ag="nocorrect ag "
+alias adb="nocorrect adb "
