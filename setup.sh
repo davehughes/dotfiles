@@ -1,9 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 # Detect platform-dependent options
 OS=`uname -a | cut -d" " -f 1`
+echo "OS: $OS"
 
-if [[ "$OS" == "Darwin" ]]; then
+if [ "$OS" == "Darwin" ]; then
     SCRIPT=`stat -f $0`
 
     if [ `which brew` ]; then
@@ -11,10 +12,10 @@ if [[ "$OS" == "Darwin" ]]; then
     else
         echo 'No package manager found.  Install aptitude or yum to continue.' && exit 1
     fi
-elif [[ "$OS" == "Linux" ]]; then
+elif [ "$OS" == "Linux" ]; then
     SCRIPT=`readlink -f $0`
 
-    if [ `which apt` ]; then
+    if [ `which apt-get` ]; then
         PACKAGE_MANAGER=apt
     elif [ `which yum` ]; then
         PACKAGE_MANAGER=yum
@@ -88,7 +89,8 @@ SCRIPTDIR=$(dirname $SCRIPT)
 pushd $SCRIPTDIR
 
 echo "running in $SCRIPTDIR"
-install_${PACKAGE_MANAGER}_packages
+INSTALL_PACKAGES = "install_${PACKAGE_MANAGER}_packages"
+eval ${INSTALL_PACKAGES}
 install_common_packages
 install_vundle
 symlink_dotfiles
