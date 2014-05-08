@@ -58,8 +58,14 @@ function install_common_packages() {
 }
 
 function install_vundle() {
-    mkdir -p .vim/bundle
-    git clone git://github.com/gmarik/vundle .vim/bundle/vundle
+    if [ ! -d .vim/bundle/vundle ]; then
+        mkdir -p .vim/bundle
+        git clone git://github.com/gmarik/vundle .vim/bundle/vundle
+    else
+        pushd .vim/bundle/vundle
+        git pull
+        popd
+    fi
     vim +PluginInstall +qall
 }
 
