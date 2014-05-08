@@ -99,7 +99,7 @@ echo "running in $SCRIPTDIR"
 INSTALL_PACKAGES="install_${PACKAGE_MANAGER}_packages"
 eval ${INSTALL_PACKAGES}
 install_common_packages
-install_vundle
 symlink_dotfiles
+install_vundle
 
 popd
