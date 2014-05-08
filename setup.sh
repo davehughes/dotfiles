@@ -5,7 +5,7 @@ OS=`uname -a | cut -d" " -f 1`
 echo "OS: $OS"
 
 if [ "$OS" == "Darwin" ]; then
-    SCRIPT=`stat -f $0`
+    SCRIPTDIR=$(cd "$(dirname "$0")"; pwd)
 
     if [ `which brew` ]; then
         PACKAGE_MANAGER=brew
@@ -13,7 +13,8 @@ if [ "$OS" == "Darwin" ]; then
         echo 'No package manager found.  Install aptitude or yum to continue.' && exit 1
     fi
 elif [ "$OS" == "Linux" ]; then
-    SCRIPT=`readlink -f $0`
+    SCRIPT=$(readlink -f $0)
+    SCRIPTDIR=$(dirname $SCRIPT)
 
     if [ `which apt-get` ]; then
         PACKAGE_MANAGER=apt
@@ -62,9 +63,9 @@ function install_vundle() {
         mkdir -p .vim/bundle
         git clone git://github.com/gmarik/vundle .vim/bundle/vundle
     else
-        pushd .vim/bundle/vundle
+        pushd .vim/bundle/vundle >> /dev/null
         git pull
-        popd
+        popd >> /dev/null
     fi
     vim +PluginInstall +qall
 }
@@ -96,14 +97,12 @@ function symlink_dotfiles() {
 }
 
 # Run main installation
-SCRIPTDIR=$(dirname $SCRIPT)
-pushd $SCRIPTDIR
-
-echo "running in $SCRIPTDIR"
+pushd $SCRIPTDIR >> /dev/null
+echo "Dotfiles Path: $SCRIPTDIR"
 INSTALL_PACKAGES="install_${PACKAGE_MANAGER}_packages"
 eval ${INSTALL_PACKAGES}
 install_common_packages
 symlink_dotfiles
 install_vundle
 
-popd
+popd >> /dev/null
