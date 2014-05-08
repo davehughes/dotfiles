@@ -3,6 +3,7 @@ USER=vagrant
 DOTFILES_REPO=git://github.com/davehughes/dotfiles
 DOTFILES_DIR=/home/$USER/.dotfiles
 
+sudo apt-get update
 sudo apt-get install -y git
 
 if [ ! -d DOTFILES_DIR ]; then
