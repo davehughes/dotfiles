@@ -6,6 +6,11 @@ SCRIPTDIR=`dirname $SCRIPT`
 pushd $SCRIPTDIR
 echo "running in $SCRIPTDIR"
 
+# Install vundle and plugins
+mkdir -p .vim/bundle
+git clone git://github.com/gmarik/vundle .vim/bundle/vundle
+vim +PluginInstall +qall
+
 echo "symlinking dotfiles from $SCRIPTDIR to $HOME"
 for f in .* ; do
     [ $f = '.' ] && continue
@@ -25,7 +30,5 @@ done
 # symlink bin directory
 ln -sfn $SCRIPTDIR/bin $HOME/bin
 echo "$SCRIPTDIR/bin --> $HOME/bin"
-
-git submodule update --init --recursive
 
 popd
