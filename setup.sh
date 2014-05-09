@@ -82,11 +82,6 @@ function symlink_dotfiles() {
         echo "$SCRIPTDIR/$f --> $HOME/$f"
     done
 
-    for f in .ssh/* ; do
-        ln -sfn $SCRIPTDIR/$f $HOME/$f
-        echo "$SCRIPTDIR/$f --> $HOME/$f"
-    done
-
     # symlink bin directory
     ln -sfn $SCRIPTDIR/bin $HOME/bin
     echo "$SCRIPTDIR/bin --> $HOME/bin"
