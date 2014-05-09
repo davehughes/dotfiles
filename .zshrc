@@ -1,6 +1,7 @@
-if test -z $TMUX && [[ $TERM != "screen-256color" ]]; then
-    exec tmux
-fi
+# Uncomment to auto-start tmux when opening a shell
+# if test -z $TMUX && [[ $TERM != "screen-256color" ]]; then
+#     exec tmux
+# fi
 
 
 # Path to your oh-my-zsh configuration.
