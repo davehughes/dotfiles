@@ -20,8 +20,6 @@ ZSH_THEME="davehughes"
 # Don't rename the terminal, it's likely a tmux window that I already named
 DISABLE_AUTO_TITLE=true
 
-setopt nocorrectall
-
 # Set to this to use case-sensitive completion
 # CASE_SENSITIVE="true"
 
@@ -153,3 +151,9 @@ LOCAL_SHELL_CONFIG=~/.local.zshrc
 if [[ -f  $LOCAL_SHELL_CONFIG ]]; then
     source $LOCAL_SHELL_CONFIG
 fi
+
+unsetopt correct_all
+unsetopt correct
+
+# Attempt to findenv upon opening shell
+findenv
