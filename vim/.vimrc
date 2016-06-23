@@ -61,6 +61,8 @@ Plugin 'vim-scripts/paredit.vim'
 syntax on
 au BufNewFile,BufRead *.less set filetype=less
 au BufNewFile,BufRead *.zsh-theme set filetype=zsh
+au BufNewFile,BufRead *.zshenv set filetype=zsh
+au BufNewFile,BufRead *.zsh set filetype=zsh
 au BufRead,BufNewFile *.pde set filetype=arduino
 au BufRead,BufNewFile *.ino set filetype=arduino
 au BufRead,BufNewFile *.js set filetype=javascript

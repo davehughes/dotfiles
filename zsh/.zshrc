@@ -6,3 +6,9 @@ for file in ${config_files}
 do
   source $file
 done
+
+unsetopt correct_all
+unsetopt correct
+
+# set up fasd
+eval "$(fasd --init auto zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zshwcomp-install)"
