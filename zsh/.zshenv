@@ -1,6 +1,6 @@
 # .zshenv is always sourced, define here exported variables that should
 # be available to other programs.
-export EDITOR=vim
+export EDITOR=nvim
 export PAGER=less
 export TERM="xterm-256color"
 

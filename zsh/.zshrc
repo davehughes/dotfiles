@@ -12,3 +12,6 @@ unsetopt correct
 
 # set up fasd
 eval "$(fasd --init auto zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zshwcomp-install)"
+
+bindkey "j" menu-complete
+bindkey "k" reverse-menu-complete
