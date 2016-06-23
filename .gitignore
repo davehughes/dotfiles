@@ -3,7 +3,7 @@ vim/.vim/*.sw[a-z]
 vim/.vim/*~
 vim/.vim/bundle/*
 
-# Ignore all files under @work except those ending in .secret
-@work/**/*
-!@work/**/
+# Ignore all files under @uber except those ending in .secret
+@uber/**/*
+!@uber/**/
 !*.secret
