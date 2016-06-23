@@ -1,11 +1,6 @@
-# Set Apple Terminal.app resume directory
-# based on this answer: http://superuser.com/a/315029
-
-function chpwd {
-  local SEARCH=' '
-  local REPLACE='%20'
-  local PWD_URL="file://$HOSTNAME${PWD//$SEARCH/$REPLACE}"
-  printf '\e]7;%s\a' "$PWD_URL"
-}
-
-chpwd
+# This file is intentionally empty.
+#
+# The terminalapp plugin is deprecated and may be removed in a future release.
+# Its functionality has been folded in to the core lib/termsupport.zsh, which
+# is loaded for all users. You can remove terminalapp from your $plugins list
+# once all your systems are updated to the current version of Oh My Zsh.
