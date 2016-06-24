@@ -8,15 +8,7 @@ export TERM="xterm-256color"
 DISABLE_AUTO_TITLE=true
 
 # Customize PATH
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:~/bin
-
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
-fi
-
-PATH=$PATH:~/.gvm/bin
-export PATH
+export PATH=$HOME/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # load zsh config files
 env_config_files=(~/.zsh/**/*.zshenv(N))
