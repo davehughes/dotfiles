@@ -1,5 +1,6 @@
 filetype off
 filetype plugin indent on
+let mapleader="\\"
 set nocompatible
 set modelines=0
 set nowrap
@@ -53,9 +54,11 @@ Bundle 'rking/ag.vim'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'fatih/vim-go'
 Bundle 'vim-scripts/dbext.vim'
-Bundle 'easymotion/vim-easymotion'
+Bundle 'nathanielc/vim-tickscript'
+" Bundle 'easymotion/vim-easymotion'
 Plugin 'nsf/gocode', {'rtp': 'vim/'}
 Plugin 'vim-scripts/paredit.vim'
+Plugin 'hashivim/vim-terraform'
 
 " Syntax config
 syntax on
@@ -73,12 +76,14 @@ au BufRead,BufNewFile *.go set filetype=go
 au BufRead,BufNewFile *.org set filetype=org
 au BufRead,BufNewFile *.sql set filetype=sql
 au BufRead,BufNewFile *.sql.j2 set filetype=sql
+au BufRead,BufNewFile *.tick set filetype=tick
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 au FileType jade setl sw=2 sts=2 et
 au FileType javascript setl sw=2 sts=2 et
 au FileType yaml setl sw=2 sts=2 et
 au FileType html setl sw=2 sts=2 et noexpandtab
 au FileType go setl sw=2 sts=2 ts=2 et
+au FileType tick setl sw=2 sts=2 ts=2 et commentstring=//\ %s
 
 " File-specific key mappings
 " + Eval line or visual selection
@@ -97,6 +102,8 @@ nmap <Leader>t :TagbarToggle<CR>
 nmap <Leader>j :cn<CR>zz
 nmap <Leader>k :cp<CR>zz
 nmap <Leader>s :set opfunc=SearchMotion<CR>g@
+nmap <Leader>\\ :Commentary<CR>
+vmap <Leader>\ :'<,'>Commentary<CR>
 
 function! SearchMotion(type, ...)
   " Save selection and register and update selection for proper yanking
@@ -139,6 +146,8 @@ endif
 " Syntastic
 let g:syntastic_python_checkers = ["flake8", "pep8", "pyflakes", "python", "pylint"]
 let g:syntastic_jslint_checkers = ["jshint"]
+" let g:syntastic_go_checkers = ['gometalinter']
+let g:syntastic_ruby_checkers = ['ruby-lint']
 
 " UltiSnips setup
 "let g:UltiSnipsSnippetDirectories=["bundle/ultisnips/UltiSnips", "snippets"]
@@ -167,6 +176,9 @@ augroup END
 
 " vim-go
 let g:go_fmt_command = "goimports"
+
+" vim-terraform
+let g:terraform_fmt_on_save = 1
 
 " dbext setup (adds psycopg2-style substitutions to regex, e.g. %(myvar)s)
 let g:dbext_default_variable_def_regex = '\(\w\|'."'".'\)\@<!?\(\w\|'."'".'\)\@<!,\zs\(@\|:\a\|\$\)\w\+\>,\zs%(\s*\w\+\s*)s\>'

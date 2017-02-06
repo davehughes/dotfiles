@@ -8,3 +8,5 @@ alias v='f -e vim' # quick opening files with vim
 
 alias vim="nvim"
 alias oldvim="vim"
+
+alias mfa="~/bin/mfa.py --config=$HOME/.mfa"

@@ -1,5 +1,5 @@
 # GOROOT
-XGVM_VERSION=go1.6.2
+XGVM_VERSION=go1.7.2
 XGVM_PKGSET=coin
 
 [[ -s "$HOME/.gvm/scripts/gvm" ]] && source "$HOME/.gvm/scripts/gvm"

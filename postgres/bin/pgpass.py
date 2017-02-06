@@ -1,4 +1,3 @@
-#!/Users/dave/projects/ci-etl/env/bin/python 
 #!/usr/bin/python
 import argparse
 import collections
