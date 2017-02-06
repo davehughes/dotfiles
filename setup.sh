@@ -62,8 +62,8 @@ function install_common_packages() {
 }
 
 function install_vundle() {
-    if [ ! -d .vim/bundle/vundle ]; then
-        mkdir -p .vim/bundle
+    if [ ! -d vim/.vim/bundle/vundle ]; then
+        mkdir -p vim/.vim/bundle
         git clone git://github.com/gmarik/vundle vim/.vim/bundle/vundle
     else
         pushd vim/.vim/bundle/vundle >> /dev/null
@@ -73,15 +73,21 @@ function install_vundle() {
     vim +PluginInstall +qall
 }
 
+function install_oh_my_zsh() {
+    rm -rf ~/.oh-my-zsh
+    sh install-oh-my-zsh.sh
+    rm -rf ~/.oh-my-zsh/custom
+}
+
 function stow_core_dotfiles() {
     echo "stowing dotfiles from $SCRIPTDIR to $HOME"
-    stow stow
-    stow git
-    stow postgres
-    stow tmux
-    stow vagrant
-    stow vim
-    stow zsh
+    stow -R stow
+    stow -R git
+    stow -R postgres
+    stow -R tmux
+    stow -R vagrant
+    stow -R vim
+    stow -R zsh
 }
 
 # Run main installation
@@ -90,6 +96,7 @@ echo "Dotfiles Path: $SCRIPTDIR"
 INSTALL_PACKAGES="install_${PACKAGE_MANAGER}_packages"
 eval ${INSTALL_PACKAGES}
 install_common_packages
+install_oh_my_zsh
 stow_core_dotfiles
 install_vundle
 
