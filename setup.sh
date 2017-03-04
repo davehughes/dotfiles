@@ -30,6 +30,7 @@ echo "Package manager: $PACKAGE_MANAGER"
 
 function install_brew_packages() {
     echo "Installing OSX packages..."
+    brew install stow
     brew install ruby
     brew install rubygems
     brew install ruby-build
@@ -39,6 +40,10 @@ function install_brew_packages() {
     brew install ctags-exuberant
     brew install fasd
     brew install git-secret
+    brew install neovim/neovim/neovim
+    brew install oauth-toolkit
+    brew install pwgen
+    brew install the_silver_searcher
 }
 
 function install_apt_packages() {
@@ -75,8 +80,15 @@ function install_vundle() {
 
 function install_oh_my_zsh() {
     rm -rf ~/.oh-my-zsh
-    sh install-oh-my-zsh.sh
+    sh scripts/install-oh-my-zsh.sh
     rm -rf ~/.oh-my-zsh/custom
+}
+
+function install_gvm() {
+    sh scripts/install-gvm.sh
+    ln -s ~/.gvm/bin/gvm /usr/local/bin/gvm
+    ln -s ~/.gvm/bin/gvmsudo /usr/local/bin/gvmsudo
+    ln -s ~/.gvm/bin/gvm-prompt /usr/local/bin/gvm-promp
 }
 
 function stow_core_dotfiles() {
@@ -97,6 +109,7 @@ INSTALL_PACKAGES="install_${PACKAGE_MANAGER}_packages"
 eval ${INSTALL_PACKAGES}
 install_common_packages
 install_oh_my_zsh
+install_gvm
 stow_core_dotfiles
 install_vundle
 
