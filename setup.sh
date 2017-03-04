@@ -88,7 +88,7 @@ function install_gvm() {
     sh scripts/install-gvm.sh
     ln -s ~/.gvm/bin/gvm /usr/local/bin/gvm
     ln -s ~/.gvm/bin/gvmsudo /usr/local/bin/gvmsudo
-    ln -s ~/.gvm/bin/gvm-prompt /usr/local/bin/gvm-promp
+    ln -s ~/.gvm/bin/gvm-prompt /usr/local/bin/gvm-prompt
 }
 
 function stow_core_dotfiles() {
