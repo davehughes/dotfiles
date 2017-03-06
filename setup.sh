@@ -32,7 +32,6 @@ function install_brew_packages() {
     echo "Installing OSX packages..."
     brew install stow
     brew install ruby
-    brew install rubygems
     brew install ruby-build
     brew install ./brew/vim.rb --env=std --with-features=big
     brew install tmux
@@ -44,6 +43,13 @@ function install_brew_packages() {
     brew install oauth-toolkit
     brew install pwgen
     brew install the_silver_searcher
+    brew install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste
+}
+
+function tweak_defaults() {
+    defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool TRUE
+    defaults write -g InitialKeyRepeat 12
+    defaults write -g KeyRepeat 1
 }
 
 function install_apt_packages() {
@@ -88,7 +94,10 @@ function install_gvm() {
     sh scripts/install-gvm.sh
     ln -s ~/.gvm/bin/gvm /usr/local/bin/gvm
     ln -s ~/.gvm/bin/gvmsudo /usr/local/bin/gvmsudo
-    ln -s ~/.gvm/bin/gvm-prompt /usr/local/bin/gvm-prompt
+    ln -s ~/.gvm/bin/gvm-prompt /usr/local/bin/gvm-promp
+    gvm install go1.4 -B
+    gvm install go1.7.2 -B
+    gvm install go1.8 -B
 }
 
 function stow_core_dotfiles() {
@@ -112,5 +121,6 @@ install_oh_my_zsh
 install_gvm
 stow_core_dotfiles
 install_vundle
+tweak_defaults
 
 popd >> /dev/null
