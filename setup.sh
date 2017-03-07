@@ -40,9 +40,11 @@ function install_brew_packages() {
     brew install fasd
     brew install git-secret
     brew install neovim/neovim/neovim
-    brew install oauth-toolkit
+    brew install outh-toolkit
     brew install pwgen
     brew install the_silver_searcher
+    brew install Caskroom/cask/karabiner-elements
+    brew install Caskroom/cask/seil 
     brew install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste
 }
 
