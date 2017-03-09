@@ -40,6 +40,8 @@ function install_brew_packages() {
     brew install fasd
     brew install git-secret
     brew install neovim/neovim/neovim
+    pip install neovim  # required for python support
+    brew install rlwrap
     brew install outh-toolkit
     brew install pwgen
     brew install the_silver_searcher
