@@ -112,6 +112,7 @@ function stow_core_dotfiles() {
     stow -R tmux
     stow -R vagrant
     stow -R vim
+    stow -R util
     stow -R zsh
 }
 
