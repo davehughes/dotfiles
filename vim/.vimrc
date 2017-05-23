@@ -187,3 +187,10 @@ let g:UltiSnipsJumpBackwardTrigger="<c-M>"
 let g:UltiSnipsEditSplit="horizontal"
 let g:UltiSnipsSnippetsDir=$HOME.'/.vim/snippets/UltiSnips'
 let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/snippets/UltiSnips']
+
+" folding
+augroup AutoSaveFolds
+  autocmd!
+  autocmd BufWinLeave * mkview
+  autocmd BufWinEnter * silent loadview
+augroup END
