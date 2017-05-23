@@ -59,6 +59,7 @@ Bundle 'nathanielc/vim-tickscript'
 Plugin 'nsf/gocode', {'rtp': 'vim/'}
 Plugin 'vim-scripts/paredit.vim'
 Plugin 'hashivim/vim-terraform'
+Plugin 'SirVer/ultisnips'
 
 " Syntax config
 syntax on
@@ -149,10 +150,6 @@ let g:syntastic_jslint_checkers = ["jshint"]
 " let g:syntastic_go_checkers = ['gometalinter']
 let g:syntastic_ruby_checkers = ['ruby-lint']
 
-" UltiSnips setup
-"let g:UltiSnipsSnippetDirectories=["bundle/ultisnips/UltiSnips", "snippets"]
-"let g:UltiSnipsEditSplit="horizontal"
-
 " neocomplcache setup
 let g:neocomplcache_enable_at_startup = 0
 
@@ -182,3 +179,11 @@ let g:terraform_fmt_on_save = 1
 
 " dbext setup (adds psycopg2-style substitutions to regex, e.g. %(myvar)s)
 let g:dbext_default_variable_def_regex = '\(\w\|'."'".'\)\@<!?\(\w\|'."'".'\)\@<!,\zs\(@\|:\a\|\$\)\w\+\>,\zs%(\s*\w\+\s*)s\>'
+
+" ultisnips
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-N>"
+let g:UltiSnipsJumpBackwardTrigger="<c-M>"
+let g:UltiSnipsEditSplit="horizontal"
+let g:UltiSnipsSnippetsDir=$HOME.'/.vim/snippets/UltiSnips'
+let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/snippets/UltiSnips']

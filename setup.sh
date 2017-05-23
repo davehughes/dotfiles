@@ -52,6 +52,7 @@ function install_brew_packages() {
 
 function tweak_defaults() {
     defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool TRUE
+    defaults write com.apple.finder AppleShowAllFiles -bool TRUE
     defaults write -g InitialKeyRepeat 12
     defaults write -g KeyRepeat 1
 }
