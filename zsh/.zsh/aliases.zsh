@@ -4,7 +4,10 @@ alias tmux="tmux -2"
 alias node="env NODE_NO_READLINE=1 rlwrap node"
 
 # fasd
-alias v='f -e vim' # quick opening files with vim
+alias v='fasd -fe vim'
+alias vv='fasd -fise vim'
+alias j='fasd_cd -d'
+alias jj='fasd_cd -d -i'
 
 alias vim="nvim"
 alias oldvim="vim"
