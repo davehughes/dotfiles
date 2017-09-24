@@ -5,6 +5,7 @@ OS=`uname -a | cut -d" " -f 1`
 echo "OS: $OS"
 
 if [ "$OS" == "Darwin" ]; then
+    PLATFORM=osx
     SCRIPTDIR=$(cd "$(dirname "$0")"; pwd)
 
     if [ `which brew` ]; then
@@ -13,6 +14,7 @@ if [ "$OS" == "Darwin" ]; then
         echo 'No package manager found.  Install aptitude or yum to continue.' && exit 1
     fi
 elif [ "$OS" == "Linux" ]; then
+    PLATFORM=linux
     SCRIPT=$(readlink -f $0)
     SCRIPTDIR=$(dirname $SCRIPT)
 
@@ -26,6 +28,7 @@ elif [ "$OS" == "Linux" ]; then
 else
     echo "Unrecognized OS: $OS" && exit 1
 fi
+echo "Platform: $PLATFORM"
 echo "Package manager: $PACKAGE_MANAGER"
 
 function install_brew_packages() {
@@ -37,7 +40,6 @@ function install_brew_packages() {
     brew install tmux
     brew install zsh
     brew install ctags-exuberant
-    brew install fasd
     brew install git-secret
     brew install neovim/neovim/neovim
     pip install neovim  # required for python support
@@ -50,20 +52,42 @@ function install_brew_packages() {
     brew install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste
 }
 
-function tweak_defaults() {
+function tweak_osx_defaults() {
     defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool TRUE
     defaults write com.apple.finder AppleShowAllFiles -bool TRUE
     defaults write -g InitialKeyRepeat 12
     defaults write -g KeyRepeat 1
 }
 
+function tweak_linux_defaults() {
+    echo "No linux defaults to tweak"
+}
+
 function install_apt_packages() {
     echo "Installing aptitude packages..."
-    sudo apt-get -y install vim-nox tmux zsh ruby ruby-dev rubygems ssh unzip \
-                            exuberant-ctags libjline-java \
-                            python-dev python-pip \
-                            x11-xserver-utils xdotool \
-                            fasd
+    # Update
+    sudo apt update
+
+    # Install dependencies
+    sudo apt -y install \
+	    neovim \
+	    tmux \
+	    zsh \
+	    ssh \
+	    git \
+	    stow \
+	    unzip \
+	    libjline-java \
+	    python-dev python-pip \
+	    x11-xserver-utils \
+	    xdotool \
+        silversearcher-ag \
+	    oathtool \
+        pwgen \
+        openjdk-8-jre-headless \
+        racket \
+        mit-scheme \
+        r-base
 }
 
 function install_yum_packages() {
@@ -96,10 +120,10 @@ function install_oh_my_zsh() {
 }
 
 function install_gvm() {
-    sh scripts/install-gvm.sh
-    ln -s ~/.gvm/bin/gvm /usr/local/bin/gvm
-    ln -s ~/.gvm/bin/gvmsudo /usr/local/bin/gvmsudo
-    ln -s ~/.gvm/bin/gvm-prompt /usr/local/bin/gvm-promp
+    bash scripts/install-gvm.sh
+    sudo ln -sf ~/.gvm/bin/gvm /usr/local/bin/gvm
+    sudo ln -sf ~/.gvm/bin/gvmsudo /usr/local/bin/gvmsudo
+    sudo ln -sf ~/.gvm/bin/gvm-prompt /usr/local/bin/gvm-prompt
     gvm install go1.4 -B
     gvm install go1.7.2 -B
     gvm install go1.8 -B
@@ -115,18 +139,22 @@ function stow_core_dotfiles() {
     stow -R vim
     stow -R util
     stow -R zsh
+    stow -R --target $HOME --dir platforms $PLATFORM
 }
 
 # Run main installation
 pushd $SCRIPTDIR >> /dev/null
 echo "Dotfiles Path: $SCRIPTDIR"
-INSTALL_PACKAGES="install_${PACKAGE_MANAGER}_packages"
-eval ${INSTALL_PACKAGES}
+
+# Set shell
+chsh -s $(which zsh) $USER
+
+install_${PACKAGE_MANAGER}_packages
 install_common_packages
 install_oh_my_zsh
 install_gvm
 stow_core_dotfiles
 install_vundle
-tweak_defaults
+tweak_${PLATFORM}_defaults
 
 popd >> /dev/null
