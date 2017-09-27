@@ -87,7 +87,8 @@ function install_apt_packages() {
         openjdk-8-jre-headless \
         racket \
         mit-scheme \
-        r-base
+        r-base \
+        compizconfig-settings-manager
 }
 
 function install_yum_packages() {
