@@ -1,0 +1,98 @@
+{
+    "title": "Linux Compatibility",
+    "rules": [
+        {
+            "description": "Use Ctrl as Cmd (leader) in Google Chrome",
+            "manipulators": [
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "a"}, "to": [{"modifiers": ["left_command"], "key_code": "a"}], "type": "basic"}, 
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "b"}, "to": [{"modifiers": ["left_command"], "key_code": "b"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "c"}, "to": [{"modifiers": ["left_command"], "key_code": "c"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "d"}, "to": [{"modifiers": ["left_command"], "key_code": "d"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "e"}, "to": [{"modifiers": ["left_command"], "key_code": "e"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "f"}, "to": [{"modifiers": ["left_command"], "key_code": "f"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "g"}, "to": [{"modifiers": ["left_command"], "key_code": "g"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "h"}, "to": [{"modifiers": ["left_command"], "key_code": "h"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "i"}, "to": [{"modifiers": ["left_command"], "key_code": "i"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "j"}, "to": [{"modifiers": ["left_command"], "key_code": "j"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "k"}, "to": [{"modifiers": ["left_command"], "key_code": "k"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "l"}, "to": [{"modifiers": ["left_command"], "key_code": "l"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "m"}, "to": [{"modifiers": ["left_command"], "key_code": "m"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "n"}, "to": [{"modifiers": ["left_command"], "key_code": "n"}], "type": "basic"}, 
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "o"}, "to": [{"modifiers": ["left_command"], "key_code": "o"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "p"}, "to": [{"modifiers": ["left_command"], "key_code": "p"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "q"}, "to": [{"modifiers": ["left_command"], "key_code": "q"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "r"}, "to": [{"modifiers": ["left_command"], "key_code": "r"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "s"}, "to": [{"modifiers": ["left_command"], "key_code": "s"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "t"}, "to": [{"modifiers": ["left_command"], "key_code": "t"}], "type": "basic"}, 
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "u"}, "to": [{"modifiers": ["left_command"], "key_code": "u"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "v"}, "to": [{"modifiers": ["left_command"], "key_code": "v"}], "type": "basic"}, 
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "w"}, "to": [{"modifiers": ["left_command"], "key_code": "w"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "x"}, "to": [{"modifiers": ["left_command"], "key_code": "x"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "y"}, "to": [{"modifiers": ["left_command"], "key_code": "y"}], "type": "basic"},
+                {"conditions": [{"type": "frontmost_application_if", "bundle_identifiers": ["^com\\.google\\.Chrome"]}], "from": {"modifiers": {"mandatory": ["left_control"], "optional": []}, "key_code": "z"}, "to": [{"modifiers": ["left_command"], "key_code": "z"}], "type": "basic"}
+            ]
+        }, {
+            "description": "TotalSpaces vim bindings remapping (requires using Cmd+Shift as leader in TotalSpaces hotkeys)",
+            "manipulators": [
+                { 
+                    "from": {"modifiers": {"mandatory": ["left_control", "left_command"], "optional": ["any"]}, "key_code": "h"},
+                    "to": [{"modifiers": ["left_command", "shift"], "key_code": "h"}],
+                    "type": "basic"
+                },
+                { 
+                    "from": {"modifiers": {"mandatory": ["left_control", "left_command"], "optional": ["any"]}, "key_code": "j"},
+                    "to": [{"modifiers": ["left_command", "shift"], "key_code": "j"}],
+                    "type": "basic"
+                },
+                { 
+                    "from": {"modifiers": {"mandatory": ["left_control", "left_command"], "optional": ["any"]}, "key_code": "k"},
+                    "to": [{"modifiers": ["left_command", "shift"], "key_code": "k"}],
+                    "type": "basic"
+                },
+                { 
+                    "from": {"modifiers": {"mandatory": ["left_control", "left_command"], "optional": ["any"]}, "key_code": "l"},
+                    "to": [{"modifiers": ["left_command", "shift"], "key_code": "l"}],
+                    "type": "basic"
+                },
+                { 
+                    "from": {"modifiers": {"mandatory": ["left_control", "left_command", "left_option"], "optional": ["any"]}, "key_code": "h"},
+                    "to": [{"modifiers": ["left_command", "left_option", "shift"], "key_code": "h"}],
+                    "type": "basic"
+                },
+                { 
+                    "from": {"modifiers": {"mandatory": ["left_control", "left_command", "left_option"], "optional": ["any"]}, "key_code": "j"},
+                    "to": [{"modifiers": ["left_command", "left_option", "shift"], "key_code": "j"}],
+                    "type": "basic"
+                },
+                { 
+                    "from": {"modifiers": {"mandatory": ["left_control", "left_command", "left_option"], "optional": ["any"]}, "key_code": "k"},
+                    "to": [{"modifiers": ["left_command", "left_option", "shift"], "key_code": "k"}],
+                    "type": "basic"
+                },
+                { 
+                    "from": {"modifiers": {"mandatory": ["left_control", "left_command", "left_option"], "optional": ["any"]}, "key_code": "l"},
+                    "to": [{"modifiers": ["left_command", "left_option", "shift"], "key_code": "l"}],
+                    "type": "basic"
+                }
+            ]
+        }, {
+            "description": "Caps lock to F4 (Tmux Leader)",
+            "manipulators": [
+                { 
+                    "from": {"modifiers": {"optional": ["any"]}, "key_code": "caps_lock"},
+                    "to": [{"modifiers": [], "key_code": "f4"}],
+                    "type": "basic"
+                }
+            ]
+        }, {
+            "description": "Fn -> Ctrl for more PC-like keyboard",
+            "manipulators": [
+                { 
+                    "from": {"modifiers": {"optional": ["any"]}, "key_code": "fn"},
+                    "to": [{"modifiers": [], "key_code": "left_control"}],
+                    "type": "basic"
+                }
+            ]
+        }
+    ]
+}
