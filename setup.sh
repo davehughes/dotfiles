@@ -50,6 +50,7 @@ function install_brew_packages() {
     brew install Caskroom/cask/karabiner-elements
     brew install Caskroom/cask/seil 
     brew install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste
+    brew install jq
 }
 
 function tweak_osx_defaults() {
@@ -60,7 +61,7 @@ function tweak_osx_defaults() {
 }
 
 function tweak_linux_defaults() {
-    echo "No linux defaults to tweak"
+    dconf write /org/gnome/gnome-session/auto-save-session true
 }
 
 function install_apt_packages() {
@@ -78,7 +79,8 @@ function install_apt_packages() {
 	    stow \
 	    unzip \
 	    libjline-java \
-	    python-dev python-pip \
+	    python-dev \
+        python-pip \
 	    x11-xserver-utils \
 	    xdotool \
         silversearcher-ag \
@@ -88,7 +90,10 @@ function install_apt_packages() {
         racket \
         mit-scheme \
         r-base \
-        compizconfig-settings-manager
+        jq \
+        rlwrap \
+        compizconfig-settings-manager \
+        dconf-editor
 }
 
 function install_yum_packages() {
@@ -135,6 +140,7 @@ function stow_core_dotfiles() {
     stow -R stow
     stow -R git
     stow -R postgres
+    stow -R python
     stow -R tmux
     stow -R vagrant
     stow -R vim

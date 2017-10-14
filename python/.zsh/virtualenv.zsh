@@ -39,7 +39,3 @@ function mkenv {
         pip install -r $REQS
     fi
 }
-
-# Attempt to findenv upon opening shell
-findenv
-
