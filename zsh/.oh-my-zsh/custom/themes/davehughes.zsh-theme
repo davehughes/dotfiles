@@ -95,7 +95,7 @@ function combined_location {
         SEGMENTS+=("$ENV_HIGHLIGHT%{$C[repo_name]%}$REPO_NAME%{$C[separator]%}:%{$C[repo_branch]%}$(git_prompt_info)")
     fi
 
-    SEGMENTS+=("$(gvm-prompt)") 
+    which gvm-prompt && SEGMENTS+=("$(gvm-prompt)") 
 
     # Set location string relative to current repo and home directories
     LPATH=${PWD}

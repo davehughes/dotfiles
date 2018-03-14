@@ -11,7 +11,6 @@ alias jj='fasd_cd -d -i'
 alias l='fasd -de ls'
 alias ll='fasd -dise ls'
 
-alias vim="nvim"
-alias oldvim="vim"
+which nvim >> /dev/null && alias vim="nvim" && alias oldvim="vim"
 
 alias mfa="~/bin/mfa.py --config=$HOME/.mfa"
