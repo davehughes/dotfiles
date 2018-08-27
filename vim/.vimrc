@@ -173,6 +173,7 @@ augroup END
 
 " vim-go
 let g:go_fmt_command = "goimports"
+let g:go_version_warning = 0
 
 " vim-terraform
 let g:terraform_fmt_on_save = 1

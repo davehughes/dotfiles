@@ -12,3 +12,4 @@ unsetopt correct
 
 # set up fasd
 eval "$(fasd --init auto zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zshwcomp-install)"
+brew analytics off 2>&1 >/dev/null
