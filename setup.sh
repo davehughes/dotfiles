@@ -141,6 +141,7 @@ function stow_core_dotfiles() {
     stow -R git
     stow -R postgres
     stow -R python
+    stow -R rust
     stow -R tmux
     stow -R vagrant
     stow -R vim
