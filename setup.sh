@@ -103,8 +103,7 @@ function install_yum_packages() {
 
 function install_common_packages() {
     echo "Installing common packages..."
-    sudo pip install virtualenv supervisor ipython ipdb
-    sudo gem install tmuxinator
+    sudo pip install virtualenv supervisor ipython ipdb tmuxp
 }
 
 function install_vundle() {
