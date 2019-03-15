@@ -59,7 +59,7 @@ Bundle 'nathanielc/vim-tickscript'
 Plugin 'nsf/gocode', {'rtp': 'vim/'}
 Plugin 'vim-scripts/paredit.vim'
 Plugin 'hashivim/vim-terraform'
-Plugin 'SirVer/ultisnips'
+" Plugin 'SirVer/ultisnips'
 
 " Syntax config
 syntax on
@@ -182,16 +182,17 @@ let g:terraform_fmt_on_save = 1
 let g:dbext_default_variable_def_regex = '\(\w\|'."'".'\)\@<!?\(\w\|'."'".'\)\@<!,\zs\(@\|:\a\|\$\)\w\+\>,\zs%(\s*\w\+\s*)s\>'
 
 " ultisnips
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-N>"
-let g:UltiSnipsJumpBackwardTrigger="<c-M>"
-let g:UltiSnipsEditSplit="horizontal"
-let g:UltiSnipsSnippetsDir=$HOME.'/.vim/snippets/UltiSnips'
-let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/snippets/UltiSnips']
+let g:UltiSnipsEnableSnipMate = 0
+" let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsJumpForwardTrigger="<c-N>"
+" let g:UltiSnipsJumpBackwardTrigger="<c-M>"
+" let g:UltiSnipsEditSplit="horizontal"
+" let g:UltiSnipsSnippetsDir=$HOME.'/.vim/snippets/UltiSnips'
+" let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/snippets/UltiSnips']
 
 " folding
 augroup AutoSaveFolds
   autocmd!
-  autocmd BufWinLeave * mkview
-  autocmd BufWinEnter * silent loadview
+  "autocmd BufWinLeave ?* nested silent! mkview!
+  "autocmd BufWinEnter ?* silent loadview
 augroup END
