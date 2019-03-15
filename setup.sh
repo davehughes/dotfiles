@@ -90,6 +90,7 @@ function install_apt_packages() {
     sudo apt -y install rlwrap
     sudo apt -y install compizconfig-settings-manager
     sudo apt -y install dconf-editor
+    sudo apt -y install bison  # required for gvm
 }
 
 function install_yum_packages() {
@@ -125,9 +126,7 @@ function install_gvm() {
     sudo ln -sf ~/.gvm/bin/gvm /usr/local/bin/gvm
     sudo ln -sf ~/.gvm/bin/gvmsudo /usr/local/bin/gvmsudo
     sudo ln -sf ~/.gvm/bin/gvm-prompt /usr/local/bin/gvm-prompt
-    gvm install go1.4 -B
-    gvm install go1.7.2 -B
-    gvm install go1.8 -B
+    gvm install go1.12 -B
 }
 
 function stow_core_dotfiles() {
@@ -136,6 +135,7 @@ function stow_core_dotfiles() {
     stow -R git
     stow -R postgres
     stow -R python
+    stow -R go
     stow -R rust
     stow -R tmux
     stow -R vagrant
