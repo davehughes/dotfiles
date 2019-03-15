@@ -41,8 +41,6 @@ function install_brew_packages() {
     brew install zsh
     brew install ctags-exuberant
     brew install git-secret
-    brew install neovim/neovim/neovim
-    pip install neovim  # required for python support
     brew install rlwrap
     brew install outh-toolkit
     brew install pwgen
@@ -70,30 +68,28 @@ function install_apt_packages() {
     sudo apt update
 
     # Install dependencies
-    sudo apt -y install \
-	    neovim \
-	    tmux \
-	    zsh \
-	    ssh \
-	    git \
-	    stow \
-	    unzip \
-	    libjline-java \
-	    python-dev \
-        python-pip \
-	    x11-xserver-utils \
-	    xdotool \
-        silversearcher-ag \
-	    oathtool \
-        pwgen \
-        openjdk-8-jre-headless \
-        racket \
-        mit-scheme \
-        r-base \
-        jq \
-        rlwrap \
-        compizconfig-settings-manager \
-        dconf-editor
+    sudo apt -y install stow
+    sudo apt -y install tmux
+    sudo apt -y install zsh
+    sudo apt -y install ssh
+    sudo apt -y install git
+    sudo apt -y install unzip
+    sudo apt -y install libjline-java
+    sudo apt -y install python-dev
+    sudo apt -y install python-pip
+    sudo apt -y install x11-xserver-utils
+    sudo apt -y install xdotool
+    sudo apt -y install silversearcher-ag
+    sudo apt -y install oathtool
+    sudo apt -y install pwgen
+    sudo apt -y install openjdk-8-jre-headless
+    sudo apt -y install racket
+    sudo apt -y install mit-scheme
+    sudo apt -y install r-base
+    sudo apt -y install jq
+    sudo apt -y install rlwrap
+    sudo apt -y install compizconfig-settings-manager
+    sudo apt -y install dconf-editor
 }
 
 function install_yum_packages() {
