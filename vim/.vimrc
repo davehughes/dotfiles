@@ -60,6 +60,7 @@ Plugin 'nsf/gocode', {'rtp': 'vim/'}
 Plugin 'vim-scripts/paredit.vim'
 Plugin 'hashivim/vim-terraform'
 " Plugin 'SirVer/ultisnips'
+Plugin 'posva/vim-vue'
 
 " Syntax config
 syntax on
@@ -78,6 +79,7 @@ au BufRead,BufNewFile *.org set filetype=org
 au BufRead,BufNewFile *.sql set filetype=sql
 au BufRead,BufNewFile *.sql.j2 set filetype=sql
 au BufRead,BufNewFile *.tick set filetype=tick
+au BufRead,BufNewFile *.vue set filetype=vue
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 au FileType jade setl sw=2 sts=2 et
 au FileType javascript setl sw=2 sts=2 et

@@ -130,6 +130,12 @@ function install_gvm() {
     gvm install go1.12 -B
 }
 
+function install_rbenv() {
+    RBENV_ROOT=~/.rbenv
+    bash scripts/install-rbenv.sh $RBENV_ROOT
+    sudo ln -sf $RBENV_ROOT/bin/rbenv ~/bin/rbenv
+}
+
 function stow_core_dotfiles() {
     echo "stowing dotfiles from $SCRIPTDIR to $HOME"
     stow -R stow
@@ -138,6 +144,7 @@ function stow_core_dotfiles() {
     stow -R python
     stow -R go
     stow -R rust
+    stow -R ruby
     stow -R tmux
     stow -R vagrant
     stow -R vim
@@ -157,6 +164,7 @@ install_${PACKAGE_MANAGER}_packages
 install_common_packages
 install_oh_my_zsh
 install_gvm
+install_rbenv
 stow_core_dotfiles
 install_vundle
 tweak_${PLATFORM}_defaults
