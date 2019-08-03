@@ -61,6 +61,7 @@ Plugin 'vim-scripts/paredit.vim'
 Plugin 'hashivim/vim-terraform'
 " Plugin 'SirVer/ultisnips'
 Plugin 'posva/vim-vue'
+Plugin 'leafgarland/typescript-vim'
 
 " Syntax config
 syntax on
@@ -80,6 +81,7 @@ au BufRead,BufNewFile *.sql set filetype=sql
 au BufRead,BufNewFile *.sql.j2 set filetype=sql
 au BufRead,BufNewFile *.tick set filetype=tick
 au BufRead,BufNewFile *.vue set filetype=vue
+au BufRead,BufNewFile *.ts set filetype=typescript
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 au FileType jade setl sw=2 sts=2 et
 au FileType javascript setl sw=2 sts=2 et
