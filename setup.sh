@@ -91,6 +91,7 @@ function install_apt_packages() {
     sudo apt -y install compizconfig-settings-manager
     sudo apt -y install dconf-editor
     sudo apt -y install bison  # required for gvm
+    sudo apt -y install redshift
 }
 
 function install_yum_packages() {
