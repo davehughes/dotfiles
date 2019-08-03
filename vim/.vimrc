@@ -19,7 +19,7 @@ set backupdir=~/.vim/sessions//
 set directory=~/.vim/sessions//
 set tags=.tags,tags,env/lib/tags,env/src/tags
 set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
-set clipboard=unnamed
+set clipboard=unnamedplus
 
 " Vundle configuration and packages
 set rtp+=~/.vim/bundle/vundle
