@@ -56,6 +56,7 @@ Bundle 'fatih/vim-go'
 Bundle 'vim-scripts/dbext.vim'
 Bundle 'nathanielc/vim-tickscript'
 " Bundle 'easymotion/vim-easymotion'
+Bundle 'vim-ruby/vim-ruby'
 Plugin 'nsf/gocode', {'rtp': 'vim/'}
 Plugin 'vim-scripts/paredit.vim'
 Plugin 'hashivim/vim-terraform'
@@ -82,6 +83,7 @@ au BufRead,BufNewFile *.sql.j2 set filetype=sql
 au BufRead,BufNewFile *.tick set filetype=tick
 au BufRead,BufNewFile *.vue set filetype=vue
 au BufRead,BufNewFile *.ts set filetype=typescript
+au BufRead,BufNewFile *.rb set filetype=ruby
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 au FileType jade setl sw=2 sts=2 et
 au FileType javascript setl sw=2 sts=2 et
@@ -104,6 +106,7 @@ nmap ,gs :Gstatus<CR>
 nmap ,gc :Gcommit<CR>
 highlight SpellBad term=underline gui=undercurl guisp=Orange
 nmap <Leader>t :TagbarToggle<CR>
+nmap <Leader>T :CtrlPTag<CR>
 nmap <Leader>j :cn<CR>zz
 nmap <Leader>k :cp<CR>zz
 nmap <Leader>s :set opfunc=SearchMotion<CR>g@

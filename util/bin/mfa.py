@@ -15,7 +15,7 @@ def load_login_map(filepath):
     '''
     if not os.path.isfile(filepath):
         return {}
-    return yaml.load(open(filepath))
+    return yaml.safe_load(open(filepath))
 
 
 def save_login_map(filepath, login_map):

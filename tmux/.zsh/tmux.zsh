@@ -24,6 +24,7 @@ _tmuxinator() {
 
 compdef _tmuxinator tmuxinator mux
 alias mux="tmuxinator"
+alias tmux-layout="tmux display-message -p '#{window_layout}'"
 
 # Local Variables:
 # mode: Shell-Script
