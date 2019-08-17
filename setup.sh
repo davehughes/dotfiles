@@ -49,6 +49,7 @@ function install_brew_packages() {
     brew install Caskroom/cask/seil 
     brew install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste
     brew install jq
+    brew install kitty
 }
 
 function tweak_osx_defaults() {
@@ -92,6 +93,7 @@ function install_apt_packages() {
     sudo apt -y install dconf-editor
     sudo apt -y install bison  # required for gvm
     sudo apt -y install redshift
+    sudo apt -y install kitty
 }
 
 function install_yum_packages() {
@@ -143,6 +145,7 @@ function stow_core_dotfiles() {
     stow -R postgres
     stow -R python
     stow -R go
+    stow -R kitty
     stow -R rust
     stow -R ruby
     stow -R tmux
