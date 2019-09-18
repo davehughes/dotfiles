@@ -12,3 +12,5 @@ alias l='fasd -de ls'
 alias ll='fasd -dise ls'
 
 alias mfa="~/bin/mfa.py --config=$HOME/.mfa"
+
+alias tz='tizonia'

@@ -14,3 +14,8 @@ function git-settings-sutrolabs {
     git-settings-common
 }
 
+function git-changed-files {
+    commit1=HEAD^
+    commit2=HEAD
+    git diff-tree -r --no-commit-id --name-only $commit1 $commit2
+}

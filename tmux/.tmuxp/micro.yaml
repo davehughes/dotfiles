@@ -1,0 +1,21 @@
+# See http://tmuxp.git-pull.com/en/latest/examples.html for usage examples
+session_name: micro
+windows:
+ - window_name: notes
+   layout: 5b3a,200x51,0,0{99x51,0,0,1,100x51,100,0[100x32,100,0,2,100x18,100,33,3]}
+   shell_command_before:
+     - cd ~/Documents
+   panes:
+     - vim notes/micro-todo.txt
+     - vim ~/.tmuxp/micro.yaml
+     - zsh -c clear
+
+ - window_name: teensy
+   layout: 0a31,198x48,0,0{98x48,0,0,5,99x48,99,0[99x11,99,0,6,99x12,99,12,7,99x23,99,25,8]}
+   shell_command_before:
+     - cd $HOME
+   panes:
+     - vim
+     - zsh -c clear
+     - zsh -c clear
+     - zsh -c clear

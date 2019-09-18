@@ -63,6 +63,7 @@ Plugin 'hashivim/vim-terraform'
 " Plugin 'SirVer/ultisnips'
 Plugin 'posva/vim-vue'
 Plugin 'leafgarland/typescript-vim'
+Plugin 'ngmy/vim-rubocop'
 
 " Syntax config
 syntax on
@@ -155,7 +156,7 @@ endif
 let g:syntastic_python_checkers = ["flake8", "pep8", "pyflakes", "python", "pylint"]
 let g:syntastic_jslint_checkers = ["jshint"]
 " let g:syntastic_go_checkers = ['gometalinter']
-let g:syntastic_ruby_checkers = ['ruby-lint']
+let g:syntastic_ruby_checkers = ['ruby-lint', 'rubocop']
 
 " neocomplcache setup
 let g:neocomplcache_enable_at_startup = 0

@@ -1,14 +1,26 @@
 # See http://tmuxp.git-pull.com/en/latest/examples.html for usage examples
 session_name: 4-pane-split
 windows:
-- window_name: dev window
-  layout: tiled
-  shell_command_before:
-    - cd ~/
-  panes:
-    - shell_command:
-        - cd /var/log
-        - ls -al | grep \.log
-    - echo hello
-    - echo hello
-    - echo hello
+ - window_name: notes
+   layout: tiled
+   shell_command_before:
+     - cd ~/
+   panes:
+     - shell_command:
+         - cd /var/log
+         - ls -al | grep \.log
+     - echo hello
+     - echo hello
+     - echo hello
+
+ - window_name: environment
+   layout: tiled
+   shell_command_before:
+     - cd ~/
+   panes:
+     - shell_command:
+         - cd /var/log
+         - ls -al | grep \.log
+     - echo hello
+     - echo hello
+     - echo hello
