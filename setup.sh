@@ -74,6 +74,7 @@ function install_apt_packages() {
     sudo apt -y install zsh
     sudo apt -y install ssh
     sudo apt -y install git
+    sudo apt -y install curl
     sudo apt -y install unzip
     sudo apt -y install libjline-java
     sudo apt -y install python-dev
@@ -94,6 +95,27 @@ function install_apt_packages() {
     sudo apt -y install bison  # required for gvm
     sudo apt -y install redshift
     sudo apt -y install kitty
+    sudo apt -y install xsel
+    sudo apt -y install xkbset
+    sudo apt -y install tree
+    sudo apt -y install ctags
+    sudo apt -y install awscli
+    sudo apt -y install libpq-dev
+    sudo apt -y install mitmproxy
+    sudo apt -y install libxml2-dev
+
+    install_snap_packages
+    install_npm_packages
+}
+
+function install_snap_packages() {
+    snap install chromium
+    snap install slack --classic
+    snap install spotify
+}
+
+function install_npm_packages() {
+    sudo npm install -g qrcode-terminal
 }
 
 function install_yum_packages() {
@@ -103,7 +125,13 @@ function install_yum_packages() {
 
 function install_common_packages() {
     echo "Installing common packages..."
-    sudo pip install virtualenv supervisor ipython ipdb tmuxp
+    sudo pip install virtualenv
+    sudo pip install supervisor
+    sudo pip install ipython
+    sudo pip install ipdb
+    sudo pip install tmuxp
+    sudo pip install mitmproxy
+    sudo pip install awscli
 }
 
 function install_vundle() {

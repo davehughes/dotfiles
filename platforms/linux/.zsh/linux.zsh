@@ -1,23 +1,65 @@
 export PATH=$PATH:$HOME/.local/bin
 
-# When using a linux desktop instance, set up some utilities
-if [ -n "${DISPLAY}" ]; then
-    alias pbcopy='xsel --clipboard --input'
-    alias pbpaste='xsel --clipboard --output'
+function -setup-keyboard {
+    # When using a linux desktop instance, set up some utilities
+    if [ -n "${DISPLAY}" ]; then
+        alias pbcopy='xsel --clipboard --input'
+        alias pbpaste='xsel --clipboard --output'
 
-    # Map CapsLock to trigger F4, which is the tmux Leader
-    xmodmap -e "keycode 66=F4"
-    xmodmap -e "clear Lock"
+        # Map CapsLock to trigger F4, which is the tmux Leader
+        -set-capslock off
+        xmodmap -e "keycode 66=F4"
+        xmodmap -e "clear Lock"
 
-    # Map Fn -> Ctrl for Apple keyboards
-    xmodmap -e "keycode 464=Control_L"
+        # Map Fn -> Ctrl for Apple keyboards
+        xmodmap -e "keycode 464=Control_L"
 
-    # Set keyboard repeat rate
-    xset r rate 200 80
-else
-    alias pbcopy='echo "No clipboard available in headless session"'
-    alias pbpaste='echo "No clipboard available in headless session"'
-fi
+        # Set keyboard repeat rate
+        xset r rate 200 80
+    else
+        alias pbcopy='echo "No clipboard available in headless session"'
+        alias pbpaste='echo "No clipboard available in headless session"'
+    fi
+}
+
+# Remap caps lock so it can be used as the tmux prefix key (see .tmux.conf)
+alias decap="-set-capslock off"
+alias DECAP=decap
+
+function -capslock-state {
+    xset q | ag "Caps Lock" | sed 's/^.*00:\s*Caps Lock:\s*\(off\|on\).*$/\1/'
+}
+
+function -toggle-capslock {
+    -set-capslock $(-invert-on-off-state $(-capslock-state))
+}
+
+function -invert-on-off-state {
+    STATE=$1
+    if [[ "$STATE" = "off" ]]; then
+        echo "on"
+    elif [[ "$STATE" = "on" ]]; then
+        echo "off"
+    else
+        echo "off"
+    fi
+}
+
+function -set-capslock {
+    TARGET_STATE=$1
+    STATE=$(-capslock-state)
+    if [[ "$STATE" = "$TARGET_STATE" ]]; then
+        echo "CapsLock is in target state ($TARGET_STATE)"
+    elif [[ "$TARGET_STATE" = "off" ]]; then
+        echo "CapsLock changed from ON -> OFF"
+        xdotool key Caps_Lock
+    elif [[ "$TARGET_STATE" = "on" ]]; then
+        echo "CapsLock changed from OFF -> ON"
+        xdotool key Caps_Lock
+    else
+        echo "Unrecognized target state"
+    fi
+}
 
 # Configure system settings without dconf UI
 function -gnome-configure {
@@ -95,3 +137,5 @@ function -renet {
     # > lsmod
     # > dmesg
 }
+
+-setup-keyboard
