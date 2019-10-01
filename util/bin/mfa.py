@@ -4,6 +4,7 @@ import argparse
 import os
 import subprocess
 import sys
+import urllib
 import yaml
 
 
@@ -96,6 +97,34 @@ def is_oathtool_installed():
     return proc.returncode == 0
 
 
+def cmd_display_login_qrcode(opts):
+    login_map = load_login_map(opts.config)
+    key = login_map.get(opts.login)
+    if not key:
+        raise CLIError("Login '{}' not found.".format(opts.login))
+
+    otp_url = 'otpauth://totp/{label}?secret={secret}'.format(
+        label=urllib.quote(opts.login),
+        secret=urllib.quote(key),
+    )
+    print(generate_qrcode(otp_url))
+
+def generate_qrcode(data, small=True):
+    status = subprocess.call(['which', 'qrcode-terminal'])
+    if status != 0:
+        raise Exception("Couldn't find required command 'qrcode-terminal'")
+
+    proc = subprocess.Popen(
+        ['qrcode-terminal', data],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        )
+    out, err = proc.communicate()
+    if err:
+        raise Exception(err)
+    return out
+
+
 def parse_opts(argv=None):
     argv = argv or sys.argv[1:]
     parser = argparse.ArgumentParser(description="Manage multi-factor auth from the command line")
@@ -116,6 +145,11 @@ def parse_opts(argv=None):
     token_cmd = subparsers.add_parser('token')
     token_cmd.add_argument('login')
     token_cmd.set_defaults(func=cmd_generate_login_token)
+
+    # qrcode subcommand
+    token_cmd = subparsers.add_parser('qrcode')
+    token_cmd.add_argument('login')
+    token_cmd.set_defaults(func=cmd_display_login_qrcode)
 
     # add subcommand
     def cmd_add_token(opts):
