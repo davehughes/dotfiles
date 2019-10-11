@@ -70,6 +70,7 @@ function install_apt_packages() {
 
     # Install dependencies
     sudo apt -y install stow
+    sudo apt -y install vim-gnome
     sudo apt -y install tmux
     sudo apt -y install zsh
     sudo apt -y install ssh
@@ -79,6 +80,8 @@ function install_apt_packages() {
     sudo apt -y install libjline-java
     sudo apt -y install python-dev
     sudo apt -y install python-pip
+    sudo apt -y install python3-dev
+    sudo apt -y install python3-pip
     sudo apt -y install x11-xserver-utils
     sudo apt -y install xdotool
     sudo apt -y install silversearcher-ag
@@ -103,6 +106,9 @@ function install_apt_packages() {
     sudo apt -y install libpq-dev
     sudo apt -y install mitmproxy
     sudo apt -y install libxml2-dev
+    sudo apt -y install libxmlsec1-dev
+    sudo apt -y install htop
+    sudo apt -y install deluge
 
     install_snap_packages
     install_npm_packages
@@ -112,6 +118,9 @@ function install_snap_packages() {
     snap install chromium
     snap install slack --classic
     snap install spotify
+    snap install wonderwall
+    snap connect wonderwall:hardware-observe
+    snap install heroku --classic
 }
 
 function install_npm_packages() {
@@ -120,18 +129,29 @@ function install_npm_packages() {
 
 function install_yum_packages() {
     echo "Installing yum packages..."
-    sudo yum -y install vim tmux zsh ruby ruby-devel rubygems ssh unzip xorg-x11-xkb-utils fasd
+    sudo yum update
+    sudo yum -y install vim
+    sudo yum -y install tmux
+    sudo yum -y install zsh
+    sudo yum -y install ruby
+    sudo yum -y install ruby-devel
+    sudo yum -y install rubygems
+    sudo yum -y install ssh
+    sudo yum -y install unzip
+    sudo yum -y install xorg-x11-xkb-utils
+    sudo yum -y install fasd
 }
 
 function install_common_packages() {
     echo "Installing common packages..."
-    sudo pip install virtualenv
-    sudo pip install supervisor
-    sudo pip install ipython
-    sudo pip install ipdb
-    sudo pip install tmuxp
-    sudo pip install mitmproxy
-    sudo pip install awscli
+    sudo -H pip3 install virtualenv
+    sudo -H pip3 install ipython
+    sudo -H pip3 install ipdb
+    sudo -H pip3 install tmuxp
+    sudo -H pip3 install awscli
+    sudo -H pip3 install docker-compose
+    sudo -H pip3 install dbt
+    sudo -H pip3 install mitmproxy
 }
 
 function install_vundle() {

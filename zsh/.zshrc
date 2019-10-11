@@ -11,6 +11,7 @@ done
 unsetopt correct_all
 unsetopt correct
 unsetopt nomatch
+setopt complete_aliases
 
 # set up fasd
 eval "$(fasd --init auto zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zshwcomp-install)"

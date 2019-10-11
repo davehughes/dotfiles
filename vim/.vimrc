@@ -5,14 +5,14 @@ set nocompatible
 set modelines=0
 set nowrap
 set hidden
-set expandtab
 set ruler
 set number
 set textwidth=0
-set tabstop=4
 set bs=2
-set softtabstop=4
-set shiftwidth=4
+set expandtab
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
 set autoindent
 set hlsearch
 set backupdir=~/.vim/sessions//
@@ -86,12 +86,9 @@ au BufRead,BufNewFile *.vue set filetype=vue
 au BufRead,BufNewFile *.ts set filetype=typescript
 au BufRead,BufNewFile *.rb set filetype=ruby
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
-au FileType jade setl sw=2 sts=2 et
-au FileType javascript setl sw=2 sts=2 et
-au FileType yaml setl sw=2 sts=2 et
-au FileType html setl sw=2 sts=2 et noexpandtab
-au FileType go setl sw=2 sts=2 ts=2 et
-au FileType tick setl sw=2 sts=2 ts=2 et commentstring=//\ %s
+au FileType html setl noexpandtab
+au FileType tick commentstring=//\ %s
+au FileType sql setl commentstring=--\ %s
 
 " File-specific key mappings
 " + Eval line or visual selection
@@ -168,6 +165,9 @@ let g:gitgutter_max_signs = 10000
 " Solarized color scheme and color/theme tools
 set background=dark
 colorscheme solarized
+
+" Transparent background
+hi Normal guibg=NONE ctermbg=NONE
 
 " Easy color chooser bindings
 nmap <silent> <f3> :NEXTCOLOR<cr>
