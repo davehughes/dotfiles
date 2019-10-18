@@ -1,0 +1,5 @@
+[user]
+	email = d@vidhughes.com
+	name = David Hughes
+[rebase]
+	autosquash = true
