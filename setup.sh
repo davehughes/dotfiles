@@ -109,6 +109,9 @@ function install_apt_packages() {
     sudo apt -y install libxmlsec1-dev
     sudo apt -y install htop
     sudo apt -y install deluge
+    sudo apt -y install chrome-gnome-shell gir1.2-gtop-2.0 gir1.2-networkmanager-1.0  gir1.2-clutter-1.0
+    sudo apt -y install gnome-tweak-tool
+    sudo apt -y install dnsutils
 
     install_snap_packages
     install_npm_packages

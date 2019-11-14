@@ -95,7 +95,11 @@ function combined_location {
         SEGMENTS+=("$ENV_HIGHLIGHT%{$C[repo_name]%}$REPO_NAME%{$C[separator]%}:%{$C[repo_branch]%}$(git_prompt_info)")
     fi
 
-    SEGMENTS+=("$(gvm-prompt)") 
+    # GVM (golang version) prompt
+    # SEGMENTS+=("$(gvm-prompt)") 
+
+    # rbenv version prompt
+    SEGMENTS+=("rbenv $(rbenv version-name)")
 
     # Set location string relative to current repo and home directories
     LPATH=${PWD}

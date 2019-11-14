@@ -49,12 +49,12 @@ function -set-capslock {
     TARGET_STATE=$1
     STATE=$(-capslock-state)
     if [[ "$STATE" = "$TARGET_STATE" ]]; then
-        echo "CapsLock is in target state ($TARGET_STATE)"
+        # echo "CapsLock is in target state ($TARGET_STATE)"
     elif [[ "$TARGET_STATE" = "off" ]]; then
-        echo "CapsLock changed from ON -> OFF"
+        # echo "CapsLock changed from ON -> OFF"
         xdotool key Caps_Lock
     elif [[ "$TARGET_STATE" = "on" ]]; then
-        echo "CapsLock changed from OFF -> ON"
+        # echo "CapsLock changed from OFF -> ON"
         xdotool key Caps_Lock
     else
         echo "Unrecognized target state"
@@ -122,14 +122,17 @@ function -gnome-keys-magic-keyboard {
 
 # Reset network driver on piece-of-shit XPS13
 function -renet {
-    # echo "Power cycling network driver (ath10k_pci)"
-    # sudo modprobe -r ath10k_pci
-    # sudo modprobe ath10k_pci
-    # echo "Wait 30-90 seconds for this to take effect..."
+    echo "Power cycling network driver (ath10k_pci)"
+    sudo modprobe -r ath10k_pci
+    sudo modprobe -i ath10k_pci
+    echo "Wait 30-90 seconds for this to take effect..."
 
     # From https://ubuntuforums.org/showthread.php?t=2384252
     echo "Rescanning PCI bus"
     echo 1 | sudo tee /sys/bus/pci/rescan >> /dev/null
+
+    echo "Restarting network-manager service..."
+    sudo service network-manager restart
 
     # Other things to try/look at:
     # > sudo lshw -class network
