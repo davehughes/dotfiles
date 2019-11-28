@@ -30,7 +30,7 @@ Bundle 'jceb/vim-orgmode'
 Bundle 'scrooloose/syntastic'
 Bundle 'majutsushi/tagbar'
 Bundle 'kchmck/vim-coffee-script'
-Bundle 'tpope/vim-commentary'
+Bundle 'tomtom/tcomment_vim'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-leiningen'
 Bundle 'tpope/vim-projectionist'
@@ -57,6 +57,7 @@ Bundle 'vim-scripts/dbext.vim'
 Bundle 'nathanielc/vim-tickscript'
 " Bundle 'easymotion/vim-easymotion'
 Bundle 'vim-ruby/vim-ruby'
+Bundle 'jakwings/vim-pony'
 Plugin 'nsf/gocode', {'rtp': 'vim/'}
 Plugin 'vim-scripts/paredit.vim'
 Plugin 'hashivim/vim-terraform'
@@ -64,6 +65,7 @@ Plugin 'hashivim/vim-terraform'
 Plugin 'posva/vim-vue'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'ngmy/vim-rubocop'
+
 
 " Syntax config
 syntax on
@@ -85,6 +87,7 @@ au BufRead,BufNewFile *.tick set filetype=tick
 au BufRead,BufNewFile *.vue set filetype=vue
 au BufRead,BufNewFile *.ts set filetype=typescript
 au BufRead,BufNewFile *.rb set filetype=ruby
+au BufRead,BufNewFile *.pony set filetype=pony
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 au FileType html setl noexpandtab
 au FileType tick commentstring=//\ %s
@@ -108,8 +111,8 @@ nmap <Leader>T :CtrlPTag<CR>
 nmap <Leader>j :cn<CR>zz
 nmap <Leader>k :cp<CR>zz
 nmap <Leader>s :set opfunc=SearchMotion<CR>g@
-nmap <Leader>\\ :Commentary<CR>
-vmap <Leader>\ :'<,'>Commentary<CR>
+nmap <Leader>\\ gcc
+vmap <Leader>\ gc
 
 function! SearchMotion(type, ...)
   " Save selection and register and update selection for proper yanking
