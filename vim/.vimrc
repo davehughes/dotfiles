@@ -35,8 +35,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-leiningen'
 Bundle 'tpope/vim-projectionist'
 Bundle 'tpope/vim-dispatch'
-" Bundle 'vim-fireplace'
-Bundle 'altercation/vim-colors-solarized'
+" Bundle 'altercation/vim-colors-solarized'
 Bundle 'tpope/vim-fireplace'
 Bundle 'tpope/vim-classpath'
 Bundle 'guns/vim-clojure-static'
@@ -51,20 +50,23 @@ Bundle 'groenewege/vim-less'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'tclem/vim-arduino'
 Bundle 'rking/ag.vim'
-Bundle 'digitaltoad/vim-jade'
+Bundle 'digitaltoad/vim-pug'
 Bundle 'fatih/vim-go'
 Bundle 'vim-scripts/dbext.vim'
 Bundle 'nathanielc/vim-tickscript'
 " Bundle 'easymotion/vim-easymotion'
 Bundle 'vim-ruby/vim-ruby'
+Bundle 'janko/vim-test'
 Bundle 'jakwings/vim-pony'
 Plugin 'nsf/gocode', {'rtp': 'vim/'}
 Plugin 'vim-scripts/paredit.vim'
 Plugin 'hashivim/vim-terraform'
-" Plugin 'SirVer/ultisnips'
 Plugin 'posva/vim-vue'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'ngmy/vim-rubocop'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'ycm-core/YouCompleteMe'
 
 
 " Syntax config
@@ -86,12 +88,16 @@ au BufRead,BufNewFile *.sql.j2 set filetype=sql
 au BufRead,BufNewFile *.tick set filetype=tick
 au BufRead,BufNewFile *.vue set filetype=vue
 au BufRead,BufNewFile *.ts set filetype=typescript
+au BufRead,BufNewFile *.tsx set filetype=typescript
 au BufRead,BufNewFile *.rb set filetype=ruby
+au BufRead,BufNewFile *.jbuilder set filetype=ruby
 au BufRead,BufNewFile *.pony set filetype=pony
+au BufRead,BufNewFile *.html set filetype=html
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 au FileType html setl noexpandtab
 au FileType tick commentstring=//\ %s
 au FileType sql setl commentstring=--\ %s
+au FileType pug setl commentstring=//-\ %s
 
 " File-specific key mappings
 " + Eval line or visual selection
@@ -169,6 +175,9 @@ let g:gitgutter_max_signs = 10000
 set background=dark
 colorscheme solarized
 
+" set background=light
+" colorscheme night_vision
+
 " Transparent background
 hi Normal guibg=NONE ctermbg=NONE
 
@@ -193,13 +202,13 @@ let g:terraform_fmt_on_save = 1
 let g:dbext_default_variable_def_regex = '\(\w\|'."'".'\)\@<!?\(\w\|'."'".'\)\@<!,\zs\(@\|:\a\|\$\)\w\+\>,\zs%(\s*\w\+\s*)s\>'
 
 " ultisnips
-let g:UltiSnipsEnableSnipMate = 0
-" let g:UltiSnipsExpandTrigger="<tab>"
+" let g:UltiSnipsEnableSnipMate = 0
+let g:UltiSnipsExpandTrigger="<C-i><C-o>"
 " let g:UltiSnipsJumpForwardTrigger="<c-N>"
 " let g:UltiSnipsJumpBackwardTrigger="<c-M>"
 " let g:UltiSnipsEditSplit="horizontal"
-" let g:UltiSnipsSnippetsDir=$HOME.'/.vim/snippets/UltiSnips'
-" let g:UltiSnipsSnippetDirectories=[$HOME.'/.vim/snippets/UltiSnips']
+let g:UltiSnipsSnippetsDir=$HOME . '/.vim/snippets/davehughes'
+let g:UltiSnipsSnippetDirectories=[$HOME . '/.vim/snippets/UltiSnips', $HOME . '/.vim/snippets/davehughes']
 
 " folding
 augroup AutoSaveFolds

@@ -197,6 +197,7 @@ function stow_core_dotfiles() {
     stow -R python
     stow -R go
     stow -R kitty
+    stow -R node
     stow -R rust
     stow -R ruby
     stow -R tmux
@@ -212,7 +213,7 @@ pushd $SCRIPTDIR >> /dev/null
 echo "Dotfiles Path: $SCRIPTDIR"
 
 # Set shell
-chsh -s $(which zsh) $USER
+sudo chsh -s $(which zsh) $USER
 
 install_${PACKAGE_MANAGER}_packages
 install_common_packages
