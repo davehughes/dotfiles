@@ -183,6 +183,11 @@ function install_gvm() {
     gvm install go1.12 -B
 }
 
+function install_nvm() {
+    bash scripts/install-node-nvm.sh
+    nvm install node
+}
+
 function install_rbenv() {
     RBENV_ROOT=~/.rbenv
     bash scripts/install-rbenv.sh $RBENV_ROOT
@@ -219,6 +224,7 @@ install_${PACKAGE_MANAGER}_packages
 install_common_packages
 install_oh_my_zsh
 install_gvm
+install_nvm
 install_rbenv
 stow_core_dotfiles
 install_vundle
