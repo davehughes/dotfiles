@@ -1,4 +1,4 @@
-EXPECTED_USERS=()
+EXPECTED_USERS=(dave)
 
 local rvm_ruby=''
 if which rvm-prompt &> /dev/null; then
@@ -9,23 +9,45 @@ else
   fi
 fi
 
-typeset -A colors; colors=(
-    reset white
-    user 009
-    at 255
-    host 009
-    separator 007
-    path 014
-    env 002
-    repo_name 004
+# See a legend of the 256 color values here: https://jonasjacek.github.io/colors/
+# or use the `spectrum_ls` command, which oh-my-zsh uses under the covers.
+typeset -A colors
+typeset -A C
+colors=(
+    reset       white
+    user        024
+    at          255
+    host        024
+    separator   007
+    path        014
+    env         002
+    repo_name   004
     repo_branch 003
-    error_code 001
+    error_code  001
 )
-C=colors
-typeset -A C; C=();
+C=()
 for key in ${(@k)colors}; do
     C[$key]=$FG[$colors[$key]]
 done
+
+# Colors corresponding to themes in the tmux-themepack project
+typeset -A PRIMARY_COLOR_BY_THEME
+PRIMARY_COLOR_BY_THEME=(
+  blue    024
+  cyan    039
+  gray    245
+  green   100
+  magenta 125
+  orange  130
+  purple  090
+  red     088
+  yellow  227
+)
+PRIMARY_COLOR=$PRIMARY_COLOR_BY_THEME[${TMUX_THEME_COLOR:-red}]
+
+# C[user]=$fg_bold[$PRIMARY_COLOR]
+C[user]=$terminfo[bold]$FG[$PRIMARY_COLOR]
+C[host]=$terminfo[bold]$FG[$PRIMARY_COLOR]
 
 ZSH_THEME_GIT_PROMPT_ADDED="%{$fg[green]%} ✚"
 ZSH_THEME_GIT_PROMPT_MODIFIED="%{$fg[blue]%} ✹"
