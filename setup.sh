@@ -50,6 +50,8 @@ function install_brew_packages() {
     brew install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste
     brew install jq
     brew install kitty
+    brew install borkdude/brew/babashka
+    brew install borkdude/brew/jet
 }
 
 function tweak_osx_defaults() {
@@ -197,14 +199,17 @@ function install_rbenv() {
 function stow_core_dotfiles() {
     echo "stowing dotfiles from $SCRIPTDIR to $HOME"
     stow -R stow
+    stow -R clojure
     stow -R git
-    stow -R postgres
-    stow -R python
     stow -R go
+    stow -R gpg
+    stow -R java
     stow -R kitty
     stow -R node
-    stow -R rust
+    stow -R postgres
+    stow -R python
     stow -R ruby
+    stow -R rust
     stow -R tmux
     stow -R vagrant
     stow -R vim

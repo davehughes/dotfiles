@@ -48,17 +48,18 @@ def build_alias_map(filepath=None):
     return merged_map
 
 
-def get_connect_command(alias):
+def get_connect_command(alias, args):
     alias_map = build_alias_map()
     connection_line = alias_map.get(alias)
     if not connection_line:
         raise KeyError("No connection found for alias: {}".format(alias))
 
-    return 'psql -h {host} -p {port} -U {user} {database}'.format(
+    return 'psql -h {host} -p {port} -U {user} {database} {args}'.format(
         user=connection_line.user,
         host=connection_line.host,
         port=connection_line.port,
         database=connection_line.database,
+        args=' '.join(args or []),
         )
 
 
@@ -112,9 +113,10 @@ def parse_opts(argv=None):
 
     # pgpass.py print-connection-command {alias}
     def cmd_print_connection_command(opts):
-        print get_connect_command(opts.alias[0])
+        print get_connect_command(opts.alias[0], opts.args)
     connect_cmd = subparsers.add_parser('print-connection-command')
     connect_cmd.add_argument('alias', nargs=1)
+    connect_cmd.add_argument('args', nargs='*')
     connect_cmd.set_defaults(func=cmd_print_connection_command)
 
     # pgpass.py dump-dbext

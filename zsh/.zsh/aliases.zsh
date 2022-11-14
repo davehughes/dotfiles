@@ -14,3 +14,9 @@ alias ll='fasd -dise ls'
 alias mfa="~/bin/mfa.py --config=$HOME/.mfa"
 
 alias tz='tizonia'
+
+alias spotify='ncspot'
+
+function kill-spotify {
+  kill -9 $(ps ax | ag Spotify | head -n 1 | awk -F" " '{print $1}')
+}

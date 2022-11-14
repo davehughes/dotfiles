@@ -16,3 +16,4 @@ if test ! -z "$env_config_files" ;
       source $file
     done
 fi
+. "$HOME/.cargo/env"

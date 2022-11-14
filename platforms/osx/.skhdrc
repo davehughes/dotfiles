@@ -1,0 +1,39 @@
+fn + cmd - h : odc move-space left
+fn + cmd - j : odc move-space down
+fn + cmd - k : odc move-space up
+fn + cmd - l : odc move-space right
+
+fn + alt + cmd - h : odc move-window left --follow
+fn + alt + cmd - j : odc move-window down --follow
+fn + alt + cmd - k : odc move-window up --follow
+fn + alt + cmd - l : odc move-window right --follow
+
+# ctrl + alt - j : odc invert-space vertical
+# ctrl + alt - k : odc invert-space vertical
+# ctrl + alt - h : odc invert-space horizontal
+# ctrl + alt - l : odc invert-space horizontal
+
+ctrl + alt - s : odc set-space-layout stack
+ctrl + alt - b : odc set-space-layout bsp
+ctrl + alt - f : odc set-space-layout float
+
+# USB keyboard with [Ctrl][Cmd][Alt]
+ctrl + alt - h : odc move-space left
+ctrl + alt - j : odc move-space down
+ctrl + alt - k : odc move-space up
+ctrl + alt - l : odc move-space right
+
+ctrl + alt + cmd - h : odc move-window left --follow
+ctrl + alt + cmd - j : odc move-window down --follow
+ctrl + alt + cmd - k : odc move-window up --follow
+ctrl + alt + cmd - l : odc move-window right --follow
+
+alt - tab : skhd -k "cmd - tab"
+
+# Firefox unfuck
+ctrl - t : skhd -k "cmd - t"
+ctrl - w : skhd -k "cmd - w"
+# ctrl - l : skhd -k "cmd - l"
+
+# Experimental
+f7: odc log 'f7'

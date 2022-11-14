@@ -1,0 +1,52 @@
+layouts:
+  vsplit_1_3: &layout_vsplit_1_3 "0a31,198x48,0,0{98x48,0,0,5,99x48,99,0[99x11,99,0,6,99x12,99,12,7,99x23,99,25,8]}"
+  quad_split: &layout_quad_split "b109,318x79,0,0{159x79,0,0[159x39,0,0,12,159x39,0,40,15],158x79,160,0[158x39,160,0,13,158x39,160,40,14]}"
+
+commands:
+  clear: &cmd_clear 'sleep 1 && clear'
+
+# See http://tmuxp.git-pull.com/en/latest/examples.html for usage examples
+session_name: census
+windows:
+ - window_name: notes
+   layout: *layout_vsplit_1_3
+   shell_command_before:
+     - cd ~/projects/giza
+     - *cmd_clear
+   panes:
+     - vim NOTES.md
+     - *cmd_clear
+     - *cmd_clear
+     - *cmd_clear
+
+ - window_name: giza-services
+   layout: *layout_quad_split
+   shell_command_before:
+     - cd ~/projects/giza
+   panes:
+     - make outbound-proxy
+     - psql giza_development
+     - make api-proxy
+     - 
+
+ - window_name: giza
+   layout: *layout_vsplit_1_3
+   shell_command_before:
+     - cd ~/projects/giza
+     - *cmd_clear
+   panes:
+     - vim NOTES.md
+     - cd client && npm run serve
+     - rails s
+     - rails c
+
+ - window_name: cholula
+   layout: *layout_vsplit_1_3
+   shell_command_before:
+     - cd ~/projects/cholula
+     - *cmd_clear
+   panes:
+     - vim scratch.sql
+     - snowsql -c census
+     -
+     -

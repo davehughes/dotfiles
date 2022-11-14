@@ -9,7 +9,7 @@ export PGPASSFILE=~/.pgpass
 PG_CONNECT_SCRIPT=~/bin/pgpass.py
 
 function pg-connect () {
-    PSQL_COMMAND=$($PG_CONNECT_SCRIPT print-connection-command $1)
+    PSQL_COMMAND=$($PG_CONNECT_SCRIPT print-connection-command $@)
     echo "pg-connect $1 => $PSQL_COMMAND"
     sh -c "$PSQL_COMMAND"
 }

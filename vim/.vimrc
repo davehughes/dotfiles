@@ -19,7 +19,7 @@ set backupdir=~/.vim/sessions//
 set directory=~/.vim/sessions//
 set tags=.tags,tags,env/lib/tags,env/src/tags
 set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
-set clipboard=unnamedplus
+" set clipboard=unnamedplus
 
 " Vundle configuration and packages
 set rtp+=~/.vim/bundle/vundle
@@ -64,9 +64,18 @@ Plugin 'hashivim/vim-terraform'
 Plugin 'posva/vim-vue'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'ngmy/vim-rubocop'
-Plugin 'SirVer/ultisnips'
+" Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'ycm-core/YouCompleteMe'
+Bundle 'sirtaj/vim-openscad'
+Bundle 'venantius/vim-cljfmt'
+Plugin 'morhetz/gruvbox'
+Bundle 'sotte/presenting.vim'
+Bundle 'honza/dockerfile.vim'
+Plugin 'jremmen/vim-ripgrep'
+" Bundle 'ruanyl/vim-gh-line'
+Bundle 'davehughes/vim-gh-line'
+Plugin 'neoclide/coc.nvim', { 'branch': 'release' }
 
 
 " Syntax config
@@ -93,6 +102,9 @@ au BufRead,BufNewFile *.rb set filetype=ruby
 au BufRead,BufNewFile *.jbuilder set filetype=ruby
 au BufRead,BufNewFile *.pony set filetype=pony
 au BufRead,BufNewFile *.html set filetype=html
+au BufRead,BufNewFile *.tf* set filetype=terraform
+au BufRead,BufNewFile *.df set filetype=dockerfile
+au BufRead,BufNewFile *.make set filetype=makefile
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 au FileType html setl noexpandtab
 au FileType tick commentstring=//\ %s
@@ -147,6 +159,18 @@ endfunction
 " Ctrl-P
 let g:ctrlp_extensions = ["tag"]
 " let g:ctrlp_cmd = 'CtrlPMRUFiles'
+
+" TODO: get rg working as default grep
+" if executable('rg')
+"   " Use ag over grep
+"   set grepprg=rg\ --color=never
+"
+"   " Use rg in CtrlP for listing files.
+"   let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+"
+"   " rg is fast enough that CtrlP doesn't need to cache
+"   let g:ctrlp_use_caching = 0
+" elseif executable('ag')
 if executable('ag')
   " Use ag over grep
   set grepprg=ag\ --nogroup\ --nocolor
@@ -173,7 +197,8 @@ let g:gitgutter_max_signs = 10000
 
 " Solarized color scheme and color/theme tools
 set background=dark
-colorscheme solarized
+" colorscheme solarized
+colorscheme gruvbox
 
 " set background=light
 " colorscheme night_vision
@@ -197,6 +222,7 @@ let g:go_version_warning = 0
 
 " vim-terraform
 let g:terraform_fmt_on_save = 1
+let g:terraform_align = 1
 
 " dbext setup (adds psycopg2-style substitutions to regex, e.g. %(myvar)s)
 let g:dbext_default_variable_def_regex = '\(\w\|'."'".'\)\@<!?\(\w\|'."'".'\)\@<!,\zs\(@\|:\a\|\$\)\w\+\>,\zs%(\s*\w\+\s*)s\>'
@@ -216,3 +242,44 @@ augroup AutoSaveFolds
   "autocmd BufWinLeave ?* nested silent! mkview!
   "autocmd BufWinEnter ?* silent loadview
 augroup END
+
+" Custom helpers
+command CtrlPGem CtrlP /Users/dave/.rbenv/versions/2.7.5/lib/ruby/gems/2.7.0/gems
+
+" start coc.nvim <<<===
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+set signcolumn=yes
+
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: There's always complete item selected by default, you may want to enable
+" no select by `"suggest.noselect": true` in your configuration file.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+" end coc.nvim ===>>>
