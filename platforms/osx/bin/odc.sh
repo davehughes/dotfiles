@@ -1,7 +1,7 @@
-#!/bin/zsh
+#!/bin/bash
 
-SCRIPT_DIR=${0:a:h}
-ODC_ROOT="${SCRIPT_DIR}/odc"
+# TODO: figure out a way to do this without hard-coding, probably with global system install?
+ODC_ROOT=/Users/dave/bin/odc
 ODC_VENV="${ODC_ROOT}/env"
 ODC_LOGFILE=${ODC_LOGFILE:-/tmp/osx-desktop-control.log}
 
