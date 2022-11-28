@@ -1,4 +1,4 @@
-#!/usr/local/bin/zsh
+#!/bin/zsh
 
 SCRIPT_DIR=${0:a:h}
 ODC_ROOT="${SCRIPT_DIR}/odc"

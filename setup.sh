@@ -52,6 +52,8 @@ function install_brew_packages() {
     brew install kitty
     brew install borkdude/brew/babashka
     brew install borkdude/brew/jet
+    brew install koekeishiya/formulae/yabai
+    brew install koekeishiya/formulae/skhd
 }
 
 function tweak_osx_defaults() {
@@ -162,7 +164,7 @@ function install_common_packages() {
 function install_vundle() {
     if [ ! -d vim/.vim/bundle/vundle ]; then
         mkdir -p vim/.vim/bundle
-        git clone git://github.com/gmarik/vundle vim/.vim/bundle/vundle
+        git clone https://github.com/gmarik/vundle vim/.vim/bundle/vundle
     else
         pushd vim/.vim/bundle/vundle >> /dev/null
         git pull
@@ -182,7 +184,7 @@ function install_gvm() {
     sudo ln -sf ~/.gvm/bin/gvm /usr/local/bin/gvm
     sudo ln -sf ~/.gvm/bin/gvmsudo /usr/local/bin/gvmsudo
     sudo ln -sf ~/.gvm/bin/gvm-prompt /usr/local/bin/gvm-prompt
-    gvm install go1.12 -B
+    gvm install go1.19
 }
 
 function install_nvm() {
