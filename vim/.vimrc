@@ -19,7 +19,6 @@ set backupdir=~/.vim/sessions//
 set directory=~/.vim/sessions//
 set tags=.tags,tags,env/lib/tags,env/src/tags
 set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
-set autochdir
 " set clipboard=unnamedplus
 
 " Vundle configuration and packages
@@ -185,9 +184,6 @@ let g:gitgutter_max_signs = 10000
 set background=dark
 " colorscheme solarized
 colorscheme gruvbox
-
-" set background=light
-" colorscheme night_vision
 
 " Transparent background
 hi Normal guibg=NONE ctermbg=NONE

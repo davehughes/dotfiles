@@ -54,6 +54,7 @@ function install_brew_packages() {
     brew install borkdude/brew/jet
     brew install koekeishiya/formulae/yabai
     brew install koekeishiya/formulae/skhd
+    brew install redis
 }
 
 function tweak_osx_defaults() {
