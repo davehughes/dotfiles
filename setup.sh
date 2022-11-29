@@ -198,6 +198,10 @@ function install_rbenv() {
     sudo ln -sf $RBENV_ROOT/bin/rbenv ~/bin/rbenv
 }
 
+function install_rustup() {
+  which rustup || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
+}
+
 function stow_core_dotfiles() {
     echo "stowing dotfiles from $SCRIPTDIR to $HOME"
     stow -R stow
@@ -233,6 +237,7 @@ install_oh_my_zsh
 install_gvm
 install_nvm
 install_rbenv
+install_rustup
 stow_core_dotfiles
 install_vundle
 tweak_${PLATFORM}_defaults

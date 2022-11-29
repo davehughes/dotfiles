@@ -1,2 +1,2 @@
-# Add cargo binaries to PATH
-add_to_PATH $HOME/.cargo/bin
+# Load PATH and any other environment updates from rustup/cargo
+test -f ${HOME}/.cargo/env && source ${HOME}/.cargo/env
