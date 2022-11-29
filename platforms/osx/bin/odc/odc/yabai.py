@@ -221,7 +221,7 @@ class Window(object):
 
     @property
     def focused(self):
-        return self.data['focused'] == 1
+        return self.data.get('has-focus', False) or self.data.get('focused', 0) == 1
 
     @property
     def display(self):

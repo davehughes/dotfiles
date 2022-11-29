@@ -1,3 +1,5 @@
+ # NOTE: for this to work, `odc` needs to be on skhd's PATH. This can be configured in the .plist file that configures
+ # how the skhd brew service operates, which should be somewhere like `/opt/homebrew/Cellar/skhd/<version>/homebrew.mxcl.skhd.plist`
 fn + cmd - h : odc move-space left
 fn + cmd - j : odc move-space down
 fn + cmd - k : odc move-space up
