@@ -49,7 +49,7 @@ function install_brew_packages() {
     brew install Caskroom/cask/seil 
     brew install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste
     brew install jq
-    brew install kitty
+    brew install ripgrep
     brew install borkdude/brew/babashka
     brew install borkdude/brew/jet
     brew install koekeishiya/formulae/yabai
