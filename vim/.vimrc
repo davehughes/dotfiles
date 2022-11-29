@@ -19,6 +19,7 @@ set backupdir=~/.vim/sessions//
 set directory=~/.vim/sessions//
 set tags=.tags,tags,env/lib/tags,env/src/tags
 set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
+set autochdir
 " set clipboard=unnamedplus
 
 " Vundle configuration and packages
@@ -29,7 +30,6 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'jceb/vim-orgmode'
 Bundle 'scrooloose/syntastic'
 Bundle 'majutsushi/tagbar'
-Bundle 'kchmck/vim-coffee-script'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-leiningen'
@@ -49,7 +49,6 @@ Bundle 'spacehi.vim'
 Bundle 'groenewege/vim-less'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'tclem/vim-arduino'
-Bundle 'rking/ag.vim'
 Bundle 'digitaltoad/vim-pug'
 Bundle 'fatih/vim-go'
 Bundle 'vim-scripts/dbext.vim'
@@ -158,27 +157,14 @@ endfunction
 
 " Ctrl-P
 let g:ctrlp_extensions = ["tag"]
-" let g:ctrlp_cmd = 'CtrlPMRUFiles'
+" let g:ctrlp_cmd = 'CtrlPMRUFilesi
+let g:ctrlp_working_path_mode = 'ra'
 
-" TODO: get rg working as default grep
-" if executable('rg')
-"   " Use ag over grep
-"   set grepprg=rg\ --color=never
-"
-"   " Use rg in CtrlP for listing files.
-"   let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-"
-"   " rg is fast enough that CtrlP doesn't need to cache
-"   let g:ctrlp_use_caching = 0
-" elseif executable('ag')
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
+" Use ripgrep for default grep, CtrlP
+if executable('rg')
+  set grepprg=rg\ --color=never
+  set grepformat=%f:%l:%c:%m
+  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
   let g:ctrlp_use_caching = 0
 endif
 
