@@ -55,6 +55,7 @@ function install_brew_packages() {
     brew install koekeishiya/formulae/yabai
     brew install koekeishiya/formulae/skhd
     brew install redis
+    brew install golang
 }
 
 function tweak_osx_defaults() {
