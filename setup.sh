@@ -49,6 +49,7 @@ function install_brew_packages() {
     brew install Caskroom/cask/seil 
     brew install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste
     brew install jq
+    brew install tree
     brew install ripgrep
     brew install borkdude/brew/babashka
     brew install borkdude/brew/jet
@@ -56,6 +57,11 @@ function install_brew_packages() {
     brew install koekeishiya/formulae/skhd
     brew install redis
     brew install golang
+    # Install libpq (postgres) libs and binaries like psql
+    brew install libpq
+    brew link --force libpq
+    brew install --cask snowflake-snowsql
+    ln -s /Applications/SnowSQL.app/Contents/MacOS/snowsql /usr/local/bin
 }
 
 function tweak_osx_defaults() {

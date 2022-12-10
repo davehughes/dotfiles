@@ -11,6 +11,10 @@ alias jj='fasd_cd -d -i'
 alias l='fasd -de ls'
 alias ll='fasd -dise ls'
 
+alias ag='rg'
+alias /='rg'
+alias /ps='ps ax | rg'
+
 alias mfa="~/bin/mfa.py --config=$HOME/.mfa"
 
 alias tz='tizonia'

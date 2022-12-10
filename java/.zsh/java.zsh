@@ -1,2 +1,2 @@
-# export JAVA_HOME=/usr/local/Cellar/openjdk/16.0.1
-export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
+export JAVA_8_HOME=$(/usr/libexec/java_home -v1.8)
+export JAVA_19_HOME=$(/usr/libexec/java_home -v19)

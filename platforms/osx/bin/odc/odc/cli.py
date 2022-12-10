@@ -44,7 +44,11 @@ class CLI(object):
 
         def cmd_move_space(opts):
             logging.info(f'move-space {opts.direction}')
-            self.grid_controller.move(**odc.grid.MOVEMENT_DIRECTION_OFFSETS[opts.direction])
+            try:
+                self.grid_controller.move(**odc.grid.MOVEMENT_DIRECTION_OFFSETS[opts.direction])
+            except Exception as e:
+                logging.error(e)
+                import ipdb; ipdb.set_trace();
 
         move_space_cmd = subparsers.add_parser('move-space', help='Move between spaces')
         move_space_cmd.set_defaults(func=cmd_move_space)

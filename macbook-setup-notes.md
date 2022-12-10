@@ -10,7 +10,8 @@
   + Add Cmd-S Launchpad shortcut (Keyboard > Shortcuts > Launchpad & Dock > Show Launchpad)
   + Set Caps Lock to perform 'No Action' (Keyboard > Keyboard Tab > Modifier Keys)
   + Set hot-corner for desktops display (Mission Control > Hot Corners > Choose 'Mission Control')
-  + Allow alt-tab to switch spaces (Mission Control > 'When switching to an application, switch to a Space with open windows for the application')
+  + Allow alt-tab to switch spaces (Mission Control > check 'When switching to an application, switch to a Space with open windows for the application')
+  + Tell the OS to stop messing with spaces (Mission Control > uncheck 'Automatically rearrange Spaces based on most recent use')
   + Give Terminal full disk access (Security & Privacy > Privacy > Full Disk Access)
   
 + Install developer tools

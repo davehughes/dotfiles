@@ -87,6 +87,7 @@ au BufRead,BufNewFile *.ino set filetype=arduino
 au BufRead,BufNewFile *.js set filetype=javascript
 au BufRead,BufNewFile *.clj set filetype=clojure
 au BufRead,BufNewFile *.cljs set filetype=clojure
+au BufRead,BufNewFile *.rkt,*.rktl,*.rktd set filetype=scheme
 au BufRead,BufNewFile *.sls set filetype=yaml
 au BufRead,BufNewFile *.go set filetype=go
 au BufRead,BufNewFile *.org set filetype=org
@@ -226,7 +227,7 @@ augroup AutoSaveFolds
 augroup END
 
 " Custom helpers
-command CtrlPGem CtrlP /Users/dave/.rbenv/versions/2.7.5/lib/ruby/gems/2.7.0/gems
+command CtrlPGem CtrlP /Users/dave/.rbenv/versions/2.7.6/lib/ruby/gems/2.7.0/gems
 
 " start coc.nvim <<<===
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
