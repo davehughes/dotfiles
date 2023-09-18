@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 import argparse
 import collections
 import os
@@ -68,13 +68,7 @@ def list_databases(filepath=None):
     aliases = sorted(alias_map.keys())
     for alias in aliases:
         connection_line = alias_map[alias]
-        print '{alias}: {user}:***@{host}:{port}/{database}'.format(
-            alias=alias,
-            user=connection_line.user,
-            host=connection_line.host,
-            port=connection_line.port,
-            database=connection_line.database,
-            )
+        print(f'{alias}: {connection_line.user}:***@{connection_line.host}:{connection_line.port}/{connection_line.database}')
 
 
 def dump_dbext():
@@ -97,7 +91,7 @@ def dump_dbext():
             profile_name=alias.lower().replace('-', '_'),
             connection_string=dbext_connection_string,
             )
-        print config_line
+        print(config_line)
 
         
 def parse_opts(argv=None):
@@ -113,7 +107,7 @@ def parse_opts(argv=None):
 
     # pgpass.py print-connection-command {alias}
     def cmd_print_connection_command(opts):
-        print get_connect_command(opts.alias[0], opts.args)
+        print(get_connect_command(opts.alias[0], opts.args))
     connect_cmd = subparsers.add_parser('print-connection-command')
     connect_cmd.add_argument('alias', nargs=1)
     connect_cmd.add_argument('args', nargs='*')

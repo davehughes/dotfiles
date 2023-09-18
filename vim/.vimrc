@@ -19,15 +19,13 @@ set backupdir=~/.vim/sessions//
 set directory=~/.vim/sessions//
 set tags=.tags,tags,env/lib/tags,env/src/tags
 set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
-" set clipboard=unnamedplus
+set clipboard=unnamed
 
 " Vundle configuration and packages
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'gmarik/vundle'
-Bundle 'kien/ctrlp.vim'
 Bundle 'jceb/vim-orgmode'
-Bundle 'scrooloose/syntastic'
 Bundle 'majutsushi/tagbar'
 Bundle 'tomtom/tcomment_vim'
 Bundle 'tpope/vim-fugitive'
@@ -64,7 +62,6 @@ Plugin 'leafgarland/typescript-vim'
 Plugin 'ngmy/vim-rubocop'
 " Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
-Plugin 'ycm-core/YouCompleteMe'
 Bundle 'sirtaj/vim-openscad'
 Bundle 'venantius/vim-cljfmt'
 Plugin 'morhetz/gruvbox'
@@ -73,8 +70,11 @@ Bundle 'honza/dockerfile.vim'
 Plugin 'jremmen/vim-ripgrep'
 " Bundle 'ruanyl/vim-gh-line'
 Bundle 'davehughes/vim-gh-line'
-Plugin 'neoclide/coc.nvim', { 'branch': 'release' }
-
+Plugin 'udalov/kotlin-vim'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+Plugin 'dense-analysis/ale'
+Plugin 'madox2/vim-ai'
 
 " Syntax config
 syntax on
@@ -104,6 +104,7 @@ au BufRead,BufNewFile *.html set filetype=html
 au BufRead,BufNewFile *.tf* set filetype=terraform
 au BufRead,BufNewFile *.df set filetype=dockerfile
 au BufRead,BufNewFile *.make set filetype=makefile
+au BufRead,BufNewFile *.kt set filetype=kotlin
 " autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
 au FileType html setl noexpandtab
 au FileType tick commentstring=//\ %s
@@ -120,11 +121,16 @@ nmap <silent> <C-h> :bp<CR>
 nmap <silent> <C-l> :bn<CR>
 nmap <silent> <C-j> :wincmd w<CR>
 nmap <silent> <C-k> :wincmd W<CR>
+nmap <silent> <C-p> :GFiles<CR>
+nmap <silent> <C-o> :Buffers<CR>
+nmap <silent> <C-f> :Rg<CR>
+nmap <silent> <C-g> :ALEGoToDefinition<CR>
 nmap ,gs :Gstatus<CR>
 nmap ,gc :Gcommit<CR>
+nmap ,gb :Git blame<CR>
 highlight SpellBad term=underline gui=undercurl guisp=Orange
 nmap <Leader>t :TagbarToggle<CR>
-nmap <Leader>T :CtrlPTag<CR>
+nmap <Leader>T :Tags<CR>
 nmap <Leader>j :cn<CR>zz
 nmap <Leader>k :cp<CR>zz
 nmap <Leader>s :set opfunc=SearchMotion<CR>g@
@@ -155,27 +161,11 @@ function! SearchMotion(type, ...)
 
 endfunction
 
-" Ctrl-P
-let g:ctrlp_extensions = ["tag"]
-" let g:ctrlp_cmd = 'CtrlPMRUFilesi
-let g:ctrlp_working_path_mode = 'ra'
-
 " Use ripgrep for default grep, CtrlP
 if executable('rg')
   set grepprg=rg\ --color=never
   set grepformat=%f:%l:%c:%m
-  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
-  let g:ctrlp_use_caching = 0
 endif
-
-" Syntastic
-let g:syntastic_python_checkers = ["flake8", "pep8", "pyflakes", "python", "pylint"]
-let g:syntastic_jslint_checkers = ["jshint"]
-" let g:syntastic_go_checkers = ['gometalinter']
-let g:syntastic_ruby_checkers = ['ruby-lint', 'rubocop']
-
-" neocomplcache setup
-let g:neocomplcache_enable_at_startup = 0
 
 " Git gutter
 " autocmd VimEnter * EnableGitGutterLineHighlights
@@ -225,44 +215,3 @@ augroup AutoSaveFolds
   "autocmd BufWinLeave ?* nested silent! mkview!
   "autocmd BufWinEnter ?* silent loadview
 augroup END
-
-" Custom helpers
-command CtrlPGem CtrlP /Users/dave/.rbenv/versions/2.7.6/lib/ruby/gems/2.7.0/gems
-
-" start coc.nvim <<<===
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-set updatetime=300
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-set signcolumn=yes
-
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: There's always complete item selected by default, you may want to enable
-" no select by `"suggest.noselect": true` in your configuration file.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ coc#pum#visible() ? coc#pum#next(1) :
-      \ CheckBackspace() ? "\<Tab>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
-
-" Make <CR> to accept selected completion item or notify coc.nvim to format
-" <C-g>u breaks current undo, please make your own choice.
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-function! CheckBackspace() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-" end coc.nvim ===>>>

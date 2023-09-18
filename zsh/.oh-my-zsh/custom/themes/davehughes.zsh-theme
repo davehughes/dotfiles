@@ -121,7 +121,9 @@ function combined_location {
     # SEGMENTS+=("$(gvm-prompt)") 
 
     # rbenv version prompt
-    SEGMENTS+=("rbenv $(rbenv version-name)")
+    if which rbenv &> /dev/null; then
+      SEGMENTS+=("rbenv $(rbenv version-name)")
+    fi
 
     # Set location string relative to current repo and home directories
     LPATH=${PWD}
