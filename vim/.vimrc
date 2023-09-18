@@ -215,3 +215,9 @@ augroup AutoSaveFolds
   "autocmd BufWinLeave ?* nested silent! mkview!
   "autocmd BufWinEnter ?* silent loadview
 augroup END
+
+let g:ale_fixers = {
+\ '*': ['remove_trailing_lines', 'trim_whitespace'],
+\ 'ruby': ['syntax_tree'],
+\}
+let g:ale_fix_on_save = 1
