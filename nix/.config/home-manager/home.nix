@@ -15,13 +15,15 @@
   # release notes.
   home.stateVersion = "23.05"; # Please read the comment before changing.
 
-  # The home.packages option allows you to install Nix packages into your
-  # environment.
+  # Install packages in the environment.
+  #
+  # I've encountered [this issue](https://github.com/NixOS/nix/issues/3616),
+  # which seems to be related to OSX upgrades removing PATH entries, and the
+  # solution is given in this comment:
+  # https://github.com/NixOS/nix/issues/3616#issuecomment-903869569
   home.packages = [
+    pkgs.direnv
     pkgs.yabai
-    # # Adds the 'hello' command to your environment. It prints a friendly
-    # # "Hello, world!" when run.
-    # pkgs.hello
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -63,11 +65,83 @@
   #
   # if you don't want to manage your shell through Home Manager.
   home.sessionVariables = {
-    # EDITOR = "emacs";
+    EDITOR = "vim";
+    PAGER = "less";
+    TERM = "xterm-256color";
+
+    # Don't rename the terminal, it's likely a tmux window that I already named
+    DISABLE_AUTO_TITLE = "true";
+    VIRTUAL_ENV_DISABLE_PROMPT = "true";
+    TMUX_THEME_COLOR = "purple";
+    TMUX_THEME = "powerline/double/${TMUX_THEME_COLOR}";
+    ZSH_CUSTOM = "/tmp/oh-my-zsh-custom";
+  };
+
+  home.sessionPath = {
+    # Add homebrew bin directory
+    # add_to_PATH /opt/homebrew/bin
+
+    # Add personal bin directory
+    "$HOME/bin"
   };
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  programs.zsh = {
+    enable = true;
+    oh-my-zsh = {
+      enable = true;
+      theme = "davehughes";
+      plugins = [
+        "fasd"
+        "gitfast"
+        "gpg-agent"
+        "pip"
+        "ssh-agent"
+      ];
+
+    };
+    shellAliases = {
+      # Always load tmux in 256 color mode
+      tmux="tmux -2";
+      tmux-layout="tmux display-message -p '#{window_layout}'";
+
+      hm = "home-manager";
+
+      # fasd
+      v  = "fasd -fe vim";
+      vv = "fasd -fise vim";
+      j  = "fasd_cd -d";
+      jj = "fasd_cd -d -i";
+      l  = "fasd -de ls";
+      ll = "fasd -dise ls";
+
+      "/" = "rg";
+      "/ps" = "ps ax | rg";
+      "/nix" = "nix search nixpkgs";
+
+      ":e" = "$EDITOR";
+      ":q" = "exit";
+
+      mfa = "~/bin/mfa.py --config=$HOME/.mfa";
+    };
+
+    initExtra = ''
+      unsetopt correct_all
+      unsetopt correct
+      unsetopt nomatch
+      setopt complete_aliases
+
+      # set up fasd
+      eval "$(fasd --init auto zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zshwcomp-install)"
+    '';
+  };
+
+  programs.vim = {
+    enable = true;
+    defaultEditor = true;
+  }
 
   # Configure programs; https://rycee.gitlab.io/home-manager/options.html to see options
   programs.git = {
