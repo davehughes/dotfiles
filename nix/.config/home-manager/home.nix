@@ -24,6 +24,39 @@
   home.packages = [
     pkgs.direnv
     pkgs.yabai
+    pkgs.fasd
+    pkgs.stow
+    pkgs.tmux
+    pkgs.tmuxp
+    pkgs.pwgen
+    pkgs.jq
+    pkgs.yq
+
+    # brew install ruby
+    # brew install ruby-build
+    # brew install ./brew/vim.rb --env=std --with-features=big
+    # brew install zsh
+    # brew install ctags-exuberant
+    # brew install git-secret
+    # brew install rlwrap
+    # brew install outh-toolkit
+    # brew install pwgen
+    # brew install Caskroom/cask/karabiner-elements
+    # brew install Caskroom/cask/seil
+    # brew install reattach-to-user-namespace --with-wrap-pbcopy-and-pbpaste
+    # brew install jq
+    # brew install tree
+    # brew install ripgrep
+    # brew install borkdude/brew/babashka
+    # brew install borkdude/brew/jet
+    # brew install koekeishiya/formulae/yabai
+    # brew install koekeishiya/formulae/skhd
+    # brew install redis
+    # brew install golang
+    # # Install libpq (postgres) libs and binaries like psql
+    # brew install libpq
+    # brew link --force libpq
+    # brew install --cask snowflake-snowsql
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -74,7 +107,6 @@
     VIRTUAL_ENV_DISABLE_PROMPT = "true";
     TMUX_THEME_COLOR = "purple";
     TMUX_THEME = "powerline/double/${TMUX_THEME_COLOR}";
-    ZSH_CUSTOM = "/tmp/oh-my-zsh-custom";
   };
 
   home.sessionPath = {
@@ -93,6 +125,7 @@
     oh-my-zsh = {
       enable = true;
       theme = "davehughes";
+      custom = "$HOME/.dotfiles/oh-my-zsh-custom";
       plugins = [
         "fasd"
         "gitfast"
@@ -100,7 +133,6 @@
         "pip"
         "ssh-agent"
       ];
-
     };
     shellAliases = {
       # Always load tmux in 256 color mode
@@ -136,12 +168,29 @@
       # set up fasd
       eval "$(fasd --init auto zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zshwcomp-install)"
     '';
+
+    plugins = [
+      {
+        name = "zsh-nix-shell";
+        file = "nix-shell.plugin.zsh";
+        src = pkgs.fetchFromGitHub {
+          owner = "chisui";
+          repo = "zsh-nix-shell";
+          rev = "v0.7.0";
+          sha256 = "149zh2rm59blr2q458a5irkfh82y3dwdich60s9670kl3cl5h2m1";
+        };
+      }
+    ];
   };
 
   programs.vim = {
     enable = true;
     defaultEditor = true;
-  }
+  };
+
+  programs.fzf = {
+    enable = true;
+  };
 
   # Configure programs; https://rycee.gitlab.io/home-manager/options.html to see options
   programs.git = {
