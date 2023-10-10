@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dave"
+version = "0.0.0"
+dependencies = [
+  "tabulate",
+  "pyyaml",
+]
+
+[project.scripts]
+dave = "dave.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

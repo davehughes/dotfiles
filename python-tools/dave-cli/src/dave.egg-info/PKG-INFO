@@ -1,0 +1,5 @@
+Metadata-Version: 2.1
+Name: dave
+Version: 0.0.0
+Requires-Dist: tabulate
+Requires-Dist: pyyaml

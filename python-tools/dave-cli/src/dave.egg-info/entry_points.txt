@@ -1,0 +1,2 @@
+[console_scripts]
+dave = dave.cli:main
