@@ -1,0 +1,5 @@
+local path_parts=(${(s/:/)PATH})
+local path_lines=${(j/\n/)path_parts}
+path_lines=$(edit-interactive $path_lines)
+path_parts=(${(f)path_lines})
+PATH=${(j/:/)path_parts}

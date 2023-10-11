@@ -1,0 +1,10 @@
+# edit the contents of the first arg interactively in EDITOR. outputs the edited copy if successful,
+# or the original value otherwise.
+local tempfile=$(mktemp)
+echo $1 > ${tempfile}
+$EDITOR ${tempfile} </dev/tty >/dev/tty
+if [ $? -eq 0 ]; then
+  cat ${tempfile}
+else
+  echo $1
+fi

@@ -1,16 +1,18 @@
 { config, pkgs, ... }:
 
 let
-  tmuxThemepack = pkgs.tmuxPlugins.mkTmuxPlugin {
-    pluginName = "themepack";
-    version = "1.1.0";
+  dave-cli = with pkgs.python3Packages; buildPythonPackage {
+    name = "dave-cli";
+    version = "v0.1";
+    format = "pyproject";
     src = pkgs.fetchFromGitHub {
-      owner = "jimeh";
-      repo = "tmux-themepack";
-      rev = "1.1.0";
-      # obtained by running `nix-prefetch-url --unpack https://github.com/<author>/<repo>/archive/<rev>.tar.gz`
-      sha256 = "00dmd16ngyag3n46rbnl9vy82ih6g0y02yfwkid32a1c8vdbvb3z";
+      owner = "davehughes";
+      repo = "dave-cli";
+      rev = "v0.1";
+      sha256 = "UY5WT6YYfg4RD2vnL+czJEO4sIXGujK6l38H8Ti5jLo=";
     };
+
+    propagatedBuildInputs = [ setuptools tabulate pyyaml ];
   };
 in
 {
@@ -34,45 +36,55 @@ in
   # which seems to be related to OSX upgrades removing PATH entries, and the
   # solution is given in this comment:
   # https://github.com/NixOS/nix/issues/3616#issuecomment-903869569
-  home.packages = [
-    pkgs.direnv
-    pkgs.vim
-    pkgs.fasd
-    pkgs.stow
-    pkgs.ripgrep
-    pkgs.jq
-    pkgs.yq
-    pkgs.jet
-    pkgs.tree
-    pkgs.ctags
+  home.packages = with pkgs; [
+    direnv
+    bash
+    babashka
+    # TODO: take your pick: vim is -python3, vim-full has +python3 but breaks copy-paste
+    # vim-full
+    vim
 
-    pkgs.skhd
-    pkgs.yabai
-    pkgs.karabiner-elements
-    pkgs.reattach-to-user-namespace
+    fasd
+    ripgrep
+    jq
+    yq
+    jet
+    tree
+    ctags
+    asdf-vm
+    gnupg
+    mitmproxy
+    pwgen
+    oath-toolkit
+    rlwrap
 
-    pkgs.babashka
-    pkgs.pwgen
-    pkgs.oath-toolkit
-    pkgs.rlwrap
-    pkgs.libpqxx
+    skhd
+    yabai
+    karabiner-elements
 
-    pkgs.racket
+    postgresql
+    redis
+    iredis
 
-    # brew install ruby
-    # brew install ruby-build
-    # brew install redis
-    # brew install golang
-    # # Install libpq (postgres) libs and binaries like psql
-    # brew install libpq
-    # brew link --force libpq
-    # brew install --cask snowflake-snowsql
+    awscli2
+    docker
+    docker-compose
 
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
+    clojure
+    racket
+    ruby
+    rustup
+
+    # browse options at https://www.nerdfonts.com/font-downloads
+    (nerdfonts.override {
+      fonts = [
+      "FantasqueSansMono"
+      "Inconsolata"
+      "IntelOneMono"
+      "SourceCodePro"
+      ]; })
+
+    (pkgs.python3.withPackages (p: with p; [dave-cli]))
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -82,43 +94,15 @@ in
     # '')
   ];
 
-  home.file = {
-    # NOTE: there's a bootstrapping problem here...
-    # ".config/nix/nix.conf".source = nix/nix.conf;
-
-    ".config/zsh" = { source = ./zsh; recursive = true; };
-
-    ".skhdrc".source = ./skhdrc;
-
-    # TODO: replace this with home-manager's programs.gpg?
-    ".gnupg/gpg.conf".text = ''
-      use-agent
-    '';
-
-    ".gnupg/gpg-agent.conf".text = ''
-      default-cache-ttl 86400
-      max-cache-ttl 86400
-    '';
-
-    ".config/zsh/scripts/gpg.zsh".text = ''
-      export GPG_TTY=''$(tty)
-      gpgconfg --launch gpg-agent
-    '';
-
-    ".ipython/profile_default/startup/autoreload.ipy".text = ''
-      %load_ext autoreload
-      %autoreload 2
-    '';
-
-    ".config/karabiner" = { source = ./karabiner; recursive = true; };
-  };
+  # NOTE: there's a bootstrapping problem here...
+  # home.file.".config/nix/nix.conf".source = nix/nix.conf;
+  home.file.".config/nixpkgs/config.nix".source = nixpkgs/config.nix;
 
   home.file.".vimrc".source = ./vimrc;
   home.sessionVariables.EDITOR = "vim";
 
   home.sessionVariables = {
     PAGER = "less";
-    TERM = "tmux-256color";
 
     # Don't rename the terminal, it's likely a tmux window that I already named
     DISABLE_AUTO_TITLE = "true";
@@ -126,9 +110,6 @@ in
   };
 
   home.sessionPath = [
-    # Add homebrew bin directory
-    # /opt/homebrew/bin
-
     # python-tools bin directory
     "$HOME/.local/python-tools/bin"
   ];
@@ -136,17 +117,25 @@ in
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
-  home.sessionVariables.TMUX_THEME = "powerline/double/purple";
+  # NOTE: I've seen some weird interactions where tmux settings don't get applied until the tmux server is killed
+  # If in doubt, kill all sessions and launch a new one with `tmux new-session`.
   programs.tmux = {
     enable = true;
-    tmuxp.enable = true;
+
+    terminal = "tmux-256color";
+    keyMode = "vi";
     escapeTime = 0;
     historyLimit = 50000;
     disableConfirmationPrompt = true;
+    sensibleOnTop = false;
+
+    tmuxp.enable = true;
     plugins = with pkgs; [
       # tmuxPlugins.yank
-      tmuxThemepack
+      tmuxPlugins.nord
+      # tmuxPlugins.power-theme
     ];
+
     extraConfig = ''
       # rebind prefix key
       # (using Karabiner-Elements to send F4 when 'caps lock' is pressed)
@@ -170,13 +159,16 @@ in
       bind-key C-k resize-pane -U 10
       bind-key C-j resize-pane -D 10
 
+      bind a setw synchronize-panes
+
       # reload tmux config
       bind R source ~/.config/tmux/tmux.conf
 
       set-window-option -g automatic-rename off
       set -s set-clipboard on
-      set -g default-terminal tmux-256color
       set -ga terminal-overrides ",*256col*:Tc"
+      set -ga terminal-overrides "*:Ss=\E[%p1%d q:Se\E[ q"
+      set-environment -g COLORTERM "truecolor"
 
       # get rid of annoying lag when pressing Esc in vims
       set -s escape-time 0
@@ -187,20 +179,7 @@ in
 
   programs.zsh = {
     enable = true;
-
-    zplug = {
-      enable = true;
-      # TODO: peruse https://github.com/unixorn/awesome-zsh-plugins and add anything that looks useful
-      plugins = [
-        { name = "plugins/fasd"; tags = ["from:oh-my-zsh"]; }
-        { name = "plugins/gitfast"; tags = ["from:oh-my-zsh"]; }
-        { name = "plugins/gpg-agent"; tags = ["from:oh-my-zsh"]; }
-        { name = "plugins/ssh-agent"; tags = ["from:oh-my-zsh"]; }
-        { name = "plugins/pip"; tags = ["from:oh-my-zsh"]; }
-        { name = "zsh-users/zsh-syntax-highlighting"; tags = ["defer:2"]; }
-        { name = ".config/zsh/themes/davehughes"; tags = ["from:local" "as:theme"]; }
-      ];
-    };
+    dotDir = ".config/zsh";
 
     shellAliases = {
       # Always load tmux in 256 color mode
@@ -224,7 +203,8 @@ in
       ":e" = "$EDITOR";
       ":q" = "exit";
 
-      mfa = "~/bin/mfa.py --config=$HOME/.mfa";
+      pg-list = "dave pg-list";
+      pg-edit = "$EDITOR ~/.pgpass";
     };
 
     initExtra = ''
@@ -237,8 +217,22 @@ in
 
       # set up fasd
       eval "$(fasd --init auto zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zshwcomp-install)"
+
+      . "$HOME/.nix-profile/share/asdf-vm/asdf.sh"
+      . "$HOME/.nix-profile/share/asdf-vm/completions/_asdf"
+
+      fpath=(~/.config/zsh/functions "$fpath[@]")
+      autoload -Uz \
+        edit-interactive \
+        findenv \
+        kill-spotify \
+        path-append path-prepend path-edit path-ls \
+        palette \
+        pg-connect \
+        snowsql-json
     '';
 
+    # TODO: peruse https://github.com/unixorn/awesome-zsh-plugins and add anything that looks useful
     plugins = [
       {
         name = "zsh-nix-shell";
@@ -250,7 +244,105 @@ in
           sha256 = "149zh2rm59blr2q458a5irkfh82y3dwdich60s9670kl3cl5h2m1";
         };
       }
+      {
+        name = "zsh-syntax-highlighting";
+        file = "zsh-syntax-highlighting.plugin.zsh";
+        src = pkgs.fetchFromGitHub {
+          owner = "zsh-users";
+          repo = "zsh-syntax-highlighting";
+          rev = "0.7.1";
+          sha256 = "03r6hpb5fy4yaakqm3lbf4xcvd408r44jgpv4lnzl9asp4sb9qc0";
+        };
+      }
     ];
+  };
+  home.file.".config/zsh/scripts"   = { source = zsh/scripts; recursive = true; };
+  home.file.".config/zsh/themes"    = { source = zsh/themes; recursive = true; };
+  home.file.".config/zsh/functions" = { source = zsh/functions; recursive = true; };
+
+  programs.kitty = {
+    enable = true;
+    # use `kitty +kitten themes` to browse
+    theme = "Soft Server";
+    font = {
+      name = "SauceCodePro";
+      size = 12;
+    };
+    settings = {
+      enable_audio_bell = false;
+      background_opacity = "0.9";
+    };
+  };
+
+  # starship multi-shell theme builder
+  programs.starship = {
+    enable = true;
+    # some interesting themes to crib from:
+    # https://starship.rs/presets/tokyo-night.html
+    # https://starship.rs/presets/pastel-powerline.html
+    # some useful symbols:                
+    settings = {
+      add_newline = false;
+      # format = "$all";
+      format = "[»](fg:#d08770 bold) ";
+      continuation_prompt = "։ ";
+      right_format = ''
+        [](fg:#d08770)
+        $directory
+        [](bg:#d08770 fg:#81a1c1)
+        ($git_branch$git_commit)
+        [](bg:#81a1c1 fg:#8fbcbb)
+        $rust
+        $ruby
+        $java
+        $python
+        $golang
+        $nodejs
+        ($character)
+        [](fg:#8fbcbb)
+      '';
+
+      directory = {
+        style = "fg:#3b4252 bg:#d08770";
+        format = "[›$path ]($style)";
+        truncation_length = 3;
+        truncation_symbol = "…/";
+      };
+
+      git_branch = {
+        symbol = "";
+        style = "fg:#3b4252 bg:#81a1c1";
+        format = "[$symbol $branch]($style)";
+      };
+
+      git_commit = {
+        style = "fg:#3b4252 bg:#81a1c1";
+        only_detached = false;
+        format = "[ \\($hash$tag\\) ]($style)";
+      };
+
+      python = {
+        style = "fg:#3b4252 bg:#8fbcbb";
+        format = "[py $version ]($style)";
+      };
+
+      java = {
+        style = "fg:#3b4252 bg:#8fbcbb";
+        format = "[$symbol$version ]($style)";
+      };
+
+      nodejs = {
+        symbol = "";
+        style = "fg:#3b4252 bg:#8fbcbb";
+        format = "[$symbol ($version) ]($style)";
+      };
+
+      character = {
+        success_symbol = "";
+        error_symbol = "[◉](bold fg:#bf616a bg:#8fbcbb)";
+        format = "$symbol";
+      };
+    };
   };
 
   programs.fzf = {
@@ -282,6 +374,11 @@ in
   # Language environment zsh hooks
   home.file.".irbrc".source = ./irbrc;
 
+  home.file.".ipython/profile_default/startup/autoreload.ipy".text = ''
+    %load_ext autoreload
+    %autoreload 2
+  '';
+
   home.file.".clojure/deps.edn".source = ./clojure-deps.edn;
   home.file.".lein/profiles.clj".source = ./lein-profiles.clj;
 
@@ -290,7 +387,73 @@ in
     test -f ''${HOME}/.cargo/env && source ''${HOME}/.cargo/env
   '';
 
-  home.file.".config/zsh/scripts/gvm.zsh".text = ''
+  home.file.".config/zsh/scripts/golang.zsh".text = ''
     [[ -s "''${HOME}/.gvm/scripts/gvm" ]] && source "''${HOME}/.gvm/scripts/gvm
+
+    gvm use go1.19 >> /dev/null
+    gvm pkgset use global >> /dev/null
+  '';
+
+  # Desktop automation
+  home.file.".config/karabiner" = { source = ./karabiner; recursive = true; };
+
+  home.file.".config/skhd/skhdrc".text = ''
+    # NOTE: for this to work, the `dave` CLI tool needs to be on skhd's PATH. This can be configured in the .plist file
+    # that configures how the skhd service operates, which should be in `~/Library/LaunchAgents/com.koekeishiya.skhd.plist`
+    # (when installed via `skhd --install-service`)
+    fn + cmd - h : dave odc-move-space left
+    fn + cmd - j : dave odc-move-space down
+    fn + cmd - k : dave odc-move-space up
+    fn + cmd - l : dave odc-move-space right
+
+    fn + alt + cmd - h : dave odc-move-window left --follow
+    fn + alt + cmd - j : dave odc-move-window down --follow
+    fn + alt + cmd - k : dave odc-move-window up --follow
+    fn + alt + cmd - l : dave odc-move-window right --follow
+
+    # ctrl + alt - j : dave odc-invert-space vertical
+    # ctrl + alt - k : dave odc-invert-space vertical
+    # ctrl + alt - h : dave odc-invert-space horizontal
+    # ctrl + alt - l : dave odc-invert-space horizontal
+
+    ctrl + alt - s : dave odc-set-space-layout stack
+    ctrl + alt - b : dave odc-set-space-layout bsp
+    ctrl + alt - f : dave odc-set-space-layout float
+
+    # USB keyboard with [Ctrl][Cmd][Alt]
+    ctrl + alt - h : dave odc-move-space left
+    ctrl + alt - j : dave odc-move-space down
+    ctrl + alt - k : dave odc-move-space up
+    ctrl + alt - l : dave odc-move-space right
+
+    ctrl + alt + cmd - h : dave odc-move-window left --follow
+    ctrl + alt + cmd - j : dave odc-move-window down --follow
+    ctrl + alt + cmd - k : dave odc-move-window up --follow
+    ctrl + alt + cmd - l : dave odc-move-window right --follow
+
+    alt - tab : skhd -k "cmd - tab"
+
+    # Firefox unfuck
+    ctrl - t : skhd -k "cmd - t"
+    ctrl - w : skhd -k "cmd - w"
+    # ctrl - l : skhd -k "cmd - l"
+
+    # Experimental
+    f7: dave odc-log 'f7'
+  '';
+
+  # GPG signing
+  home.file.".gnupg/gpg.conf".text = ''
+    use-agent
+  '';
+
+  home.file.".gnupg/gpg-agent.conf".text = ''
+    default-cache-ttl 86400
+    max-cache-ttl 86400
+  '';
+
+  home.file.".config/zsh/scripts/gpg.zsh".text = ''
+    export GPG_TTY=''$(tty)
+    gpgconf --launch gpg-agent
   '';
 }

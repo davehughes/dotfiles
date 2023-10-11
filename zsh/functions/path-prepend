@@ -1,0 +1,12 @@
+local d=$@
+for d; do
+  d=$({ cd -- "$d" && { pwd -P || pwd; } } 2>/dev/null)  # canonicalize symbolic links
+  if [ -z "$d" ]; then
+    echo "skipping nonexistent directory: $d"
+    continue; # skip nonexistent directory
+  fi
+  case ":$PATH:" in
+    *":$d:"*) :;;
+    *) PATH=$d:$PATH;;
+  esac
+done

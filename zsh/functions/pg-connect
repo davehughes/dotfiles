@@ -1,0 +1,10 @@
+# Set up postgres passwords file and define connection aliases
+# """
+# # alias:whatever
+# host:port:database:user:password
+# ""
+# which is converted to:
+# "pg-connect whatever" => "psql -H host -p port -U user database"
+PSQL_COMMAND=$(PGPASSFILE=~/.pgpass dave pg-print-psql-connection-command $@)
+echo "pg-connect $1 => $PSQL_COMMAND"
+sh -c "$PSQL_COMMAND"

@@ -1,0 +1,3 @@
+local path=${1:-$PATH}
+local path_parts=(${(s/:/)PATH})
+echo ${(j/\n/)path_parts}

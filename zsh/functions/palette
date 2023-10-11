@@ -1,0 +1,5 @@
+COLORS=()
+for color in {000..255}; do
+    COLORS+=("%F{$color} ■ $color")
+done
+print -P "${(j:\n:)COLORS}"
