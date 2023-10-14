@@ -37,7 +37,6 @@ in
   # solution is given in this comment:
   # https://github.com/NixOS/nix/issues/3616#issuecomment-903869569
   home.packages = with pkgs; [
-    direnv
     bash
     babashka
     # TODO: take your pick: vim is -python3, vim-full has +python3 but breaks copy-paste
@@ -98,9 +97,6 @@ in
   # home.file.".config/nix/nix.conf".source = nix/nix.conf;
   home.file.".config/nixpkgs/config.nix".source = nixpkgs/config.nix;
 
-  home.file.".vimrc".source = ./vimrc;
-  home.sessionVariables.EDITOR = "vim";
-
   home.sessionVariables = {
     PAGER = "less";
 
@@ -116,6 +112,11 @@ in
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
 
   # NOTE: I've seen some weird interactions where tmux settings don't get applied until the tmux server is killed
   # If in doubt, kill all sessions and launch a new one with `tmux new-session`.
@@ -344,6 +345,9 @@ in
       };
     };
   };
+
+  home.file.".vimrc".source = ./vimrc;
+  home.sessionVariables.EDITOR = "vim";
 
   programs.fzf = {
     enable = true;
