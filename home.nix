@@ -61,9 +61,12 @@ in
     yabai
     karabiner-elements
 
+    sqlite
+    duckdb
     postgresql
     redis
     iredis
+    # snowsql # TODO: 'unfree' package, need to figure out how to set this up
 
     awscli2
     docker
@@ -83,7 +86,7 @@ in
       "SourceCodePro"
       ]; })
 
-    (pkgs.python3.withPackages (p: with p; [dave-cli]))
+    (pkgs.python3.withPackages (p: with p; [dave-cli ipython ipdb]))
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -324,7 +327,7 @@ in
 
       python = {
         style = "fg:#3b4252 bg:#8fbcbb";
-        format = "[py $version ]($style)";
+        format = "[py$version ]($style)";
       };
 
       java = {
@@ -335,7 +338,17 @@ in
       nodejs = {
         symbol = "";
         style = "fg:#3b4252 bg:#8fbcbb";
-        format = "[$symbol ($version) ]($style)";
+        format = "[$symbol($version) ]($style)";
+      };
+
+      rust = {
+        style = "fg:#3b4252 bg:#8fbcbb";
+        format = "[$symbol($version) ]($style)";
+      };
+
+      ruby = {
+        style = "fg:#3b4252 bg:#8fbcbb";
+        format = "[$symbol($version) ]($style)";
       };
 
       character = {
