@@ -76,6 +76,7 @@ in
     racket
     ruby
     rustup
+    nodejs
 
     # browse options at https://www.nerdfonts.com/font-downloads
     (nerdfonts.override {
@@ -87,6 +88,11 @@ in
       ]; })
 
     (pkgs.python3.withPackages (p: with p; [dave-cli ipython ipdb]))
+
+    obsidian
+
+    sl
+    cowsay
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -473,4 +479,9 @@ in
     export GPG_TTY=''$(tty)
     gpgconf --launch gpg-agent
   '';
+
+  nixpkgs.config = {
+    allowUnfree = true;
+
+  };
 }

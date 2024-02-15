@@ -7,7 +7,7 @@ set nowrap
 set hidden
 set ruler
 set number
-set textwidth=0
+set textwidth=120
 set bs=2
 set expandtab
 set tabstop=2
@@ -22,9 +22,11 @@ set wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
 set clipboard=unnamed
 
 " Vundle configuration and packages
-set rtp+=~/.vim/bundle/vundle
-call vundle#rc()
-Bundle 'gmarik/vundle'
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+
+" Bundle 'gmarik/vundle'
 Bundle 'jceb/vim-orgmode'
 Bundle 'majutsushi/tagbar'
 Bundle 'tomtom/tcomment_vim'
@@ -77,6 +79,8 @@ Plugin 'dense-analysis/ale'
 Plugin 'madox2/vim-ai'
 Plugin 'tpope/vim-dadbod'
 
+call vundle#end()
+
 " Syntax config
 syntax on
 au BufNewFile,BufRead *.less set filetype=less
@@ -98,7 +102,7 @@ au BufRead,BufNewFile *.tick set filetype=tick
 au BufRead,BufNewFile *.vue set filetype=vue
 au BufRead,BufNewFile *.ts set filetype=typescript
 au BufRead,BufNewFile *.tsx set filetype=typescript
-au BufRead,BufNewFile *.rb set filetype=ruby
+au BufRead,BufNewFile *.rb,*.rbi set filetype=ruby
 au BufRead,BufNewFile *.jbuilder set filetype=ruby
 au BufRead,BufNewFile *.pony set filetype=pony
 au BufRead,BufNewFile *.html set filetype=html
@@ -222,3 +226,4 @@ let g:ale_fixers = {
 \ 'ruby': ['syntax_tree'],
 \}
 let g:ale_fix_on_save = 1
+call ale#Set('ruby_sorbet_options', '--enable-all-experimental-lsp-features')
