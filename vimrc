@@ -224,6 +224,8 @@ augroup END
 let g:ale_fixers = {
 \ '*': ['remove_trailing_lines', 'trim_whitespace'],
 \ 'ruby': ['syntax_tree'],
+\ 'typescript': ['prettier'],
+\ 'javascript': ['prettier'],
 \}
 let g:ale_fix_on_save = 1
 call ale#Set('ruby_sorbet_options', '--enable-all-experimental-lsp-features')

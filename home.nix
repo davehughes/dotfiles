@@ -38,12 +38,16 @@ in
   # https://github.com/NixOS/nix/issues/3616#issuecomment-903869569
   home.packages = with pkgs; [
     bash
-    babashka
+    # babashka
     # TODO: take your pick: vim is -python3, vim-full has +python3 but breaks copy-paste
     # vim-full
     vim
+    neovim
+
+    cmake
 
     fasd
+    fd
     ripgrep
     jq
     yq
@@ -56,6 +60,8 @@ in
     pwgen
     oath-toolkit
     rlwrap
+    graphviz
+    btop
 
     skhd
     yabai
@@ -186,6 +192,7 @@ in
   };
 
   home.file.".tmuxp" = { source = ./tmuxp; recursive = true; };
+  home.file.".config/nvim" = { source = ./nvim; recursive = true; };
 
   programs.zsh = {
     enable = true;
@@ -233,6 +240,7 @@ in
 
       fpath=(~/.config/zsh/functions "$fpath[@]")
       autoload -Uz \
+        compinit \
         edit-interactive \
         findenv \
         kill-spotify \
@@ -240,6 +248,10 @@ in
         palette \
         pg-connect \
         snowsql-json
+
+      compinit
+
+      zstyle ':completion:*:*:git:*' script ~/.zsh/git-completion.bash
     '';
 
     # TODO: peruse https://github.com/unixorn/awesome-zsh-plugins and add anything that looks useful
@@ -266,6 +278,7 @@ in
       }
     ];
   };
+  home.file.".zsh"                  = { source = zsh/dot-zsh; recursive = true; };
   home.file.".config/zsh/scripts"   = { source = zsh/scripts; recursive = true; };
   home.file.".config/zsh/themes"    = { source = zsh/themes; recursive = true; };
   home.file.".config/zsh/functions" = { source = zsh/functions; recursive = true; };
