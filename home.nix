@@ -83,6 +83,10 @@ in
     ruby
     rustup
     nodejs
+    coursier
+    scala
+    scalafmt
+    ammonite
 
     # browse options at https://www.nerdfonts.com/font-downloads
     (nerdfonts.override {
@@ -206,8 +210,8 @@ in
       hm = "home-manager";
 
       # fasd
-      v  = "fasd -fe vim";
-      vv = "fasd -fise vim";
+      v  = "fasd -fe $EDITOR";
+      vv = "fasd -fise $EDITOR";
       j  = "fasd_cd -d";
       jj = "fasd_cd -d -i";
       l  = "fasd -de ls";
@@ -379,7 +383,7 @@ in
   };
 
   home.file.".vimrc".source = ./vimrc;
-  home.sessionVariables.EDITOR = "vim";
+  home.sessionVariables.EDITOR = "nvim";
 
   programs.fzf = {
     enable = true;

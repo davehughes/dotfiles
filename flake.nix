@@ -12,7 +12,8 @@
 
   outputs = { nixpkgs, home-manager, ... }:
     let
-      system = "x86_64-darwin";
+      # system = "x86_64-darwin";
+      system = "aarch64-darwin";
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       homeConfigurations."dave" = home-manager.lib.homeManagerConfiguration {

@@ -13,6 +13,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- package management
 require("lazy").setup({
   -- general
   "jremmen/vim-ripgrep",
@@ -28,6 +29,7 @@ require("lazy").setup({
   { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
   { "nvim-telescope/telescope.nvim", dependencies = "nvim-lua/plenary.nvim", "nvim-telescope/telescope-fzf-native.nvim" },
   "vim-scripts/sudo.vim",
+  "janko/vim-test",
 
   -- git --
   "tpope/vim-fugitive",
@@ -36,16 +38,45 @@ require("lazy").setup({
 
   -- language-specific --
   "vim-ruby/vim-ruby",
-  "fatih/vim-go",
-  "udalov/kotlin-vim",
+  { "fatih/vim-go", ft = "go" },
+  { "udalov/kotlin-vim", ft = "kotlin" },
   "honza/dockerfile.vim",
   "leafgarland/typescript-vim",
+  {
+    "scalameta/nvim-metals",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+    },
+    ft = { "scala", "sbt", "java" },
+    opts = function()
+      local metals_config = require("metals").bare_config()
+      metals_config.on_attach = function(client, bufnr)
+        -- your on_attach function
+      end
+
+      return metals_config
+    end,
+    config = function(self, metals_config)
+      local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = self.ft,
+        callback = function()
+          require("metals").initialize_or_attach(metals_config)
+        end,
+        group = nvim_metals_group,
+      })
+    end
+  },
 
   -- lsp, checkers, and fixers --
   -- "dense-analysis/ale",
   "neovim/nvim-lspconfig",
   "williamboman/mason.nvim",
   "williamboman/mason-lspconfig.nvim",
+
+  -- debugging
+  "mfussenegger/nvim-dap",
+  "suketa/nvim-dap-ruby",
 
   -- appearance --
   "vim-scripts/Colour-Sampler-Pack",
@@ -54,48 +85,12 @@ require("lazy").setup({
   "altercation/vim-colors-solarized",
 }, {})
 
-
--- evaluate and re-enable:
--- Bundle 'jceb/vim-orgmode'
--- Bundle 'tpope/vim-dispatch'
--- Bundle 'janko/vim-test'
--- Plugin 'nsf/gocode', {'rtp': 'vim/'}
--- Plugin 'ngmy/vim-rubocop'
--- Bundle 'tpope/vim-classpath'
--- Bundle 'tpope/vim-fireplace'
--- Bundle 'tpope/vim-leiningen'
--- Bundle 'guns/vim-clojure-static'
--- Plugin 'vim-scripts/paredit.vim'
--- Bundle 'venantius/vim-cljfmt'
--- " Bundle 'VimClojure'
-
 -- Set filetype based on file extension
 vim.filetype.add({
   extension = {
-    clj = "clojure",
-    cljs = "clojure",
-    go = "go",
-    html = "html",
-    ino = "arduino",
-    js = "javascript",
-    kt = "kotlin",
-    less = "less",
-    org = "org",
-    pde = "arduino",
-    rb = "ruby",
-    rbi = "ruby",
-    rkt = "scheme",
-    rktl = "scheme",
-    rktd = "scheme",
-    sls = "yaml",
-    sql = "sql",
     tf = "terraform",
     tfvars = "terraform",
-    tick = "tick",
-    ts = "typescript",
     tsx = "typescript",
-    vue = "vue",
-    zsh = "zsh",
     zshenv = "zsh",
   },
 })
@@ -113,6 +108,7 @@ vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.autoindent = true
 vim.opt.hlsearch = true
+vim.opt.guicursor = ""
 --vim.opt.spell = true
 --vim.opt.backupdir=~/.vim/sessions//
 --vim.opt.directory=~/.vim/sessions//
@@ -121,12 +117,6 @@ vim.opt.clipboard = "unnamed"
 -- vim.opt.wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
 vim.g.mapleader = "\\"
 vim.cmd([[
-" autocmd BufWritePre * :%s/\s\+$//e " strip trailing whitespace
-au FileType html setl noexpandtab
-au FileType tick commentstring=//\ %s
-au FileType sql setl commentstring=--\ %s
-au FileType pug setl commentstring=//-\ %s
-
 " File-specific key mappings
 " + Eval line or visual selection
 au FileType clojure map [e :Eval<CR>
@@ -195,6 +185,8 @@ require('telescope').setup {
 require'lspconfig'.sorbet.setup{}
 require'lspconfig'.syntax_tree.setup{}
 -- require'lspconfig'.ruby_lsp.setup{}
+
+require("mason").setup()
 
 -- autoformat on demand and before save
 nmap("<Leader>f", ":lua vim.lsp.buf.format({ async = false })<CR>")
