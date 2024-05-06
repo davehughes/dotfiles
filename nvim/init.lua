@@ -19,8 +19,6 @@ require("lazy").setup({
   "jremmen/vim-ripgrep",
   "tomtom/tcomment_vim",
   "easymotion/vim-easymotion",
-  "tpope/vim-dadbod",
-  "madox2/vim-ai",
   "majutsushi/tagbar",
   "honza/vim-snippets",
   "vim-scripts/spacehi.vim",
@@ -30,6 +28,7 @@ require("lazy").setup({
   { "nvim-telescope/telescope.nvim", dependencies = "nvim-lua/plenary.nvim", "nvim-telescope/telescope-fzf-native.nvim" },
   "vim-scripts/sudo.vim",
   "janko/vim-test",
+  "kylechui/nvim-surround",
 
   -- git --
   "tpope/vim-fugitive",
@@ -83,6 +82,10 @@ require("lazy").setup({
   "vim-scripts/ScrollColors",
   "morhetz/gruvbox",
   "altercation/vim-colors-solarized",
+
+  -- interfaces to external systems --
+  "madox2/vim-ai",
+  "tpope/vim-dadbod",
 }, {})
 
 -- Set filetype based on file extension
@@ -187,6 +190,7 @@ require'lspconfig'.syntax_tree.setup{}
 -- require'lspconfig'.ruby_lsp.setup{}
 
 require("mason").setup()
+require("nvim-surround").setup()
 
 -- autoformat on demand and before save
 nmap("<Leader>f", ":lua vim.lsp.buf.format({ async = false })<CR>")

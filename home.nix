@@ -63,9 +63,13 @@ in
     graphviz
     btop
 
-    skhd
-    yabai
+    # Due to the particulars of how yabai's scripting addition integrates with the system, this setup
+    # needs frequent tweaking for new versions. Primarily, an updated sudoers entry needs to be created
+    # for each new binary according to this page:
+    # https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
+    (pkgs.callPackage ./yabai.nix { })
     karabiner-elements
+    skhd
 
     sqlite
     duckdb
