@@ -86,6 +86,8 @@ require("lazy").setup({
   -- interfaces to external systems --
   "madox2/vim-ai",
   "tpope/vim-dadbod",
+  "dermusikman/sonicpi.vim",
+  "github/copilot.vim",
 }, {})
 
 -- Set filetype based on file extension
@@ -149,6 +151,8 @@ end
 
 nmap("<C-o>", ":Telescope buffers<CR>")
 nmap("<C-p>", ":Telescope git_files<CR>")
+nmap("<C-i>", ":Telescope live_grep<CR>")
+nmap("<C-c>", ":Telescope aichats<CR>")
 nmap("<C-f>", ":Rg<CR>")
 nmap("<C-h>", ":bp<CR>")
 nmap("<C-l>", ":bn<CR>")
@@ -156,6 +160,9 @@ nmap("<C-j>", ":wincmd w<CR>")
 nmap("<C-k>", ":wincmd W<CR>")
 nmap("<Leader>gh", "V :'<,'>GBrowse<CR>")
 vmap("<Leader>gh", ":'<,'>GBrowse<CR>")
+nmap("<Leader>e", ":luafile %<CR>")
+-- TODO: figure out how to eval the visual selection
+--vmap("<Leader>e", ":luafile<CR>")
 
 -- comment toggle
 nmap("<Leader>\\\\", "gcc")
@@ -210,3 +217,4 @@ vim.g.vim_ai_chat = {
     temperature = 0.2,
   },
 }
+nmap("<Leader>c", ":AIChat<CR>")

@@ -38,12 +38,8 @@ in
   # https://github.com/NixOS/nix/issues/3616#issuecomment-903869569
   home.packages = with pkgs; [
     bash
-    # babashka
-    # TODO: take your pick: vim is -python3, vim-full has +python3 but breaks copy-paste
-    # vim-full
-    vim
+    babashka
     neovim
-
     cmake
 
     fasd
@@ -62,6 +58,9 @@ in
     rlwrap
     graphviz
     btop
+    gnused
+    curl
+    wget
 
     # Due to the particulars of how yabai's scripting addition integrates with the system, this setup
     # needs frequent tweaking for new versions. Primarily, an updated sudoers entry needs to be created
@@ -83,10 +82,12 @@ in
     docker-compose
 
     clojure
+    leiningen
     racket
     ruby
     rustup
     nodejs
+    sbt
     coursier
     scala
     scalafmt
@@ -128,9 +129,8 @@ in
     VIRTUAL_ENV_DISABLE_PROMPT = "true";
   };
 
+  # TODO: add any path entries
   home.sessionPath = [
-    # python-tools bin directory
-    "$HOME/.local/python-tools/bin"
   ];
 
   # Let Home Manager install and manage itself.
@@ -386,7 +386,6 @@ in
     };
   };
 
-  home.file.".vimrc".source = ./vimrc;
   home.sessionVariables.EDITOR = "nvim";
 
   programs.fzf = {
@@ -436,6 +435,10 @@ in
 
     gvm use go1.19 >> /dev/null
     gvm pkgset use global >> /dev/null
+  '';
+
+  home.file.".config/zsh/scripts/scala.zsh".text = ''
+    path-append "''${HOME}/Library/Application Support/Coursier/bin"
   '';
 
   # Desktop automation
