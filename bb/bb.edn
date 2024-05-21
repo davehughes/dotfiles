@@ -1,0 +1,6 @@
+{:paths [""]
+ :tasks {
+    default (prn "Hello, World!")
+    findenv hello/venv-test
+  }
+ }
