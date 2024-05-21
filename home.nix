@@ -50,17 +50,18 @@ in
     jet
     tree
     ctags
-    asdf-vm
     gnupg
-    mitmproxy
     pwgen
-    oath-toolkit
     rlwrap
     graphviz
-    btop
     gnused
     curl
     wget
+
+    mitmproxy
+    oath-toolkit
+    btop
+    ncdu
 
     # Due to the particulars of how yabai's scripting addition integrates with the system, this setup
     # needs frequent tweaking for new versions. Primarily, an updated sudoers entry needs to be created
@@ -77,10 +78,6 @@ in
     iredis
     # snowsql # TODO: 'unfree' package, need to figure out how to set this up
 
-    awscli2
-    docker
-    docker-compose
-
     clojure
     leiningen
     racket
@@ -92,6 +89,7 @@ in
     scala
     scalafmt
     ammonite
+    luarocks
 
     # browse options at https://www.nerdfonts.com/font-downloads
     (nerdfonts.override {
@@ -102,10 +100,13 @@ in
       "SourceCodePro"
       ]; })
 
-    (pkgs.python3.withPackages (p: with p; [dave-cli ipython ipdb]))
+    (pkgs.python3.withPackages (p: with p; [dave-cli ipython ipdb pip debugpy]))
 
+    awscli2
+    docker
+    docker-compose
+    graphite-cli
     obsidian
-
     sl
     cowsay
 
@@ -242,9 +243,6 @@ in
 
       # set up fasd
       eval "$(fasd --init auto zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zshwcomp-install)"
-
-      . "$HOME/.nix-profile/share/asdf-vm/asdf.sh"
-      . "$HOME/.nix-profile/share/asdf-vm/completions/_asdf"
 
       fpath=(~/.config/zsh/functions "$fpath[@]")
       autoload -Uz \
@@ -506,6 +504,5 @@ in
 
   nixpkgs.config = {
     allowUnfree = true;
-
   };
 }
