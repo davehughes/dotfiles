@@ -26,14 +26,16 @@ local lazy_plugins = {
   "nvim-lua/plenary.nvim",
   {
     "nvim-telescope/telescope-fzf-native.nvim",
-    build = "make"
+    build = "make",
   },
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = "nvim-lua/plenary.nvim",
-    "nvim-telescope/telescope-fzf-native.nvim"
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope-fzf-native.nvim",
+    },
   },
-  -- { "ThePrimeagen/harpoon", dependencies = "nvim-lua/plenary.nvim" },
+  "nvim-telescope/telescope-ui-select.nvim",
   "vim-scripts/sudo.vim",
   "janko/vim-test",
   "kylechui/nvim-surround",
@@ -47,27 +49,28 @@ local lazy_plugins = {
   "vim-ruby/vim-ruby",
   {
     "fatih/vim-go",
-    ft = "go"
+    ft = "go",
   },
   {
     "udalov/kotlin-vim",
-    ft = "kotlin"
+    ft = "kotlin",
   },
   "honza/dockerfile.vim",
   "leafgarland/typescript-vim",
   {
+    -- see more elaborate setup here: https://github.com/scalameta/nvim-metals/discussions/39
     "scalameta/nvim-metals",
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
     ft = { "scala", "sbt", "java" },
     opts = function()
-      local metals_config = require("metals").bare_config()
-      metals_config.on_attach = function(client, bufnr)
-        -- your on_attach function
+      local config = require("metals").bare_config()
+      config.on_attach = function(client, _bufnr)
+        require("metals").setup_dap()
+        -- TODO: set key mappings
       end
-
-      return metals_config
+      return config
     end,
     config = function(self, metals_config)
       local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
@@ -78,7 +81,7 @@ local lazy_plugins = {
         end,
         group = nvim_metals_group,
       })
-    end
+    end,
   },
   "Olical/conjure",
 
@@ -100,34 +103,59 @@ local lazy_plugins = {
     end,
   },
 
+  -- completion and snippets
+  {
+    "hrsh7th/nvim-cmp",
+    dependencies = "onsails/lspkind.nvim"
+  },
+  "hrsh7th/cmp-nvim-lsp",
+  "hrsh7th/cmp-buffer",
+  "hrsh7th/cmp-path",
+  "kristijanhusak/vim-dadbod-completion",
+  "zbirenbaum/copilot.lua",
+  {
+    "zbirenbaum/copilot-cmp",
+    dependencies = "zbirenbaum/copilot.lua"
+  },
+  {
+    "saadparwaiz1/cmp_luasnip",
+    dependencies = "L3MON4D3/LuaSnip"
+  },
+
   -- debugging
   "mfussenegger/nvim-dap",
   "jay-babu/mason-nvim-dap.nvim",
   "nvim-neotest/nvim-nio",
   {
     "rcarriga/nvim-dap-ui",
-    dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" }
+    dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
   },
   "jbyuki/one-small-step-for-vimkind",
 
-  -- appearance --
-  "vim-scripts/Colour-Sampler-Pack",
-  "vim-scripts/ScrollColors",
+  -- colorschemes
+  -- Mostly found on vimcolorschemes.com. `:Telescope colorscheme` to kick the tires.
   "morhetz/gruvbox",
-  "altercation/vim-colors-solarized",
+  "shaunsingh/solarized.nvim",
+  "shaunsingh/nord.nvim",
+  "folke/tokyonight.nvim",
+  "rose-pine/neovim",
+  "sainnhe/everforest",
+  "sainnhe/edge",
+  "sainnhe/sonokai",
+  "sainnhe/gruvbox-material",
+  "maxmx03/fluoromachine.nvim",
 
   -- interfaces to external systems --
   "madox2/vim-ai",
   "tpope/vim-dadbod",
   "dermusikman/sonicpi.vim",
-  "github/copilot.vim",
   {
     "vhyrro/luarocks.nvim",
     priority = 1000,
     config = true,
     opts = {
-      rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" }
-    }
+      rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" },
+    },
   },
   {
     "rest-nvim/rest.nvim",
@@ -136,14 +164,13 @@ local lazy_plugins = {
     config = function()
       require("rest-nvim").setup()
     end,
-  }
+  },
 }
 
+-- Lazy doesn't support hot reloading, so we need to check if it's already been loaded
 if vim.g.lazy_loaded == nil then
   require("lazy").setup(lazy_plugins, {})
   vim.g.lazy_loaded = true
-  -- else
-  --   print("Lazy.nvim setup was already run and hot reloading is not supported; skipping.")
 end
 
 -- Set filetype based on file extension for extensions that are not recognized by default
@@ -173,9 +200,6 @@ vim.opt.softtabstop = 2
 vim.opt.autoindent = true
 vim.opt.hlsearch = true
 vim.opt.guicursor = ""
---vim.opt.spell = true
---vim.opt.backupdir=~/.vim/sessions//
---vim.opt.directory=~/.vim/sessions//
 vim.opt.tags = ".tags,tags,env/lib/tags,env/src/tags"
 vim.opt.clipboard = "unnamed"
 -- vim.opt.wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
@@ -189,11 +213,11 @@ au FileType clojure map [r :Eval (use :reload-all (symbol (str *ns*)))<CR>
 ]])
 
 -- appearance
-vim.opt.background = "dark"
-vim.cmd("colorscheme gruvbox")
--- Use :COLORSCROLL to try out new color schemes
+vim.opt.termguicolors = true
+vim.cmd([[ colorscheme everforest ]])
+vim.g.everforest_transparent_background = 1
 -- Transparent background
-vim.cmd("hi Normal guibg=NONE ctermbg=NONE")
+vim.api.nvim_set_hl(0, "Normal", { ctermbg = "None", bg = "None" })
 
 -- key mappings
 local function map(mode, shortcut, command)
@@ -201,11 +225,11 @@ local function map(mode, shortcut, command)
 end
 
 local function nmap(shortcut, command)
-  map('n', shortcut, command)
+  map("n", shortcut, command)
 end
 
 local function vmap(shortcut, command)
-  map('v', shortcut, command)
+  map("v", shortcut, command)
 end
 
 local nvim_lua_init_path = "${HOME}/.config/home-manager/nvim/init.lua"
@@ -228,9 +252,9 @@ nmap("<Leader>t", ":TagbarToggle<cr>")
 nmap("<Leader>T", ":Tags<cr>")
 
 -- Telescope settings
-local actions = require('telescope.actions')
+local actions = require("telescope.actions")
 
-require('telescope').setup {
+require("telescope").setup({
   defaults = {
     mappings = {
       i = {
@@ -242,14 +266,44 @@ require('telescope').setup {
         ["<C-K>"] = actions.move_selection_previous,
       },
     },
-  }
-}
+  },
+  pickers = {
+    colorscheme = {
+      enable_preview = true,
+    },
+  },
+})
+require("telescope").load_extension("fzf")
+require("telescope").load_extension("ui-select")
 
 -- Treesitter
-require('nvim-treesitter.configs').setup {
+require("nvim-treesitter.configs").setup({
   ensure_installed = {
-    'c', 'cpp', 'clojure', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vim', 'vimdoc', 'markdown', 'bash',
-    'html', 'css', 'ruby', 'scala', 'json', 'yaml', 'toml', 'dockerfile', 'terraform', 'hcl', 'java', 'kotlin',
+    "c",
+    "cpp",
+    "clojure",
+    "go",
+    "lua",
+    "python",
+    "rust",
+    "tsx",
+    "typescript",
+    "vim",
+    "vimdoc",
+    "markdown",
+    "bash",
+    "html",
+    "css",
+    "ruby",
+    "scala",
+    "json",
+    "yaml",
+    "toml",
+    "dockerfile",
+    "terraform",
+    "hcl",
+    "java",
+    "kotlin",
   },
   highlight = {
     enable = true,
@@ -263,7 +317,7 @@ require('nvim-treesitter.configs').setup {
       end
     end,
   },
-}
+})
 -- HACK: I needed to muck around to get vim help docs displaying properly, since there was a conflict
 -- with the parser in the underlying nix package. Running:
 --
@@ -274,53 +328,62 @@ require('nvim-treesitter.configs').setup {
 
 -- LSP configuration
 require("mason").setup()
-require("mason-nvim-dap").setup {
-  ensure_installed = { "python", "ruby", }
-}
-require("mason-null-ls").setup {
+require("mason-nvim-dap").setup({
+  ensure_installed = { "python", "ruby" },
+})
+require("mason-null-ls").setup({
   ensure_installed = { "jq" },
   handlers = {},
-}
-require("mason-lspconfig").setup {
-  ensure_installed = { "lua_ls", "ruff", "ruff_lsp", "pyright", "ruby_lsp" }
-}
+})
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    "lua_ls",
+    "ruff",
+    "ruff_lsp",
+    "pyright",
+    "ruby_lsp",
+    "clojure_lsp",
+  },
+})
 
-require("lspconfig").lua_ls.setup {
+local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
+require("lspconfig").lua_ls.setup({
   on_init = function(client)
     local path = client.workspace_folders[1].name
-    if vim.loop.fs_stat(path .. '/.luarc.json') or vim.loop.fs_stat(path .. '/.luarc.jsonc') then
+    if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
       return
     end
 
-    client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+    client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
       runtime = {
         -- Tell the language server which version of Lua you're using
         -- (most likely LuaJIT in the case of Neovim)
-        version = 'LuaJIT'
+        version = "LuaJIT",
       },
       -- Make the server aware of Neovim runtime files
       workspace = {
         checkThirdParty = false,
         library = {
-          vim.env.VIMRUNTIME
+          vim.env.VIMRUNTIME,
           -- Depending on the usage, you might want to add additional paths here.
           -- "${3rd}/luv/library"
           -- "${3rd}/busted/library",
-        }
+        },
         -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
         -- library = vim.api.nvim_get_runtime_file("", true)
-      }
+      },
     })
   end,
   settings = {
     Lua = {
       diagnostics = {
-        globals = { "vim" }
+        globals = { "vim" },
       },
     },
-  }
-}
-require("lspconfig").ruff_lsp.setup {
+  },
+  capabilities = lsp_capabilities,
+})
+require("lspconfig").ruff_lsp.setup({
   on_attach = function(client, _bufnr)
     if client.name == "ruff_lsp" then
       -- example: conditionally disable LSP features
@@ -335,13 +398,14 @@ require("lspconfig").ruff_lsp.setup {
       --     on_save = true
       --   }
       -- }
-    }
-  }
-}
-require("lspconfig").pyright.setup {
+    },
+  },
+  capabilities = lsp_capabilities,
+})
+require("lspconfig").pyright.setup({
   settings = {
     pyright = {
-      disableOrganizeImports = false
+      disableOrganizeImports = false,
     },
     -- python = {
     --   -- analysis = {
@@ -349,11 +413,25 @@ require("lspconfig").pyright.setup {
     --   --   ignore = { '*' },
     --   -- },
     -- },
-  }
-}
-require("lspconfig").sorbet.setup {}
-require("lspconfig").syntax_tree.setup {}
-require("lspconfig").ruby_lsp.setup {}
+  },
+  capabilities = lsp_capabilities,
+})
+
+require("lspconfig").sorbet.setup({
+  capabilities = lsp_capabilities,
+})
+
+require("lspconfig").syntax_tree.setup({
+  capabilities = lsp_capabilities,
+})
+
+require("lspconfig").ruby_lsp.setup({
+  capabilities = lsp_capabilities,
+})
+
+require("lspconfig").clojure_lsp.setup({
+  capabilities = lsp_capabilities,
+})
 
 -- DAP configuration
 local dap = require("dap")
@@ -372,9 +450,9 @@ local function show_dap_filetype_info()
 end
 nmap("<Leader>d?", show_dap_filetype_info)
 
-local dapWinSettingsGroup = vim.api.nvim_create_augroup('DAP window settings', { clear = true })
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'dap-float',
+local dapWinSettingsGroup = vim.api.nvim_create_augroup("DAP window settings", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "dap-float",
   callback = function()
     -- close the floating window
     nmap("<Leader>dq", ":close!<CR>")
@@ -384,23 +462,29 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 local globalHighlightsNamespace = 0
-vim.api.nvim_set_hl(globalHighlightsNamespace, 'DapBreakpoint', { ctermbg = 0, fg = '#993939', bg = '#31353f' })
-vim.api.nvim_set_hl(globalHighlightsNamespace, 'DapLogPoint', { ctermbg = 0, fg = '#61afef', bg = '#31353f' })
-vim.api.nvim_set_hl(globalHighlightsNamespace, 'DapStopped', { ctermbg = 0, fg = '#98c379', bg = '#31353f' })
+vim.api.nvim_set_hl(globalHighlightsNamespace, "DapBreakpoint", { ctermbg = 0, fg = "#993939", bg = "#31353f" })
+vim.api.nvim_set_hl(globalHighlightsNamespace, "DapLogPoint", { ctermbg = 0, fg = "#61afef", bg = "#31353f" })
+vim.api.nvim_set_hl(globalHighlightsNamespace, "DapStopped", { ctermbg = 0, fg = "#98c379", bg = "#31353f" })
 
-vim.fn.sign_define('DapBreakpoint', {
-  text = '',
-  texthl = 'DapBreakpoint',
-  linehl = 'DapBreakpoint',
-  numhl =
-  'DapBreakpoint'
+vim.fn.sign_define("DapBreakpoint", {
+  text = "",
+  texthl = "DapBreakpoint",
+  linehl = "DapBreakpoint",
+  numhl = "DapBreakpoint",
 })
-vim.fn.sign_define('DapBreakpointCondition',
-  { text = 'ﳁ', texthl = 'DapBreakpoint', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-vim.fn.sign_define('DapBreakpointRejected',
-  { text = '', texthl = 'DapBreakpoint', linehl = 'DapBreakpoint', numhl = 'DapBreakpoint' })
-vim.fn.sign_define('DapLogPoint', { text = '', texthl = 'DapLogPoint', linehl = 'DapLogPoint', numhl = 'DapLogPoint' })
-vim.fn.sign_define('DapStopped', { text = '', texthl = 'DapStopped', linehl = 'DapStopped', numhl = 'DapStopped' })
+vim.fn.sign_define(
+  "DapBreakpointCondition",
+  { text = "ﳁ", texthl = "DapBreakpoint", linehl = "DapBreakpoint", numhl = "DapBreakpoint" }
+)
+vim.fn.sign_define(
+  "DapBreakpointRejected",
+  { text = "", texthl = "DapBreakpoint", linehl = "DapBreakpoint", numhl = "DapBreakpoint" }
+)
+vim.fn.sign_define(
+  "DapLogPoint",
+  { text = "", texthl = "DapLogPoint", linehl = "DapLogPoint", numhl = "DapLogPoint" }
+)
+vim.fn.sign_define("DapStopped", { text = "", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" })
 
 dap.listeners.before.attach["local.dap.repl"] = function()
   require("dap.repl").open()
@@ -431,7 +515,6 @@ end
 --   dapui.close()
 -- end
 
-
 dap.adapters.python = {
   type = "executable",
   -- TODO: control this with a dynamic nvim setting
@@ -455,22 +538,22 @@ dap.configurations.python = {
   },
 }
 
-dap.adapters.nlua = function(callback, config)
-  callback({ type = 'server', host = config.host or "127.0.0.1", port = config.port or 8086 })
+dap.adapters.lua = function(callback, config)
+  callback({ type = "server", host = config.host or "127.0.0.1", port = config.port or 8086 })
 end
 dap.configurations.lua = {
   {
-    type = 'nlua',
-    request = 'attach',
+    type = "lua",
+    request = "attach",
     name = "Attach to running Neovim instance",
-  }
+  },
 }
 
 require("nvim-surround").setup()
 
-local luaFtSettingsGroup = vim.api.nvim_create_augroup('Lua settings', { clear = true })
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'lua',
+local luaFtSettingsGroup = vim.api.nvim_create_augroup("Lua settings", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "lua",
   callback = function()
     -- eval the current buffer
     nmap("<Leader>e", ":luafile %<CR>")
@@ -492,11 +575,94 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   -- pattern = { "*.rb" },
   callback = function(ev)
     vim.lsp.buf.format({ async = false })
-  end
+  end,
 })
 
+-- Completion
+local cmp = require("cmp")
+local luasnip = require("luasnip")
+
+local has_words_before = function()
+  unpack = unpack or table.unpack
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+cmp.setup({
+  sources = {
+    { name = "copilot" },
+    { name = "path" },
+    { name = "buffer" },
+    { name = "nvim_lsp" },
+    { name = "luasnip" },
+    { name = "vim-dadbod-completion", keyword_length = 2 },
+  },
+  mapping = cmp.mapping.preset.insert({
+    ["<C-k>"] = cmp.mapping.select_prev_item(),
+    ["<C-j>"] = cmp.mapping.select_next_item(),
+    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+    ["<CR>"] = cmp.mapping.confirm({ select = false }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        if #cmp.get_entries() == 1 then
+          cmp.confirm({ select = true })
+        else
+          cmp.select_next_item()
+        end
+      elseif luasnip.locally_jumpable(1) then
+        luasnip.jump(1)
+      elseif has_words_before() then
+        cmp.complete()
+        if #cmp.get_entries() == 1 then
+          cmp.confirm({ select = true })
+        end
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  }),
+  window = {
+    completion = {
+      winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
+      col_offset = -3,
+      side_padding = 0,
+    },
+  },
+  formatting = {
+    fields = { "kind", "abbr", "menu" },
+    format = function(entry, vim_item)
+      local cmp_format = require("lspkind").cmp_format({
+        mode = "symbol",
+        maxwidth = 80,
+        symbol_map = {
+          Copilot = "",
+        },
+      })
+      local kind = cmp_format(entry, vim_item)
+      local strings = vim.split(kind.kind, "%s", { trimempty = true })
+      kind.kind = " " .. (strings[1] or "") .. " "
+      kind.menu = "    (" .. (strings[2] or "") .. ")"
+
+      return kind
+    end,
+  },
+  snippet = {
+    expand = function(args)
+      require("luasnip").lsp_expand(args.body)
+    end,
+  },
+})
+
+-- Copilot
+require("copilot").setup({
+  -- disable suggestion and panel modules so they don't conflict with copilot-cmp completions
+  suggestion = { enabled = false },
+  panel = { enabled = false },
+})
+require("copilot_cmp").setup()
+
 -- AI setup
-vim.g.vim_ai_token_file_path = '~/.config/openai.token'
+vim.g.vim_ai_token_file_path = "~/.config/openai.token"
 vim.g.vim_ai_chat = {
   options = {
     model = "gpt-4",
@@ -504,3 +670,46 @@ vim.g.vim_ai_chat = {
   },
 }
 nmap("<Leader>c", ":AIChat<CR>")
+
+-- Highlights
+-- Customization for Pmenu (used by nvim-cmp)
+vim.api.nvim_set_hl(0, "PmenuSel", { bg = "#282C34", fg = "NONE" })
+vim.api.nvim_set_hl(0, "Pmenu", { fg = "#C5CDD9", bg = "#22252A" })
+
+vim.api.nvim_set_hl(0, "CmpItemAbbrDeprecated", { fg = "#7E8294", bg = "NONE", strikethrough = true })
+vim.api.nvim_set_hl(0, "CmpItemAbbrMatch", { fg = "#82AAFF", bg = "NONE", bold = true })
+vim.api.nvim_set_hl(0, "CmpItemAbbrMatchFuzzy", { fg = "#82AAFF", bg = "NONE", bold = true })
+vim.api.nvim_set_hl(0, "CmpItemMenu", { fg = "#C792EA", bg = "NONE", italic = true })
+
+vim.api.nvim_set_hl(0, "CmpItemKindField", { fg = "#EED8DA", bg = "#B5585F" })
+vim.api.nvim_set_hl(0, "CmpItemKindProperty", { fg = "#EED8DA", bg = "#B5585F" })
+vim.api.nvim_set_hl(0, "CmpItemKindEvent", { fg = "#EED8DA", bg = "#B5585F" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindText", { fg = "#C3E88D", bg = "#9FBD73" })
+vim.api.nvim_set_hl(0, "CmpItemKindEnum", { fg = "#C3E88D", bg = "#9FBD73" })
+vim.api.nvim_set_hl(0, "CmpItemKindKeyword", { fg = "#C3E88D", bg = "#9FBD73" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindConstant", { fg = "#FFE082", bg = "#D4BB6C" })
+vim.api.nvim_set_hl(0, "CmpItemKindConstructor", { fg = "#FFE082", bg = "#D4BB6C" })
+vim.api.nvim_set_hl(0, "CmpItemKindReference", { fg = "#FFE082", bg = "#D4BB6C" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindFunction", { fg = "#EADFF0", bg = "#A377BF" })
+vim.api.nvim_set_hl(0, "CmpItemKindStruct", { fg = "#EADFF0", bg = "#A377BF" })
+vim.api.nvim_set_hl(0, "CmpItemKindClass", { fg = "#EADFF0", bg = "#A377BF" })
+vim.api.nvim_set_hl(0, "CmpItemKindModule", { fg = "#EADFF0", bg = "#A377BF" })
+vim.api.nvim_set_hl(0, "CmpItemKindOperator", { fg = "#EADFF0", bg = "#A377BF" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindVariable", { fg = "#C5CDD9", bg = "#7E8294" })
+vim.api.nvim_set_hl(0, "CmpItemKindFile", { fg = "#C5CDD9", bg = "#7E8294" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindUnit", { fg = "#F5EBD9", bg = "#D4A959" })
+vim.api.nvim_set_hl(0, "CmpItemKindSnippet", { fg = "#F5EBD9", bg = "#D4A959" })
+vim.api.nvim_set_hl(0, "CmpItemKindFolder", { fg = "#F5EBD9", bg = "#D4A959" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindMethod", { fg = "#DDE5F5", bg = "#6C8ED4" })
+vim.api.nvim_set_hl(0, "CmpItemKindValue", { fg = "#DDE5F5", bg = "#6C8ED4" })
+vim.api.nvim_set_hl(0, "CmpItemKindEnumMember", { fg = "#DDE5F5", bg = "#6C8ED4" })
+
+vim.api.nvim_set_hl(0, "CmpItemKindInterface", { fg = "#D8EEEB", bg = "#58B5A8" })
+vim.api.nvim_set_hl(0, "CmpItemKindColor", { fg = "#D8EEEB", bg = "#58B5A8" })
+vim.api.nvim_set_hl(0, "CmpItemKindTypeParameter", { fg = "#D8EEEB", bg = "#58B5A8" })

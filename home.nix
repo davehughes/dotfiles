@@ -90,6 +90,7 @@ in
     scalafmt
     ammonite
     luarocks
+    jdk20
 
     # browse options at https://www.nerdfonts.com/font-downloads
     (nerdfonts.override {
@@ -191,8 +192,7 @@ in
 
       set-window-option -g automatic-rename off
       set -s set-clipboard on
-      set -ga terminal-overrides ",*256col*:Tc"
-      set -ga terminal-overrides "*:Ss=\E[%p1%d q:Se\E[ q"
+      set -as terminal-overrides ',xterm*:Smul=\E[4m'
       set-environment -g COLORTERM "truecolor"
 
       # get rid of annoying lag when pressing Esc in vims
@@ -433,10 +433,6 @@ in
 
     gvm use go1.19 >> /dev/null
     gvm pkgset use global >> /dev/null
-  '';
-
-  home.file.".config/zsh/scripts/scala.zsh".text = ''
-    path-append "''${HOME}/Library/Application Support/Coursier/bin"
   '';
 
   # Desktop automation
