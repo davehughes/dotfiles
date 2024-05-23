@@ -20,7 +20,7 @@ local lazy_plugins = {
   "tomtom/tcomment_vim",
   "easymotion/vim-easymotion",
   "majutsushi/tagbar",
-  "honza/vim-snippets",
+  "chentoast/marks.nvim",
   "vim-scripts/spacehi.vim",
   "nvim-treesitter/nvim-treesitter",
   "nvim-lua/plenary.nvim",
@@ -115,11 +115,19 @@ local lazy_plugins = {
   "zbirenbaum/copilot.lua",
   {
     "zbirenbaum/copilot-cmp",
-    dependencies = "zbirenbaum/copilot.lua"
+    dependencies = "zbirenbaum/copilot.lua",
   },
   {
     "saadparwaiz1/cmp_luasnip",
-    dependencies = "L3MON4D3/LuaSnip"
+    dependencies = "L3MON4D3/LuaSnip",
+  },
+  {
+    "benfowler/telescope-luasnip.nvim",
+    dependencies = "L3MON4D3/LuaSnip",
+  },
+  {
+    "L3MON4D3/LuaSnip",
+    dependencies = "rafamadriz/friendly-snippets",
   },
 
   -- debugging
@@ -204,13 +212,6 @@ vim.opt.tags = ".tags,tags,env/lib/tags,env/src/tags"
 vim.opt.clipboard = "unnamed"
 -- vim.opt.wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
 vim.g.mapleader = "\\"
-vim.cmd([[
-" File-specific key mappings
-" + Eval line or visual selection
-au FileType clojure map [e :Eval<CR>
-" + Reload current namespace
-au FileType clojure map [r :Eval (use :reload-all (symbol (str *ns*)))<CR>
-]])
 
 -- appearance
 vim.opt.termguicolors = true
@@ -220,16 +221,16 @@ vim.g.everforest_transparent_background = 1
 vim.api.nvim_set_hl(0, "Normal", { ctermbg = "None", bg = "None" })
 
 -- key mappings
-local function map(mode, shortcut, command)
+local function keymap(mode, shortcut, command)
   vim.keymap.set(mode, shortcut, command, { noremap = true, silent = true })
 end
 
 local function nmap(shortcut, command)
-  map("n", shortcut, command)
+  keymap("n", shortcut, command)
 end
 
 local function vmap(shortcut, command)
-  map("v", shortcut, command)
+  keymap("v", shortcut, command)
 end
 
 local nvim_lua_init_path = "${HOME}/.config/home-manager/nvim/init.lua"
@@ -275,6 +276,7 @@ require("telescope").setup({
 })
 require("telescope").load_extension("fzf")
 require("telescope").load_extension("ui-select")
+require("telescope").load_extension("luasnip")
 
 -- Treesitter
 require("nvim-treesitter.configs").setup({
@@ -539,7 +541,11 @@ dap.configurations.python = {
 }
 
 dap.adapters.lua = function(callback, config)
-  callback({ type = "server", host = config.host or "127.0.0.1", port = config.port or 8086 })
+  callback({
+    type = "server",
+    host = config.host or "127.0.0.1",
+    port = config.port or 8086,
+  })
 end
 dap.configurations.lua = {
   {
@@ -550,6 +556,7 @@ dap.configurations.lua = {
 }
 
 require("nvim-surround").setup()
+require("marks").setup()
 
 local luaFtSettingsGroup = vim.api.nvim_create_augroup("Lua settings", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
@@ -568,6 +575,19 @@ vim.api.nvim_create_autocmd("FileType", {
     nmap("<Leader>de", ":lua require('osv').run_this()<CR>")
   end,
   group = luaFtSettingsGroup,
+})
+
+local clojureFtSettingsGroup = vim.api.nvim_create_augroup("Clojure settings", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "clojure",
+  callback = function()
+    -- eval the current buffer
+    nmap("[e", ":Eval<CR>")
+
+    -- reload the current namespace
+    nmap("[r", ":Eval (use :reload-all (symbol (str *ns*)))<CR>")
+  end,
+  group = clojureFtSettingsGroup,
 })
 
 -- autoformat via lsp on save
@@ -600,26 +620,26 @@ cmp.setup({
   mapping = cmp.mapping.preset.insert({
     ["<C-k>"] = cmp.mapping.select_prev_item(),
     ["<C-j>"] = cmp.mapping.select_next_item(),
-    ["<S-Tab>"] = cmp.mapping.select_prev_item(),
-    ["<CR>"] = cmp.mapping.confirm({ select = false }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        if #cmp.get_entries() == 1 then
-          cmp.confirm({ select = true })
-        else
-          cmp.select_next_item()
-        end
-      elseif luasnip.locally_jumpable(1) then
-        luasnip.jump(1)
-      elseif has_words_before() then
-        cmp.complete()
-        if #cmp.get_entries() == 1 then
-          cmp.confirm({ select = true })
-        end
-      else
-        fallback()
-      end
-    end, { "i", "s" }),
+    ["<CR>"] = cmp.mapping.confirm({ select = true }),
+    -- ["<S-Tab>"] = cmp.mapping.select_prev_item(),
+    -- ["<Tab>"] = cmp.mapping(function(fallback)
+    --   if cmp.visible() then
+    --     if #cmp.get_entries() == 1 then
+    --       cmp.confirm({ select = true })
+    --     else
+    --       cmp.select_next_item()
+    --     end
+    --   elseif luasnip.locally_jumpable(1) then
+    --     luasnip.jump(1)
+    --   elseif has_words_before() then
+    --     cmp.complete()
+    --     if #cmp.get_entries() == 1 then
+    --       cmp.confirm({ select = true })
+    --     end
+    --   else
+    --     fallback()
+    --   end
+    -- end, { "i", "s" }),
   }),
   window = {
     completion = {
@@ -653,13 +673,23 @@ cmp.setup({
   },
 })
 
+-- lazy load friendly-snippets
+require("luasnip.loaders.from_vscode").lazy_load()
+
+-- map keys for snippet substitution navigation
+keymap({ "i", "s" }, "<C-l>", function() luasnip.jump(1) end)
+keymap({ "i", "s" }, "<C-h>", function() luasnip.jump(-1) end)
+
 -- Copilot
 require("copilot").setup({
-  -- disable suggestion and panel modules so they don't conflict with copilot-cmp completions
-  suggestion = { enabled = false },
+  -- optionally disable suggestion and panel modules so they don't conflict with completions
   panel = { enabled = false },
+  suggestion = {
+    enabled = true,
+    auto_trigger = false,
+  },
 })
-require("copilot_cmp").setup()
+-- require("copilot_cmp").setup()
 
 -- AI setup
 vim.g.vim_ai_token_file_path = "~/.config/openai.token"
