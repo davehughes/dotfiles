@@ -1,19 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
-  dave-cli = with pkgs.python3Packages; buildPythonPackage {
-    name = "dave-cli";
-    version = "v0.1";
-    format = "pyproject";
-    src = pkgs.fetchFromGitHub {
-      owner = "davehughes";
-      repo = "dave-cli";
-      rev = "v0.1";
-      sha256 = "UY5WT6YYfg4RD2vnL+czJEO4sIXGujK6l38H8Ti5jLo=";
-    };
-
-    propagatedBuildInputs = [ setuptools tabulate pyyaml ];
-  };
+  inherit (import ./python.nix { inherit pkgs; inherit lib; }) dave-cli autoimport;
 in
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -37,6 +25,10 @@ in
   # solution is given in this comment:
   # https://github.com/NixOS/nix/issues/3616#issuecomment-903869569
   home.packages = with pkgs; [
+    # nix-related tools
+    cachix
+    nix-prefetch
+
     bash
     babashka
     neovim
@@ -92,6 +84,10 @@ in
     luarocks
     jdk20
 
+    # linters, formatters, fixers, and other things to wrap with nvim's null-ls "LSP"
+    nixpkgs-fmt
+    selene
+
     # browse options at https://www.nerdfonts.com/font-downloads
     (nerdfonts.override {
       fonts = [
@@ -101,7 +97,15 @@ in
       "SourceCodePro"
       ]; })
 
-    (pkgs.python3.withPackages (p: with p; [dave-cli ipython ipdb pip debugpy]))
+    (pkgs.python3.withPackages (p: with p; [
+      pip
+      poetry-core
+      ipython
+      ipdb
+      debugpy
+      dave-cli 
+      autoimport
+    ]))
 
     awscli2
     docker
@@ -228,6 +232,9 @@ in
 
       ":e" = "$EDITOR";
       ":q" = "exit";
+      ":/" = "nvim +'Telescope live_grep'";
+      ":ai" = "nvim +':AIChat'";
+      vim = "nvim"; # until I can learn...
 
       pg-list = "dave pg-list";
       pg-edit = "$EDITOR ~/.pgpass";
@@ -248,7 +255,7 @@ in
       autoload -Uz \
         compinit \
         edit-interactive \
-        findenv \
+        findenv mkenv \
         kill-spotify \
         path-append path-prepend path-edit path-ls \
         palette \
