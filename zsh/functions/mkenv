@@ -1,0 +1,2 @@
+[[ -d .venv ]] || python -m venv .venv
+.venv/bin/pip install -U pip uv

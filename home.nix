@@ -92,6 +92,10 @@ in
     luarocks
     jdk20
 
+    # linters, formatters, fixers, and other things to wrap with nvim's null-ls "LSP"
+    nixpkgs-fmt
+    selene
+
     # browse options at https://www.nerdfonts.com/font-downloads
     (nerdfonts.override {
       fonts = [
@@ -101,7 +105,14 @@ in
       "SourceCodePro"
       ]; })
 
-    (pkgs.python3.withPackages (p: with p; [dave-cli ipython ipdb pip debugpy]))
+    (pkgs.python3.withPackages (p: with p; [
+      pip
+      poetry-core
+      ipython
+      ipdb
+      debugpy
+      dave-cli 
+    ]))
 
     awscli2
     docker
@@ -228,6 +239,7 @@ in
 
       ":e" = "$EDITOR";
       ":q" = "exit";
+      vim = "nvim"; # until I can learn...
 
       pg-list = "dave pg-list";
       pg-edit = "$EDITOR ~/.pgpass";
@@ -248,7 +260,7 @@ in
       autoload -Uz \
         compinit \
         edit-interactive \
-        findenv \
+        findenv mkenv \
         kill-spotify \
         path-append path-prepend path-edit path-ls \
         palette \
