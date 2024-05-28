@@ -1,11 +1,13 @@
 # recursively look in ancestor directories to $PWD for a directory called 'env'
 # with a 'bin/activate' file and try to source it
 if [ "$1" != "" ]; then; DIR=$1; else; DIR=$PWD; fi
-ACTIVATE=$DIR/env/bin/activate
+VENV_DIR_BASENAME=".venv"
+VENV_DIR=${DIR}/${VENV_DIR_BASENAME}
+ACTIVATE=${VENV_DIR}/bin/activate
 
 if [[ -f  $ACTIVATE ]]; then
     source $ACTIVATE
-    echo "Activated virtualenv: $DIR/env"
+    echo "Activated virtualenv: ${VENV_DIR}"
     return
 else
     PARENT=$(dirname $DIR)

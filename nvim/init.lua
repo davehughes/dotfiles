@@ -36,6 +36,12 @@ local lazy_plugins = {
     },
   },
   "nvim-telescope/telescope-ui-select.nvim",
+  {
+    'stevearc/oil.nvim',
+    opts = {},
+    -- Optional dependencies
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
   "vim-scripts/sudo.vim",
   "janko/vim-test",
   "kylechui/nvim-surround",
@@ -46,17 +52,21 @@ local lazy_plugins = {
   "lewis6991/gitsigns.nvim",
 
   -- language-specific --
-  "vim-ruby/vim-ruby",
+  "Olical/conjure",
+
+  -- lsp, checkers, and fixers --
+  -- "dense-analysis/ale",
+  "neovim/nvim-lspconfig",
+  "williamboman/mason.nvim",
+  "williamboman/mason-lspconfig.nvim",
+  -- note: most of these plugins require backing tools to be installed out-of-band, which I tend to do
+  -- in my home-manager config.
   {
-    "fatih/vim-go",
-    ft = "go",
+    "nvimtools/none-ls.nvim",
+    dependencies = {
+      "nvimtools/none-ls-extras.nvim",
+    }
   },
-  {
-    "udalov/kotlin-vim",
-    ft = "kotlin",
-  },
-  "honza/dockerfile.vim",
-  "leafgarland/typescript-vim",
   {
     -- see more elaborate setup here: https://github.com/scalameta/nvim-metals/discussions/39
     "scalameta/nvim-metals",
@@ -83,30 +93,11 @@ local lazy_plugins = {
       })
     end,
   },
-  "Olical/conjure",
-
-  -- lsp, checkers, and fixers --
-  -- "dense-analysis/ale",
-  "neovim/nvim-lspconfig",
-  "williamboman/mason.nvim",
-  "williamboman/mason-lspconfig.nvim",
-  "nvimtools/none-ls.nvim",
-  {
-    "jay-babu/mason-null-ls.nvim",
-    event = { "BufReadPre", "BufNewFile" },
-    dependencies = {
-      "williamboman/mason.nvim",
-      "nvimtools/none-ls.nvim",
-    },
-    config = function()
-      -- require("your.null-ls.config") -- require your null-ls config here (example below)
-    end,
-  },
 
   -- completion and snippets
   {
     "hrsh7th/nvim-cmp",
-    dependencies = "onsails/lspkind.nvim"
+    dependencies = "onsails/lspkind.nvim",
   },
   "hrsh7th/cmp-nvim-lsp",
   "hrsh7th/cmp-buffer",
@@ -156,6 +147,8 @@ local lazy_plugins = {
   -- interfaces to external systems --
   "madox2/vim-ai",
   "tpope/vim-dadbod",
+  "kristijanhusak/vim-dadbod-completion",
+  "kristijanhusak/vim-dadbod-ui",
   "dermusikman/sonicpi.vim",
   {
     "vhyrro/luarocks.nvim",
@@ -278,34 +271,44 @@ require("telescope").load_extension("fzf")
 require("telescope").load_extension("ui-select")
 require("telescope").load_extension("luasnip")
 
+-- Oil
+nmap("<Leader>.", ":Oil<CR>")
+require("oil").setup {
+  view_options = {
+    show_hidden = true,
+  }
+}
+
 -- Treesitter
 require("nvim-treesitter.configs").setup({
   ensure_installed = {
+    "bash",
     "c",
-    "cpp",
     "clojure",
+    "cpp",
+    "css",
+    "dockerfile",
     "go",
+    "hcl",
+    "html",
+    "java",
+    "json",
+    "kotlin",
     "lua",
+    "markdown",
+    "nix",
     "python",
+    "ruby",
     "rust",
+    "scala",
+    "sql",
+    "terraform",
+    "toml",
     "tsx",
     "typescript",
     "vim",
     "vimdoc",
-    "markdown",
-    "bash",
-    "html",
-    "css",
-    "ruby",
-    "scala",
-    "json",
     "yaml",
-    "toml",
-    "dockerfile",
-    "terraform",
-    "hcl",
-    "java",
-    "kotlin",
   },
   highlight = {
     enable = true,
@@ -332,10 +335,6 @@ require("nvim-treesitter.configs").setup({
 require("mason").setup()
 require("mason-nvim-dap").setup({
   ensure_installed = { "python", "ruby" },
-})
-require("mason-null-ls").setup({
-  ensure_installed = { "jq" },
-  handlers = {},
 })
 require("mason-lspconfig").setup({
   ensure_installed = {
@@ -385,6 +384,21 @@ require("lspconfig").lua_ls.setup({
   },
   capabilities = lsp_capabilities,
 })
+
+-- null-ls (or here, none-ls a compatible successor) setup
+-- Adapts a bunch of tools that aren't full-fledged LSPs to play with the LSP client.
+--
+-- NOTE: the maintainers purged a bunch of builtins that had viable alternatives. This issue discussion
+-- is the Rosetta Stone for figuring out what to move to if your beloved builtin was removed:
+-- -> https://github.com/nvimtools/none-ls.nvim/discussions/81
+local nls = require("null-ls")
+nls.setup({
+  sources = {
+    nls.builtins.diagnostics.selene,
+    require("none-ls.formatting.jq"),
+  },
+})
+
 require("lspconfig").ruff_lsp.setup({
   on_attach = function(client, _bufnr)
     if client.name == "ruff_lsp" then
@@ -590,6 +604,19 @@ vim.api.nvim_create_autocmd("FileType", {
   group = clojureFtSettingsGroup,
 })
 
+local dadbodFtSettingsGroup = vim.api.nvim_create_augroup("vim-dadbod autocmds", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "sql", "mysql", "plsql" },
+  callback = function()
+    require('cmp').setup.buffer({
+      sources = {
+        { name = 'vim-dadbod-completion' }
+      }
+    })
+  end,
+  group = dadbodFtSettingsGroup,
+})
+
 -- autoformat via lsp on save
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   -- pattern = { "*.rb" },
@@ -607,6 +634,21 @@ local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
+
+local function map_boolean_to_onoff_string(value)
+  local t = {}
+  t[true] = "on"
+  t[false] = "off"
+  return t[value]
+end
+
+-- toggle global completions
+nmap("<Leader>C", function()
+  local enabled = require("cmp.config").get().enabled
+  cmp.setup({ enabled = not enabled })
+  enabled = require("cmp.config").get().enabled
+  print("completions " .. map_boolean_to_onoff_string(enabled) .. " (global)")
+end)
 
 cmp.setup({
   sources = {
@@ -677,8 +719,12 @@ cmp.setup({
 require("luasnip.loaders.from_vscode").lazy_load()
 
 -- map keys for snippet substitution navigation
-keymap({ "i", "s" }, "<C-l>", function() luasnip.jump(1) end)
-keymap({ "i", "s" }, "<C-h>", function() luasnip.jump(-1) end)
+keymap({ "i", "s" }, "<C-l>", function()
+  luasnip.jump(1)
+end)
+keymap({ "i", "s" }, "<C-h>", function()
+  luasnip.jump(-1)
+end)
 
 -- Copilot
 require("copilot").setup({
@@ -699,7 +745,7 @@ vim.g.vim_ai_chat = {
     temperature = 0.2,
   },
 }
-nmap("<Leader>c", ":AIChat<CR>")
+nmap("<Leader>ai", ":AIChat<CR>")
 
 -- Highlights
 -- Customization for Pmenu (used by nvim-cmp)
