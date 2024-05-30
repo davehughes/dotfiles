@@ -407,7 +407,7 @@ nls.setup({
   sources = {
     nls.builtins.diagnostics.selene,
     require("none-ls.formatting.jq"),
-    require("local.null_ls.autoformat"),
+    require("local.null_ls.autoimport"),
   },
 })
 
