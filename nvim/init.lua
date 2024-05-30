@@ -112,6 +112,7 @@ local lazy_plugins = {
   "hrsh7th/cmp-nvim-lsp",
   "hrsh7th/cmp-buffer",
   "hrsh7th/cmp-path",
+  "hrsh7th/cmp-cmdline",
   "kristijanhusak/vim-dadbod-completion",
   "zbirenbaum/copilot.lua",
   {
@@ -130,6 +131,7 @@ local lazy_plugins = {
     "L3MON4D3/LuaSnip",
     dependencies = "rafamadriz/friendly-snippets",
   },
+  "PaterJason/cmp-conjure",
 
   -- debugging
   "mfussenegger/nvim-dap",
@@ -663,6 +665,7 @@ end)
 cmp.setup({
   sources = {
     { name = "copilot" },
+    { name = "conjure" },
     { name = "path" },
     { name = "buffer" },
     { name = "nvim_lsp" },
@@ -673,25 +676,6 @@ cmp.setup({
     ["<C-k>"] = cmp.mapping.select_prev_item(),
     ["<C-j>"] = cmp.mapping.select_next_item(),
     ["<CR>"] = cmp.mapping.confirm({ select = true }),
-    -- ["<S-Tab>"] = cmp.mapping.select_prev_item(),
-    -- ["<Tab>"] = cmp.mapping(function(fallback)
-    --   if cmp.visible() then
-    --     if #cmp.get_entries() == 1 then
-    --       cmp.confirm({ select = true })
-    --     else
-    --       cmp.select_next_item()
-    --     end
-    --   elseif luasnip.locally_jumpable(1) then
-    --     luasnip.jump(1)
-    --   elseif has_words_before() then
-    --     cmp.complete()
-    --     if #cmp.get_entries() == 1 then
-    --       cmp.confirm({ select = true })
-    --     end
-    --   else
-    --     fallback()
-    --   end
-    -- end, { "i", "s" }),
   }),
   window = {
     completion = {
@@ -723,6 +707,29 @@ cmp.setup({
       require("luasnip").lsp_expand(args.body)
     end,
   },
+})
+
+-- `/` cmdline setup.
+cmp.setup.cmdline('/', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
+})
+
+-- `:` cmdline setup.
+cmp.setup.cmdline(':', {
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' }
+  }, {
+    {
+      name = 'cmdline',
+      option = {
+        ignore_cmds = { 'Man', '!' }
+      }
+    }
+  })
 })
 
 -- lazy load friendly-snippets
