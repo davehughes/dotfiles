@@ -301,6 +301,7 @@ require("nvim-treesitter.configs").setup({
     "cpp",
     "css",
     "dockerfile",
+    "fennel",
     "go",
     "hcl",
     "html",
