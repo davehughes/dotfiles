@@ -183,11 +183,17 @@ in
       bind h previous-window
       bind l next-window
 
+      # n/m to move the current window left or right
+      unbind n
+      unbind m
+      bind n swap-window -d -t -1
+      bind m swap-window -d -t +1
+
       # C-hjkl pane resizing
-      bind-key C-l resize-pane -R 10
-      bind-key C-h resize-pane -L 10
-      bind-key C-k resize-pane -U 10
-      bind-key C-j resize-pane -D 10
+      bind C-l resize-pane -R 10
+      bind C-h resize-pane -L 10
+      bind C-k resize-pane -U 10
+      bind C-j resize-pane -D 10
 
       bind a setw synchronize-panes
 
