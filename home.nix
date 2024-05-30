@@ -313,6 +313,7 @@ in
     settings = {
       enable_audio_bell = false;
       background_opacity = "0.9";
+      clear_all_shortcuts = "yes";
     };
   };
 
@@ -487,10 +488,16 @@ in
 
     alt - tab : skhd -k "cmd - tab"
 
-    # Firefox unfuck
-    ctrl - t : skhd -k "cmd - t"
-    ctrl - w : skhd -k "cmd - w"
-    # ctrl - l : skhd -k "cmd - l"
+    # Make basic browser actions work similarly across platforms
+    ctrl - t [
+      "Firefox" : skhd -k "cmd - t"
+    ]
+    ctrl - w [
+      "Firefox" : skhd -k "cmd - w"
+    ]
+    ctrl - l [
+      "Firefox" : skhd -k "cmd - l"
+    ]
 
     # Experimental
     f7: dave odc-log 'f7'
