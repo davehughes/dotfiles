@@ -218,6 +218,7 @@ vim.opt.clipboard = "unnamed"
 vim.opt.signcolumn = "yes"
 -- vim.opt.wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
 vim.g.mapleader = "\\"
+vim.g.maplocalleader = ";"
 
 -- appearance
 vim.opt.termguicolors = true
@@ -305,6 +306,7 @@ require("nvim-treesitter.configs").setup({
     "go",
     "hcl",
     "html",
+    "http",
     "java",
     "json",
     "kotlin",
@@ -322,6 +324,7 @@ require("nvim-treesitter.configs").setup({
     "typescript",
     "vim",
     "vimdoc",
+    "xml",
     "yaml",
   },
   highlight = {
@@ -360,7 +363,7 @@ require("mason-lspconfig").setup({
 })
 
 local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
-require("lspconfig").lua_ls.setup({
+require("lspconfig").lua_ls.setup {
   on_init = function(client)
     local path = client.workspace_folders[1].name
     if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
@@ -395,7 +398,9 @@ require("lspconfig").lua_ls.setup({
     },
   },
   capabilities = lsp_capabilities,
-})
+}
+
+require("lspconfig").clojure_lsp.setup {}
 
 -- null-ls (or here, none-ls a compatible successor) setup
 -- Adapts a bunch of tools that aren't full-fledged LSPs to play with the LSP client.
@@ -642,12 +647,6 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 local cmp = require("cmp")
 local luasnip = require("luasnip")
 
-local has_words_before = function()
-  unpack = unpack or table.unpack
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
 local function map_boolean_to_onoff_string(value)
   local t = {}
   t[true] = "on"
@@ -710,28 +709,29 @@ cmp.setup({
   },
 })
 
--- `/` cmdline setup.
-cmp.setup.cmdline('/', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = {
-    { name = 'buffer' }
-  }
-})
-
--- `:` cmdline setup.
-cmp.setup.cmdline(':', {
-  mapping = cmp.mapping.preset.cmdline(),
-  sources = cmp.config.sources({
-    { name = 'path' }
-  }, {
-    {
-      name = 'cmdline',
-      option = {
-        ignore_cmds = { 'Man', '!' }
-      }
-    }
-  })
-})
+-- TODO: make the bindings here work so this is more useful than annoying
+-- -- `/` cmdline setup.
+-- cmp.setup.cmdline('/', {
+--   mapping = cmp.mapping.preset.cmdline(),
+--   sources = {
+--     { name = 'buffer' }
+--   }
+-- })
+--
+-- -- `:` cmdline setup.
+-- cmp.setup.cmdline(':', {
+--   mapping = cmp.mapping.preset.cmdline(),
+--   sources = cmp.config.sources({
+--     { name = 'path' }
+--   }, {
+--     {
+--       name = 'cmdline',
+--       option = {
+--         ignore_cmds = { 'Man', '!' }
+--       }
+--     }
+--   })
+-- })
 
 -- lazy load friendly-snippets
 require("luasnip.loaders.from_vscode").lazy_load()

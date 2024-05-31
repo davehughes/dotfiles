@@ -239,7 +239,7 @@ in
       ":e" = "$EDITOR";
       ":q" = "exit";
       ":/" = "nvim +'Telescope live_grep'";
-      ":ai" = "nvim +':AIChat'";
+      ":ai" = "nvim +:AIChat +:only";
       vim = "nvim"; # until I can learn...
 
       pg-list = "dave pg-list";
@@ -314,6 +314,11 @@ in
       enable_audio_bell = false;
       background_opacity = "0.9";
       clear_all_shortcuts = "yes";
+    };
+    keybindings = {
+      # Meta-C/Meta-V are preferable but don't seem to work properly here. An skhd rule should work though.
+      "ctrl+shift+c" = "copy_to_clipboard";
+      "ctrl+shift+v" = "paste_from_clipboard";
     };
   };
 
@@ -497,6 +502,17 @@ in
     ]
     ctrl - l [
       "Firefox" : skhd -k "cmd - l"
+    ]
+
+    # Map meta-c/meta-v to copy and paste in kitty
+    cmd - c [
+      "kitty" : skhd -k "ctrl + shift - c"
+      ".kitty-wrapped" : skhd -k "ctrl + shift - c"
+    ]
+
+    cmd - v [
+      "kitty" : skhd -k "ctrl + shift - v"
+      ".kitty-wrapped" : skhd -k "ctrl + shift - v"
     ]
 
     # Experimental
