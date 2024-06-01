@@ -63,6 +63,7 @@ local lazy_plugins = {
 
   -- language-specific --
   "Olical/conjure",
+  { "Olical/nfnl", filetype = "fennel" },
 
   -- lsp, checkers, and fixers --
   -- "dense-analysis/ale",
