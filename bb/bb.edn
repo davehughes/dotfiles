@@ -1,6 +1,3 @@
 {:paths [""]
- :tasks {
-    default (prn "Hello, World!")
-    findenv hello/venv-test
-  }
- }
+ :tasks {venv-find-activate-script dot.cli/venv-find-activate-script
+         venv-find dot.cli/venv-find}}
