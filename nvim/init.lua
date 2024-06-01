@@ -163,6 +163,8 @@ local lazy_plugins = {
   "kristijanhusak/vim-dadbod-ui",
   "dermusikman/sonicpi.vim",
   {
+    -- important: this requires lua 5.1 to be in the path and doesn't seem to know about nvim's copy;
+    -- I was able to get rocks installing by adding the lua5_1 package to my home-manager deps
     "vhyrro/luarocks.nvim",
     priority = 1000,
     config = true,

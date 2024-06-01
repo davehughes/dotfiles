@@ -81,6 +81,7 @@ in
     scala
     scalafmt
     ammonite
+    lua5_1
     luarocks
     jdk20
 
