@@ -170,7 +170,16 @@ local lazy_plugins = {
     priority = 1000,
     config = true,
     opts = {
-      rocks = { "lua-curl", "nvim-nio", "mimetypes", "xml2lua" },
+      rocks = {
+        "lua-curl",
+        "nvim-nio",
+        "mimetypes",
+        "xml2lua",
+        "lpeg",
+        -- note: this currently needs to be patched, since the luarocks version has a bug
+        -- that breaks require()
+        "luajson",
+      },
     },
   },
   {
@@ -250,7 +259,7 @@ nmap("<C-o>", ":Telescope buffers<CR>")
 nmap("<C-p>", ":Telescope git_files<CR>")
 nmap("<C-i>", ":Telescope live_grep<CR>")
 -- nmap("<C-c>", ":Telescope aichats<CR>")
-nmap("<C-m>", ":Telescope marks<CR>")
+-- nmap("<C-m>", ":Telescope marks<CR>")
 nmap("<C-f>", ":Rg<CR>")
 nmap("<C-h>", ":bp<CR>")
 nmap("<C-l>", ":bn<CR>")
@@ -320,6 +329,7 @@ require("nvim-treesitter.configs").setup({
     "ruby",
     "rust",
     "scala",
+    "starlark",
     "sql",
     "terraform",
     "toml",
@@ -362,11 +372,13 @@ require("mason-lspconfig").setup({
     "pylsp",
     "ruby_lsp",
     "clojure_lsp",
+    "fennel_language_server",
   },
 })
 
+local lspconfig = require 'lspconfig'
 local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
-require("lspconfig").lua_ls.setup {
+lspconfig.lua_ls.setup {
   on_init = function(client)
     local path = client.workspace_folders[1].name
     if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
@@ -403,7 +415,32 @@ require("lspconfig").lua_ls.setup {
   capabilities = lsp_capabilities,
 }
 
-require("lspconfig").clojure_lsp.setup {}
+lspconfig.clojure_lsp.setup {}
+
+require('lspconfig.configs').fennel_language_server = {
+  default_config = {
+    -- replace it with true path
+    cmd = { 'fennel-language-server' },
+    filetypes = { 'fennel' },
+    single_file_support = true,
+    -- source code resides in directory `fnl/`
+    root_dir = lspconfig.util.root_pattern("fnl", "lua"),
+    settings = {
+      fennel = {
+        workspace = {
+          -- If you are using hotpot.nvim or aniseed,
+          -- make the server aware of neovim runtime files.
+          library = vim.api.nvim_list_runtime_paths(),
+        },
+        diagnostics = {
+          globals = { 'vim' },
+        },
+      },
+    },
+  },
+}
+
+lspconfig.fennel_language_server.setup {}
 
 -- null-ls (or here, none-ls a compatible successor) setup
 -- Adapts a bunch of tools that aren't full-fledged LSPs to play with the LSP client.
@@ -412,20 +449,25 @@ require("lspconfig").clojure_lsp.setup {}
 -- is the Rosetta Stone for figuring out what to move to if your beloved builtin was removed:
 -- -> https://github.com/nvimtools/none-ls.nvim/discussions/81
 local nls = require("null-ls")
-nls.setup({
+nls.setup {
   sources = {
     nls.builtins.diagnostics.selene,
     require("none-ls.formatting.jq"),
-    require("local.null_ls.autoimport"),
+    require("local.null_ls.autoimport").with({
+      env = function(params)
+        print("loading autoimport env")
+        return { PYTHONPATH = "/Users/dave/projects/lolmax/.venv/lib/python3.10/site-packages/" }
+      end,
+    }),
   },
-})
+}
 
 -- MANUAL STEP: need to install plugins via:
 -- `:PylspInstall pyls-isort pylsp-mypy pylsp-rope python-lsp-ruff ...`
 --
 -- For configuration options, see:
 -- https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
-require("lspconfig").pylsp.setup({
+lspconfig.pylsp.setup({
   capabilities = lsp_capabilities,
   settings = {
     pylsp = {

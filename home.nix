@@ -33,6 +33,8 @@ in
     babashka
     neovim
     cmake
+    bazelisk
+    bazel-buildtools
 
     fasd
     fd
@@ -109,6 +111,7 @@ in
     ]))
 
     awscli2
+    azure-cli
     docker
     docker-compose
     graphite-cli
@@ -136,8 +139,10 @@ in
     VIRTUAL_ENV_DISABLE_PROMPT = "true";
   };
 
-  # TODO: add any path entries
+  # NOTE: changes here require a session restart via e.g. rebooting or killing the WindowServer
   home.sessionPath = [
+    "./node_modules/.bin"
+    "$HOME/.local/share/nvim/mason/bin"
   ];
 
   # Let Home Manager install and manage itself.
@@ -242,6 +247,7 @@ in
       ":/" = "nvim +'Telescope live_grep'";
       ":ai" = "nvim +:AIChat +:only";
       vim = "nvim"; # until I can learn...
+      bazel = "bazelisk";
 
       pg-list = "dave pg-list";
       pg-edit = "$EDITOR ~/.pgpass";
@@ -533,6 +539,10 @@ in
   home.file.".config/zsh/scripts/gpg.zsh".text = ''
     export GPG_TTY=''$(tty)
     gpgconf --launch gpg-agent
+  '';
+
+  home.file.".local.bazelrc".text = ''
+    build --local_ram_resources=HOST_RAM*.5 --local_cpu_resources=HOST_CPUS-1
   '';
 
   nixpkgs.config = {
