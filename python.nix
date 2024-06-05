@@ -26,7 +26,7 @@ let
       sha256 = "GHNOdAbY7ni4NXCnLW5xAsACJOCo6xySY2JHAHAe0bc=";
     };
 
-    propagatedBuildInputs = [ setuptools ];
+    propagatedBuildInputs = [ setuptools typing-extensions ];
   };
 
   autoimport = with pkgs.python3Packages; buildPythonPackage {
