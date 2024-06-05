@@ -56,6 +56,7 @@ in
     oath-toolkit
     btop
     ncdu
+    solvespace
 
     # Due to the particulars of how yabai's scripting addition integrates with the system, this setup
     # needs frequent tweaking for new versions. Primarily, an updated sudoers entry needs to be created

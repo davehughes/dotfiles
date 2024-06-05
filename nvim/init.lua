@@ -64,6 +64,10 @@ local lazy_plugins = {
   -- language-specific --
   "Olical/conjure",
   { "Olical/nfnl", filetype = "fennel" },
+  {
+    "alexander-born/bazel.nvim",
+    dependencies = { "nvim-treesitter/nvim-treesitter" },
+  },
 
   -- lsp, checkers, and fixers --
   -- "dense-analysis/ale",
@@ -115,6 +119,7 @@ local lazy_plugins = {
   "hrsh7th/cmp-path",
   "hrsh7th/cmp-cmdline",
   "kristijanhusak/vim-dadbod-completion",
+  "alexander-born/cmp-bazel",
   "zbirenbaum/copilot.lua",
   {
     "zbirenbaum/copilot-cmp",
@@ -285,6 +290,9 @@ require("telescope").setup({
         ["<C-J>"] = actions.move_selection_next,
         ["<C-K>"] = actions.move_selection_previous,
       },
+    },
+    file_ignore_patterns = {
+      ".__yobi_legacy",
     },
   },
   pickers = {
@@ -680,6 +688,23 @@ vim.api.nvim_create_autocmd("FileType", {
   group = dadbodFtSettingsGroup,
 })
 
+local bazelFtSettingsGroup = vim.api.nvim_create_augroup("Bazel settings", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "bzl",
+  callback = function()
+    print("loading bazel filetype settings")
+    -- hook up go-to-definition to use bazel.nvim
+    -- HACK: emulate tag-jump-based go-to-definition by setting a mark and a shortcut that
+    -- lets us jump back (though only one level).
+    nmap("<C-]>", function()
+      vim.cmd(":mark T")
+      vim.fn.GoToBazelDefinition()
+    end)
+    nmap("<C-t>", "'Tdm-")
+  end,
+  group = bazelFtSettingsGroup,
+})
+
 -- autoformat via lsp on save
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   -- pattern = { "*.rb" },
@@ -711,6 +736,7 @@ cmp.setup({
   sources = {
     { name = "copilot" },
     { name = "conjure" },
+    { name = "bazel" },
     { name = "path" },
     { name = "buffer" },
     { name = "nvim_lsp" },
@@ -753,6 +779,9 @@ cmp.setup({
     end,
   },
 })
+
+-- configure cmp-bazel to use bazelisk
+vim.g.bazel_cmd = "bazelisk"
 
 -- TODO: make the bindings here work so this is more useful than annoying
 -- -- `/` cmdline setup.
