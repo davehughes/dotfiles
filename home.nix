@@ -4,6 +4,10 @@ let
   inherit (import ./python.nix { inherit pkgs; inherit lib; }) dave-cli autoimport;
 in
 {
+  nixpkgs.config = {
+    allowUnfree = true;
+  };
+
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "dave";
@@ -56,7 +60,7 @@ in
     oath-toolkit
     btop
     ncdu
-    solvespace
+    # solvespace
 
     # Due to the particulars of how yabai's scripting addition integrates with the system, this setup
     # needs frequent tweaking for new versions. Primarily, an updated sudoers entry needs to be created
@@ -65,6 +69,7 @@ in
     (pkgs.callPackage ./yabai.nix { })
     karabiner-elements
     skhd
+    terminal-notifier
 
     sqlite
     duckdb
@@ -109,13 +114,19 @@ in
       debugpy
       dave-cli 
       autoimport
+      # databricks-cli
+      # databricks-sql-cli
+      # databricks-connect
     ]))
 
+    terraform
     awscli2
     azure-cli
     docker
     docker-compose
-    graphite-cli
+    # Switching to per-project node_modules install because I can't figure out how to upgrade the
+    # woefully out-of-date version home-manager is installing
+    # graphite-cli
     obsidian
     sl
     cowsay
@@ -143,6 +154,7 @@ in
   # NOTE: changes here require a session restart via e.g. rebooting or killing the WindowServer
   home.sessionPath = [
     "./node_modules/.bin"
+    "$HOME/.local/node_modules/.bin"
     "$HOME/.local/share/nvim/mason/bin"
   ];
 
@@ -246,7 +258,7 @@ in
       ":e" = "$EDITOR";
       ":q" = "exit";
       ":/" = "nvim +'Telescope live_grep'";
-      ":ai" = "nvim +:AIChat +:only";
+      ":ai" = "nvim +:AIChat +:only +:set noautoindent";
       vim = "nvim"; # until I can learn...
       bazel = "bazelisk";
 
@@ -545,8 +557,4 @@ in
   home.file.".local.bazelrc".text = ''
     build --local_ram_resources=HOST_RAM*.5 --local_cpu_resources=HOST_CPUS-1
   '';
-
-  nixpkgs.config = {
-    allowUnfree = true;
-  };
 }

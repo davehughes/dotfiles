@@ -54,7 +54,21 @@ local lazy_plugins = {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     opts = {},
   },
-  "ludovicchabant/vim-gutentags",
+  {
+    'nvim-orgmode/orgmode',
+    event = 'VeryLazy',
+    ft = { 'org' },
+    config = function()
+      -- Setup orgmode
+      require('orgmode').setup({
+        org_agenda_files = '~/notes/**/*',
+        org_default_notes_file = '~/notes/refile.org',
+      })
+    end,
+  },
+
+  -- TODO: fix runaway indexing causing disk to fill up
+  -- "ludovicchabant/vim-gutentags",
 
   -- git --
   "tpope/vim-fugitive",
@@ -91,6 +105,7 @@ local lazy_plugins = {
     ft = { "scala", "sbt", "java" },
     opts = function()
       local config = require("metals").bare_config()
+      config.capabilities = require("cmp_nvim_lsp").default_capabilities()
       config.on_attach = function(client, _bufnr)
         require("metals").setup_dap()
         -- TODO: set key mappings
@@ -163,7 +178,7 @@ local lazy_plugins = {
   "maxmx03/fluoromachine.nvim",
 
   -- interfaces to external systems --
-  "madox2/vim-ai",
+  "davehughes/vim-ai-lolmax",
   "tpope/vim-dadbod",
   "kristijanhusak/vim-dadbod-completion",
   "kristijanhusak/vim-dadbod-ui",
@@ -214,6 +229,8 @@ vim.filetype.add({
     edn = "clojure",
   },
 })
+-- Set comment strings where necessary
+vim.cmd("call tcomment#type#Define('thrift', '// %s\\n')")
 
 vim.opt.compatible = false
 vim.opt.modelines = 0
@@ -257,6 +274,10 @@ local function vmap(shortcut, command)
   keymap("v", shortcut, command)
 end
 
+local function imap(shortcut, command)
+  keymap("i", shortcut, command)
+end
+
 local nvim_lua_init_path = "${HOME}/.config/home-manager/nvim/init.lua"
 nmap("<Leader>ne", ":edit" .. nvim_lua_init_path .. "<CR>")
 nmap("<Leader>nr", ":luafile" .. nvim_lua_init_path .. "<CR>")
@@ -284,8 +305,8 @@ require("telescope").setup({
     mappings = {
       i = {
         -- Disable the default item up/down mappings
-        ["<c-N>"] = false,
-        ["<c-P>"] = false,
+        ["<C-N>"] = false,
+        ["<C-P>"] = false,
         -- ...and climb aboard the HJKL train
         ["<C-J>"] = actions.move_selection_next,
         ["<C-K>"] = actions.move_selection_previous,
@@ -293,11 +314,17 @@ require("telescope").setup({
     },
     file_ignore_patterns = {
       ".__yobi_legacy",
+      "tags",
+      "tags.temp",
+      "tags.lock",
     },
   },
   pickers = {
     colorscheme = {
       enable_preview = true,
+    },
+    buffers = {
+      sort_lastused = true
     },
   },
 })
@@ -340,6 +367,7 @@ require("nvim-treesitter.configs").setup({
     "starlark",
     "sql",
     "terraform",
+    "thrift",
     "toml",
     "tsx",
     "typescript",
@@ -383,6 +411,13 @@ require("mason-lspconfig").setup({
     "fennel_language_server",
   },
 })
+
+
+nmap("K", function() vim.lsp.buf.hover() end)
+nmap("grr", function() vim.lsp.buf.references() end)
+nmap("grn", function() vim.lsp.buf.rename() end)
+nmap("gra", function() vim.lsp.buf.code_action() end)
+imap("<C-s>", function() vim.lsp.buf.signature_help() end)
 
 local lspconfig = require 'lspconfig'
 local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -448,7 +483,7 @@ require('lspconfig.configs').fennel_language_server = {
   },
 }
 
-lspconfig.fennel_language_server.setup {}
+-- lspconfig.fennel_language_server.setup {}
 
 -- null-ls (or here, none-ls a compatible successor) setup
 -- Adapts a bunch of tools that aren't full-fledged LSPs to play with the LSP client.
@@ -621,6 +656,7 @@ dap.adapters.lua = function(callback, config)
     port = config.port or 8086,
   })
 end
+
 dap.configurations.lua = {
   {
     type = "lua",
@@ -633,7 +669,7 @@ require("nvim-surround").setup {}
 require("marks").setup {}
 require("gitsigns").setup {
   numhl = true,
-  linehl = true,
+  linehl = false,
 }
 
 -- customize gitsigns icons
@@ -675,6 +711,21 @@ vim.api.nvim_create_autocmd("FileType", {
   group = clojureFtSettingsGroup,
 })
 
+local aichatFtSettingsGroup = vim.api.nvim_create_augroup("AIChat settings", { clear = true })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "aichat",
+  callback = function()
+    -- disable smart indent, which causes runaway indents for LLM results with e.g. code examples
+    -- (via https://vim.fandom.com/wiki/How_to_stop_auto_indenting)
+    vim.opt.cindent = false
+    vim.opt.smartindent = false
+    vim.opt.indentexpr = ""
+
+    imap("<M-k>", "<Esc>:set noautoindent<CR>:AIChat<CR>")
+  end,
+  group = aichatFtSettingsGroup,
+})
+
 local dadbodFtSettingsGroup = vim.api.nvim_create_augroup("vim-dadbod autocmds", { clear = true })
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "sql", "mysql", "plsql" },
@@ -688,22 +739,22 @@ vim.api.nvim_create_autocmd("FileType", {
   group = dadbodFtSettingsGroup,
 })
 
-local bazelFtSettingsGroup = vim.api.nvim_create_augroup("Bazel settings", { clear = true })
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "bzl",
-  callback = function()
-    print("loading bazel filetype settings")
-    -- hook up go-to-definition to use bazel.nvim
-    -- HACK: emulate tag-jump-based go-to-definition by setting a mark and a shortcut that
-    -- lets us jump back (though only one level).
-    nmap("<C-]>", function()
-      vim.cmd(":mark T")
-      vim.fn.GoToBazelDefinition()
-    end)
-    nmap("<C-t>", "'Tdm-")
-  end,
-  group = bazelFtSettingsGroup,
-})
+-- local bazelFtSettingsGroup = vim.api.nvim_create_augroup("Bazel settings", { clear = true })
+-- vim.api.nvim_create_autocmd("FileType", {
+--   pattern = "bzl",
+--   callback = function()
+--     print("loading bazel filetype settings")
+--     -- hook up go-to-definition to use bazel.nvim
+--     -- HACK: emulate tag-jump-based go-to-definition by setting a mark and a shortcut that
+--     -- lets us jump back (though only one level).
+--     nmap("<C-]>", function()
+--       vim.cmd(":mark T")
+--       vim.fn.GoToBazelDefinition()
+--     end)
+--     nmap("<C-t>", "'Tdm-")
+--   end,
+--   group = bazelFtSettingsGroup,
+-- })
 
 -- autoformat via lsp on save
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
@@ -734,13 +785,14 @@ end)
 
 cmp.setup({
   sources = {
-    { name = "copilot" },
+    -- { name = "copilot" },
     { name = "conjure" },
     { name = "bazel" },
     { name = "path" },
     { name = "buffer" },
     { name = "nvim_lsp" },
     { name = "luasnip" },
+    { name = "orgmode" },
     { name = "vim-dadbod-completion", keyword_length = 2 },
   },
   mapping = cmp.mapping.preset.insert({
@@ -820,24 +872,26 @@ end)
 
 -- Copilot
 require("copilot").setup({
-  -- optionally disable suggestion and panel modules so they don't conflict with completions
-  panel = { enabled = false },
+  panel = {
+    enabled = false,
+  },
   suggestion = {
     enabled = true,
-    auto_trigger = false,
+    auto_trigger = true,
   },
 })
+
+nmap("<Leader>CC", function() require("copilot.suggestion").toggle_auto_trigger() end)
+
 -- require("copilot_cmp").setup()
 
 -- AI setup
-vim.g.vim_ai_token_file_path = "~/.config/openai.token"
-vim.g.vim_ai_chat = {
-  options = {
-    model = "gpt-4",
-    temperature = 0.2,
-  },
-}
-nmap("<Leader>ai", ":AIChat<CR>")
+vim.g.vim_ai_debug = 1
+vim.g.vim_ai_debug_log_file = "/tmp/vim-ai.log"
+vim.g.vim_ai_model = "claude-3.5-sonnet"
+nmap("<Leader>ai", ":set noautoindent<CR>:AIChat<CR>")
+vmap("<Leader>ai", ":AI<CR>")
+vmap("<M-k>", ":AI<CR>")
 
 -- Highlights
 -- Customization for Pmenu (used by nvim-cmp)
