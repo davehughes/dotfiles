@@ -1,3 +1,20 @@
+-- key mappings
+local function keymap(mode, shortcut, command)
+  vim.keymap.set(mode, shortcut, command, { noremap = true, silent = true })
+end
+
+local function nmap(shortcut, command)
+  keymap("n", shortcut, command)
+end
+
+local function vmap(shortcut, command)
+  keymap("v", shortcut, command)
+end
+
+local function imap(shortcut, command)
+  keymap("i", shortcut, command)
+end
+
 -- Lazy package manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
@@ -108,7 +125,12 @@ local lazy_plugins = {
       config.capabilities = require("cmp_nvim_lsp").default_capabilities()
       config.on_attach = function(client, _bufnr)
         require("metals").setup_dap()
-        -- TODO: set key mappings
+
+        -- set key mappings
+        -- vim.keymap.set("n", "<Leader>mc", ":Telescope metals commands<CR>", { noremap = true, silent = true })
+        -- vim.keymap.set("n", "<Leader>mo", ":MetalsOrganizeImports<CR>", { noremap = true, silent = true })
+        nmap("<Leader>mc", ":Telescope metals commands<CR>")
+        nmap("<Leader>mo", ":MetalsOrganizeImports<CR>")
       end
       return config
     end,
@@ -221,8 +243,8 @@ end
 -- Set filetype based on file extension for extensions that are not recognized by default
 vim.filetype.add({
   extension = {
-    tf = "terraform",
-    tfvars = "terraform",
+    tf = "hcl",
+    tfvars = "hcl",
     tsx = "typescript",
     zshenv = "zsh",
     bb = "clojure",
@@ -231,6 +253,7 @@ vim.filetype.add({
 })
 -- Set comment strings where necessary
 vim.cmd("call tcomment#type#Define('thrift', '// %s\\n')")
+vim.cmd("call tcomment#type#Define('hcl', '# %s')")
 
 vim.opt.compatible = false
 vim.opt.modelines = 0
@@ -251,7 +274,8 @@ vim.opt.tags = ".tags,tags,env/lib/tags,env/src/tags"
 vim.opt.clipboard = "unnamed"
 vim.opt.signcolumn = "yes"
 -- vim.opt.wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
-vim.g.mapleader = "\\"
+-- vim.g.mapleader = "\\"
+vim.g.mapleader = ","
 vim.g.maplocalleader = ";"
 
 -- appearance
@@ -260,23 +284,6 @@ vim.cmd([[ colorscheme everforest ]])
 vim.g.everforest_transparent_background = 1
 -- Transparent background
 vim.api.nvim_set_hl(0, "Normal", { ctermbg = "None", bg = "None" })
-
--- key mappings
-local function keymap(mode, shortcut, command)
-  vim.keymap.set(mode, shortcut, command, { noremap = true, silent = true })
-end
-
-local function nmap(shortcut, command)
-  keymap("n", shortcut, command)
-end
-
-local function vmap(shortcut, command)
-  keymap("v", shortcut, command)
-end
-
-local function imap(shortcut, command)
-  keymap("i", shortcut, command)
-end
 
 local nvim_lua_init_path = "${HOME}/.config/home-manager/nvim/init.lua"
 nmap("<Leader>ne", ":edit" .. nvim_lua_init_path .. "<CR>")
@@ -295,7 +302,12 @@ nmap("<Leader>gh", "V :'<,'>GBrowse<CR>")
 vmap("<Leader>gh", ":'<,'>GBrowse<CR>")
 
 nmap("<Leader>t", ":TagbarToggle<cr>")
-nmap("<Leader>T", ":Tags<cr>")
+nmap("<Leader>T", ":Trouble diagnostics<cr>")
+-- copy the current file path to the system clipboard
+nmap("<Leader>ff", ":let @+ = expand('%')<CR>")
+
+-- copy the contents of the filepath under the cursor to the system clipboard
+nmap("<Leader>yf", ":let @+ = join(readfile(expand('<cfile>')), \"\\n\")<CR>")
 
 -- Telescope settings
 local actions = require("telescope.actions")
@@ -413,15 +425,18 @@ require("mason-lspconfig").setup({
 })
 
 
-nmap("K", function() vim.lsp.buf.hover() end)
-nmap("grr", function() vim.lsp.buf.references() end)
-nmap("grn", function() vim.lsp.buf.rename() end)
-nmap("gra", function() vim.lsp.buf.code_action() end)
-imap("<C-s>", function() vim.lsp.buf.signature_help() end)
+local lsp_attach = function(client, bufnr)
+  nmap("K", function() vim.lsp.buf.hover() end)
+  nmap("grr", function() vim.lsp.buf.references() end)
+  nmap("grn", function() vim.lsp.buf.rename() end)
+  nmap("gra", function() vim.lsp.buf.code_action() end)
+  imap("<C-s>", function() vim.lsp.buf.signature_help() end)
+end
 
 local lspconfig = require 'lspconfig'
 local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
 lspconfig.lua_ls.setup {
+  on_attach = lsp_attach,
   on_init = function(client)
     local path = client.workspace_folders[1].name
     if vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc") then
@@ -458,32 +473,32 @@ lspconfig.lua_ls.setup {
   capabilities = lsp_capabilities,
 }
 
-lspconfig.clojure_lsp.setup {}
+-- require('lspconfig.configs').fennel_language_server = {
+--   default_config = {
+--     -- replace it with true path
+--     cmd = { 'fennel-language-server' },
+--     filetypes = { 'fennel' },
+--     single_file_support = true,
+--     -- source code resides in directory `fnl/`
+--     root_dir = lspconfig.util.root_pattern("fnl", "lua"),
+--     settings = {
+--       fennel = {
+--         workspace = {
+--           -- If you are using hotpot.nvim or aniseed,
+--           -- make the server aware of neovim runtime files.
+--           library = vim.api.nvim_list_runtime_paths(),
+--         },
+--         diagnostics = {
+--           globals = { 'vim' },
+--         },
+--       },
+--     },
+--   },
+-- }
 
-require('lspconfig.configs').fennel_language_server = {
-  default_config = {
-    -- replace it with true path
-    cmd = { 'fennel-language-server' },
-    filetypes = { 'fennel' },
-    single_file_support = true,
-    -- source code resides in directory `fnl/`
-    root_dir = lspconfig.util.root_pattern("fnl", "lua"),
-    settings = {
-      fennel = {
-        workspace = {
-          -- If you are using hotpot.nvim or aniseed,
-          -- make the server aware of neovim runtime files.
-          library = vim.api.nvim_list_runtime_paths(),
-        },
-        diagnostics = {
-          globals = { 'vim' },
-        },
-      },
-    },
-  },
-}
-
--- lspconfig.fennel_language_server.setup {}
+-- lspconfig.fennel_language_server.setup {
+--   on_attach = lsp_attach,
+-- }
 
 -- null-ls (or here, none-ls a compatible successor) setup
 -- Adapts a bunch of tools that aren't full-fledged LSPs to play with the LSP client.
@@ -495,52 +510,82 @@ local nls = require("null-ls")
 nls.setup {
   sources = {
     nls.builtins.diagnostics.selene,
+    nls.builtins.formatting.hclfmt,
     require("none-ls.formatting.jq"),
-    require("local.null_ls.autoimport").with({
-      env = function(params)
-        print("loading autoimport env")
-        return { PYTHONPATH = "/Users/dave/projects/lolmax/.venv/lib/python3.10/site-packages/" }
-      end,
-    }),
+    -- require("local.null_ls.autoimport").with({
+    --   env = function(params)
+    --     print("loading autoimport env")
+    --     return { PYTHONPATH = "/Users/dave/projects/lolmax/.venv/lib/python3.10/site-packages/" }
+    --   end,
+    -- }),
   },
 }
 
 -- MANUAL STEP: need to install plugins via:
--- `:PylspInstall pyls-isort pylsp-mypy pylsp-rope python-lsp-ruff ...`
---
+-- `:PylspInstall <plugin>`
 -- For configuration options, see:
 -- https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
+_G.installPylspPlugins = function()
+  local plugins = {
+    -- "pyls-isort",
+    "pylsp-mypy",
+    -- "pylsp-rope",
+    "python-lsp-ruff",
+    "python-lsp-black",
+    "python-lsp-autoimport",
+  }
+  for _, plugin in ipairs(plugins) do
+    vim.cmd("PylspInstall " .. plugin)
+  end
+end
+
+vim.cmd('command! PylspInstallPlugins lua installPylspPlugins()')
+
 lspconfig.pylsp.setup({
+  on_attach = lsp_attach,
   capabilities = lsp_capabilities,
   settings = {
     pylsp = {
       plugins = {
-        flake8 = { enabled = false },
+        autoimport = { enabled = true },
+        isort = { enabled = false },
+        black = { enabled = true },
+        ruff = { enabled = false },
+        mypy = { enabled = true },
+
         autopep8 = { enabled = false },
+        flake8 = { enabled = false },
+        jedi_completion = { enabled = false },
+        jedi_definition = { enabled = false },
         mccabe = { enabled = false },
-        -- I couldn't get rope working the way I want, so I'm using a hand-rolled null-ls wrapper around autoimport instead
-        -- rope_autoimport = { enabled = false },
-        -- pylsp_rope = {
-        --   autoimport = { enabled = true },
-        -- },
+        pycodestyle = { enabled = false },
+        pydocstyle = { enabled = false },
+        pyflakes = { enabled = false },
+        pylint = { enabled = false },
+        yapf = { enabled = false },
       }
     },
   },
 })
 
-require("lspconfig").sorbet.setup({
+lspconfig.sorbet.setup({
+  on_attach = lsp_attach,
   capabilities = lsp_capabilities,
 })
 
-require("lspconfig").syntax_tree.setup({
+lspconfig.syntax_tree.setup({
+  on_attach = lsp_attach,
   capabilities = lsp_capabilities,
 })
 
-require("lspconfig").ruby_lsp.setup({
+lspconfig.ruby_lsp.setup({
+  on_attach = lsp_attach,
   capabilities = lsp_capabilities,
 })
 
-require("lspconfig").clojure_lsp.setup({
+
+lspconfig.clojure_lsp.setup({
+  on_attach = lsp_attach,
   capabilities = lsp_capabilities,
 })
 
@@ -665,6 +710,72 @@ dap.configurations.lua = {
   },
 }
 
+-- cribbed from https://www.chris-kipp.io/blog/the-debug-adapter-protocol-and-scala
+dap.adapters.lua = function(callback, config)
+  local uri = vim.uri_from_bufnr(0)
+  local arguments = {}
+
+  if config.name == "from_lens" then
+    arguments = config.metals
+  else
+    local metals_dap_settings = config.metals or {}
+
+    arguments = {
+      path = uri,
+      runType = metals_dap_settings.runType or "run",
+      args = metals_dap_settings.args,
+      jvmOptions = metals_dap_settings.jvmOptions,
+      env = metals_dap_settings.env,
+      envFile = metals_dap_settings.envFile,
+    }
+  end
+
+  execute_command({
+    command = "metals.debug-adapter-start",
+    arguments = arguments,
+  }, function(_, _, res)
+    if res then
+      local port = util.split_on(res.uri, ":")[3]
+
+      callback({
+        type = "server",
+        host = "127.0.0.1",
+        port = port,
+        enrich_config = function(_config, on_config)
+          local final_config = vim.deepcopy(_config)
+          final_config.metals = nil
+          on_config(final_config)
+        end,
+      })
+    end
+  end)
+end
+
+local function scala_debug_start_command(no_debug)
+  return function(cmd, _)
+    dap.run({
+      type = "scala",
+      request = "launch",
+      name = "from_lens",
+      noDebug = no_debug,
+      metals = cmd.arguments,
+    })
+  end
+end
+
+dap.configurations.scala = {
+  {
+    type = "scala",
+    request = "launch",
+    name = "Run with arg and env file",
+    metals = {
+      runType = "runOrTestFile",
+      args = { "myArg" },
+      envFile = "path/to/.env",
+    },
+  },
+}
+
 require("nvim-surround").setup {}
 require("marks").setup {}
 require("gitsigns").setup {
@@ -722,6 +833,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.opt.indentexpr = ""
 
     imap("<M-k>", "<Esc>:set noautoindent<CR>:AIChat<CR>")
+    nmap("<M-k>", ":set noautoindent<CR>:AIChat<CR>")
   end,
   group = aichatFtSettingsGroup,
 })
@@ -776,12 +888,12 @@ local function map_boolean_to_onoff_string(value)
 end
 
 -- toggle global completions
-nmap("<Leader>C", function()
+local function toggle_cmp_completion()
   local enabled = require("cmp.config").get().enabled
-  cmp.setup({ enabled = not enabled })
+  cmp.setup.buffer({ enabled = not enabled })
   enabled = require("cmp.config").get().enabled
-  print("completions " .. map_boolean_to_onoff_string(enabled) .. " (global)")
-end)
+  print("completions " .. map_boolean_to_onoff_string(enabled) .. " (buffer)")
+end
 
 cmp.setup({
   sources = {
@@ -880,18 +992,26 @@ require("copilot").setup({
     auto_trigger = true,
   },
 })
-
-nmap("<Leader>CC", function() require("copilot.suggestion").toggle_auto_trigger() end)
-
 -- require("copilot_cmp").setup()
+
+nmap("<Leader>C", function()
+  require("copilot.suggestion").toggle_auto_trigger()
+  toggle_cmp_completion()
+end)
+nmap("<Leader>CC", function()
+  require("copilot.suggestion").toggle_auto_trigger()
+end)
+nmap("<Leader>CCC", toggle_cmp_completion)
+
 
 -- AI setup
 vim.g.vim_ai_debug = 1
 vim.g.vim_ai_debug_log_file = "/tmp/vim-ai.log"
 vim.g.vim_ai_model = "claude-3.5-sonnet"
+vim.g.lolmax_root_url = "http://localhost:8000"
 nmap("<Leader>ai", ":set noautoindent<CR>:AIChat<CR>")
 vmap("<Leader>ai", ":AI<CR>")
-vmap("<M-k>", ":AI<CR>")
+nmap("<Leader>ait", ":Telescope vim_ai_lolmax<CR>")
 
 -- Highlights
 -- Customization for Pmenu (used by nvim-cmp)

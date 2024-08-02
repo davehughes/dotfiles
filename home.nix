@@ -1,4 +1,14 @@
-{ config, pkgs, lib, ... }:
+{ 
+  config,
+  lib,
+  system, 
+  pkgs ? import <nixpkgs> {},
+  # (builtins.fetchTarball {
+  #   url = "https://github.com/NixOS/nixpkgs/archive/nixos-24.05.tar.gz";
+  #   sha256 = "0bpw6x46mp0xqfdwbrhnjn6qlb4avglir993n3cdqg8zv4klgllw";
+  # }),
+  ...
+}:
 
 let
   inherit (import ./python.nix { inherit pkgs; inherit lib; }) dave-cli autoimport;
@@ -60,13 +70,15 @@ in
     oath-toolkit
     btop
     ncdu
+    shellcheck
     # solvespace
 
     # Due to the particulars of how yabai's scripting addition integrates with the system, this setup
     # needs frequent tweaking for new versions. Primarily, an updated sudoers entry needs to be created
     # for each new binary according to this page:
     # https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
-    (pkgs.callPackage ./yabai.nix { })
+    # (pkgs.callPackage ./yabai.nix { })
+    yabai
     karabiner-elements
     skhd
     terminal-notifier
@@ -92,6 +104,7 @@ in
     lua5_1
     luarocks
     jdk20
+    # fennel-ls
 
     # linters, formatters, fixers, and other things to wrap with nvim's null-ls "LSP"
     nixpkgs-fmt
@@ -124,6 +137,7 @@ in
     azure-cli
     docker
     docker-compose
+    minikube
     # Switching to per-project node_modules install because I can't figure out how to upgrade the
     # woefully out-of-date version home-manager is installing
     # graphite-cli
@@ -261,6 +275,7 @@ in
       ":ai" = "nvim +:AIChat +:only +:set noautoindent";
       vim = "nvim"; # until I can learn...
       bazel = "bazelisk";
+      kubectl = "minikube kubectl --";
 
       pg-list = "dave pg-list";
       pg-edit = "$EDITOR ~/.pgpass";
