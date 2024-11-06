@@ -201,8 +201,8 @@ in
 
     extraConfig = ''
       # rebind prefix key
-      # (using Karabiner-Elements to send F4 when 'caps lock' is pressed)
-      set -g prefix F4
+      # (use Karabiner-Elements to send the prefix when 'caps lock' is pressed)
+      set -g prefix M-x
       unbind C-b
 
       # split windows with mnemonic characters

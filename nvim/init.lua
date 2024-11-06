@@ -252,8 +252,9 @@ vim.filetype.add({
   },
 })
 -- Set comment strings where necessary
-vim.cmd("call tcomment#type#Define('thrift', '// %s\\n')")
+vim.cmd("call tcomment#type#Define('thrift', '// %s')")
 vim.cmd("call tcomment#type#Define('hcl', '# %s')")
+vim.cmd("call tcomment#type#Define('markdown', '%s')")
 
 vim.opt.compatible = false
 vim.opt.modelines = 0
@@ -305,6 +306,7 @@ nmap("<Leader>t", ":TagbarToggle<cr>")
 nmap("<Leader>T", ":Trouble diagnostics<cr>")
 -- copy the current file path to the system clipboard
 nmap("<Leader>ff", ":let @+ = expand('%')<CR>")
+nmap("<Leader>ffl", ":let @+ = expand('%') . ':' . line('.')<CR>")
 
 -- copy the contents of the filepath under the cursor to the system clipboard
 nmap("<Leader>yf", ":let @+ = join(readfile(expand('<cfile>')), \"\\n\")<CR>")
@@ -1055,3 +1057,46 @@ vim.api.nvim_set_hl(0, "CmpItemKindEnumMember", { fg = "#DDE5F5", bg = "#6C8ED4"
 vim.api.nvim_set_hl(0, "CmpItemKindInterface", { fg = "#D8EEEB", bg = "#58B5A8" })
 vim.api.nvim_set_hl(0, "CmpItemKindColor", { fg = "#D8EEEB", bg = "#58B5A8" })
 vim.api.nvim_set_hl(0, "CmpItemKindTypeParameter", { fg = "#D8EEEB", bg = "#58B5A8" })
+
+-- Toggle stop light status
+-- 🟢🟡🔴
+nmap("<Leader>s", function()
+  local line = vim.api.nvim_get_current_line()
+  local new_line
+  local comment_string = vim.bo.commentstring
+  local filetype = vim.bo.filetype
+  if filetype == "markdown" then
+    comment_string = "%s"
+  end
+  local green_comment = string.format(comment_string, '🟢')
+  local yellow_comment = string.format(comment_string, '🟡')
+  local red_comment = string.format(comment_string, '🔴')
+
+  if line:match(green_comment .. '%s*$') then
+    new_line = line:gsub('%s*' .. green_comment .. '%s*$', ' ' .. yellow_comment)
+  elseif line:match(yellow_comment .. '%s*$') then
+    new_line = line:gsub('%s*' .. yellow_comment .. '%s*$', ' ' .. red_comment)
+  elseif line:match(red_comment .. '%s*$') then
+    new_line = line:gsub('%s*' .. red_comment .. '%s*$', '')
+  else
+    new_line = line:gsub('%s*$', ' ' .. green_comment)
+  end
+  vim.api.nvim_set_current_line(new_line)
+end)
+
+-- Insert UUID
+local function generate_uuid()
+  local handle = io.popen("uuidgen 2>/dev/null || python -c 'import uuid; print(uuid.uuid4())'")
+  local uuid = handle:read("*a")
+  handle:close()
+  return uuid:gsub("%s+", ""):lower() -- Remove any whitespace
+end
+
+local function insert_uuid()
+  local uuid = generate_uuid()
+  local cursor = vim.api.nvim_win_get_cursor(0)
+  local row, col = cursor[1] - 1, cursor[2]
+  vim.api.nvim_buf_set_text(0, row, col, row, col, { uuid })
+end
+
+nmap("<Leader>uu", insert_uuid)
