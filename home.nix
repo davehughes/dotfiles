@@ -39,6 +39,7 @@ in
   # solution is given in this comment:
   # https://github.com/NixOS/nix/issues/3616#issuecomment-903869569
   home.packages = with pkgs; [
+
     # nix-related tools
     cachix
     nix-prefetch
@@ -69,8 +70,11 @@ in
     mitmproxy
     oath-toolkit
     btop
+    htop
     ncdu
     shellcheck
+    brotab
+    wmctrl
     # solvespace
 
     # Due to the particulars of how yabai's scripting addition integrates with the system, this setup
@@ -87,60 +91,60 @@ in
     duckdb
     postgresql
     redis
-    iredis
+    # iredis
     # snowsql # TODO: 'unfree' package, need to figure out how to set this up
 
     clojure
+    # go
     leiningen
-    racket
+    python312
+    pyenv
+    # racket
     ruby
     rustup
     nodejs
     sbt
     coursier
+    maven3
+    regctl
     scala
     scalafmt
-    ammonite
+    # ammonite
     lua5_1
     luarocks
-    jdk20
-    # fennel-ls
+    jdk24
+    fennel-ls
 
     # linters, formatters, fixers, and other things to wrap with nvim's null-ls "LSP"
     nixpkgs-fmt
     selene
 
     # browse options at https://www.nerdfonts.com/font-downloads
-    (nerdfonts.override {
-      fonts = [
-      "FantasqueSansMono"
-      "Inconsolata"
-      "IntelOneMono"
-      "SourceCodePro"
-      ]; })
+    nerd-fonts.fantasque-sans-mono
+    nerd-fonts.inconsolata
+    nerd-fonts.intone-mono
+    nerd-fonts.sauce-code-pro
 
-    (pkgs.python3.withPackages (p: with p; [
-      pip
-      poetry-core
-      ipython
-      ipdb
-      debugpy
-      dave-cli 
-      autoimport
-      # databricks-cli
-      # databricks-sql-cli
-      # databricks-connect
-    ]))
+    # (pkgs.python312.withPackages (p: with p; [
+    #   pip
+    #   poetry-core
+    #   ipython
+    #   ipdb
+    #   debugpy
+    #   dave-cli
+    #   autoimport
+    # ]))
 
     terraform
     awscli2
-    azure-cli
+    azure-storage-azcopy
     docker
     docker-compose
+    podman
     minikube
     # Switching to per-project node_modules install because I can't figure out how to upgrade the
     # woefully out-of-date version home-manager is installing
-    # graphite-cli
+    graphite-cli
     obsidian
     sl
     cowsay
@@ -163,6 +167,8 @@ in
     # Don't rename the terminal, it's likely a tmux window that I already named
     DISABLE_AUTO_TITLE = "true";
     VIRTUAL_ENV_DISABLE_PROMPT = "true";
+
+    JAVA_HOME = "${pkgs.jdk24}/lib/openjdk";
   };
 
   # NOTE: changes here require a session restart via e.g. rebooting or killing the WindowServer
@@ -196,6 +202,7 @@ in
     plugins = with pkgs; [
       # tmuxPlugins.yank
       tmuxPlugins.nord
+      tmuxPlugins.resurrect
       # tmuxPlugins.power-theme
     ];
 
@@ -340,7 +347,7 @@ in
   programs.kitty = {
     enable = true;
     # use `kitty +kitten themes` to browse
-    theme = "Soft Server";
+    themeFile = "SoftServer";
     font = {
       name = "SauceCodePro";
       size = 12;

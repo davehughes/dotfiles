@@ -35,6 +35,7 @@ local lazy_plugins = {
   -- general
   "jremmen/vim-ripgrep",
   "tomtom/tcomment_vim",
+  "tpope/vim-abolish",
   "easymotion/vim-easymotion",
   "majutsushi/tagbar",
   "chentoast/marks.nvim",
@@ -53,11 +54,22 @@ local lazy_plugins = {
     },
   },
   "nvim-telescope/telescope-ui-select.nvim",
+  "smartpde/telescope-recent-files",
+  "nvim-telescope/telescope-frecency.nvim",
   {
     'stevearc/oil.nvim',
     opts = {},
     -- Optional dependencies
     dependencies = { "nvim-tree/nvim-web-devicons" },
+  },
+  {
+    "refractalize/oil-git-status.nvim",
+
+    dependencies = {
+      "stevearc/oil.nvim",
+    },
+
+    config = true,
   },
   "vim-scripts/sudo.vim",
   "janko/vim-test",
@@ -123,6 +135,11 @@ local lazy_plugins = {
     opts = function()
       local config = require("metals").bare_config()
       config.capabilities = require("cmp_nvim_lsp").default_capabilities()
+      -- pulling in some config from https://github.com/scalameta/nvim-metals/discussions/39
+      config.settings = {
+        showImplicitArguments = true,
+      }
+      config.init_options.statusBarProvider = "off"
       config.on_attach = function(client, _bufnr)
         require("metals").setup_dap()
 
@@ -131,9 +148,30 @@ local lazy_plugins = {
         -- vim.keymap.set("n", "<Leader>mo", ":MetalsOrganizeImports<CR>", { noremap = true, silent = true })
         nmap("<Leader>mc", ":Telescope metals commands<CR>")
         nmap("<Leader>mo", ":MetalsOrganizeImports<CR>")
+        nmap("<leader>ws", function()
+          require("metals").hover_worksheet()
+        end)
       end
       return config
     end,
+    --
+    --   -- *READ THIS*
+    --   -- I *highly* recommend setting statusBarProvider to either "off" or "on"
+    --   --
+    --   -- "off" will enable LSP progress notifications by Metals and you'll need
+    --   -- to ensure you have a plugin like fidget.nvim installed to handle them.
+    --   --
+    --   -- "on" will enable the custom Metals status extension and you *have* to have
+    --   -- a have settings to capture this in your statusline or else you'll not see
+    --   -- any messages from metals. There is more info in the help docs about this
+    --
+    --   metals_config.on_attach = function(client, bufnr)
+    --     require("metals").setup_dap()
+    --
+    --   end
+    --
+    --   return metals_config
+    -- end,
     config = function(self, metals_config)
       local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
       vim.api.nvim_create_autocmd("FileType", {
@@ -145,6 +183,7 @@ local lazy_plugins = {
       })
     end,
   },
+  "adoyle-h/lsp-toggle.nvim",
 
   -- completion and snippets
   {
@@ -289,11 +328,6 @@ vim.api.nvim_set_hl(0, "Normal", { ctermbg = "None", bg = "None" })
 local nvim_lua_init_path = "${HOME}/.config/home-manager/nvim/init.lua"
 nmap("<Leader>ne", ":edit" .. nvim_lua_init_path .. "<CR>")
 nmap("<Leader>nr", ":luafile" .. nvim_lua_init_path .. "<CR>")
-nmap("<C-o>", ":Telescope buffers<CR>")
-nmap("<C-p>", ":Telescope git_files<CR>")
-nmap("<C-i>", ":Telescope live_grep<CR>")
--- nmap("<C-c>", ":Telescope aichats<CR>")
--- nmap("<C-m>", ":Telescope marks<CR>")
 nmap("<C-f>", ":Rg<CR>")
 nmap("<C-h>", ":bp<CR>")
 nmap("<C-l>", ":bn<CR>")
@@ -301,6 +335,14 @@ nmap("<C-j>", ":wincmd w<CR>")
 nmap("<C-k>", ":wincmd W<CR>")
 nmap("<Leader>gh", "V :'<,'>GBrowse<CR>")
 vmap("<Leader>gh", ":'<,'>GBrowse<CR>")
+-- Also, remember these variants:
+-- :GBrowse! (copy link to clipboard)
+-- :GBrowse {branch}:% (browse to specific branch/range)
+
+-- required for GBrowse
+vim.api.nvim_create_user_command("Browse", function(args)
+  os.execute("open " .. args.args)
+end, { nargs = 1 })
 
 nmap("<Leader>t", ":TagbarToggle<cr>")
 nmap("<Leader>T", ":Trouble diagnostics<cr>")
@@ -341,18 +383,49 @@ require("telescope").setup({
       sort_lastused = true
     },
   },
+  extensions = {
+    recent_files = {
+    }
+  },
 })
 require("telescope").load_extension("fzf")
 require("telescope").load_extension("ui-select")
 require("telescope").load_extension("luasnip")
+-- require("telescope").load_extension("bazel")
+require("telescope").load_extension("recent_files")
+require("telescope").load_extension("frecency")
+require("lsp-toggle").setup({ telescope = true })
+
+nmap("<C-p>", ":Telescope git_files<CR>")
+-- nmap("<C-o>", ":Telescope frecency<CR>")
+nmap("<C-o>", ":Telescope oldfiles<CR>")
+nmap("<C-i>", ":Telescope live_grep<CR>")
+-- nmap("<C-c>", ":Telescope aichats<CR>")
+-- nmap("<C-m>", ":Telescope marks<CR>")
 
 -- Oil
 nmap("<Leader>.", ":Oil<CR>")
-require("oil").setup {
+
+require("oil").setup({
   view_options = {
     show_hidden = true,
-  }
-}
+  },
+  columns = {
+    "icon",
+    "permissions",
+    "size",
+    "mtime",
+  },
+  keymaps = {
+    ["g?"] = "actions.show_help",
+    ["<CR>"] = "actions.select",
+    ["<C-c>"] = "actions.close",
+    ["<C-r>"] = "actions.refresh",
+  },
+  win_options = {
+    signcolumn = "yes:2",
+  },
+})
 
 -- Treesitter
 require("nvim-treesitter.configs").setup({
@@ -475,6 +548,13 @@ lspconfig.lua_ls.setup {
   capabilities = lsp_capabilities,
 }
 
+-- require('lspconfig').bazel.setup {
+--   cmd = { "bazel-bsp" },
+--   root_dir = function(fname)
+--     return require('lspconfig').util.root_pattern('WORKSPACE', 'WORKSPACE.bazel')(fname)
+--   end,
+-- }
+
 -- require('lspconfig.configs').fennel_language_server = {
 --   default_config = {
 --     -- replace it with true path
@@ -513,6 +593,9 @@ nls.setup {
   sources = {
     nls.builtins.diagnostics.selene,
     nls.builtins.formatting.hclfmt,
+    nls.builtins.diagnostics.buildifier,
+    nls.builtins.formatting.buildifier,
+    nls.builtins.formatting.hclfmt,
     require("none-ls.formatting.jq"),
     -- require("local.null_ls.autoimport").with({
     --   env = function(params)
@@ -529,12 +612,12 @@ nls.setup {
 -- https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
 _G.installPylspPlugins = function()
   local plugins = {
-    -- "pyls-isort",
+    "pyls-isort",
     "pylsp-mypy",
     -- "pylsp-rope",
-    "python-lsp-ruff",
+    -- "python-lsp-ruff",
     "python-lsp-black",
-    "python-lsp-autoimport",
+    "python-lsp-autoimport"
   }
   for _, plugin in ipairs(plugins) do
     vim.cmd("PylspInstall " .. plugin)
@@ -549,7 +632,7 @@ lspconfig.pylsp.setup({
   settings = {
     pylsp = {
       plugins = {
-        autoimport = { enabled = true },
+        autoimport = { enabled = false },
         isort = { enabled = false },
         black = { enabled = true },
         ruff = { enabled = false },
@@ -1009,7 +1092,7 @@ nmap("<Leader>CCC", toggle_cmp_completion)
 -- AI setup
 vim.g.vim_ai_debug = 1
 vim.g.vim_ai_debug_log_file = "/tmp/vim-ai.log"
-vim.g.vim_ai_model = "claude-3.5-sonnet"
+vim.g.vim_ai_model = "claude-4-sonnet"
 vim.g.lolmax_root_url = "http://localhost:8000"
 nmap("<Leader>ai", ":set noautoindent<CR>:AIChat<CR>")
 vmap("<Leader>ai", ":AI<CR>")
@@ -1100,3 +1183,89 @@ local function insert_uuid()
 end
 
 nmap("<Leader>uu", insert_uuid)
+
+-- Configure diagnostic signs
+vim.fn.sign_define("DiagnosticSignError", { text = "✗", texthl = "DiagnosticSignError" })
+vim.fn.sign_define("DiagnosticSignWarn", { text = "⚠", texthl = "DiagnosticSignWarn" })
+vim.fn.sign_define("DiagnosticSignInfo", { text = "ℹ", texthl = "DiagnosticSignInfo" })
+vim.fn.sign_define("DiagnosticSignHint", { text = "➤", texthl = "DiagnosticSignHint" })
+
+-- LSP bindings
+nmap("gD", vim.lsp.buf.definition)
+nmap("K", vim.lsp.buf.hover)
+nmap("gi", vim.lsp.buf.implementation)
+nmap("gr", vim.lsp.buf.references)
+nmap("gds", vim.lsp.buf.document_symbol)
+nmap("gws", vim.lsp.buf.workspace_symbol)
+nmap("<leader>cl", vim.lsp.codelens.run)
+nmap("<leader>sh", vim.lsp.buf.signature_help)
+nmap("<leader>rn", vim.lsp.buf.rename)
+nmap("<leader>f", vim.lsp.buf.format)
+nmap("<leader>ca", vim.lsp.buf.code_action)
+
+-- Configure diagnostic display
+vim.diagnostic.config({
+  virtual_text = true,      -- Show diagnostics next to code
+  signs = true,             -- Show signs in the sign column
+  underline = true,         -- Underline the problem area
+  update_in_insert = false, -- Update diagnostics in insert mode
+  severity_sort = true,     -- Sort diagnostics by severity
+})
+
+-- Navigate between diagnostics
+nmap('[d', vim.diagnostic.goto_prev)
+nmap(']d', vim.diagnostic.goto_next)
+
+-- all workspace diagnostics
+nmap("<leader>aa", vim.diagnostic.setqflist)
+
+-- all workspace errors
+nmap("<leader>ae", function()
+  vim.diagnostic.setqflist({ severity = "E" })
+end)
+
+-- all workspace warnings
+nmap("<leader>aw", function()
+  vim.diagnostic.setqflist({ severity = "W" })
+end)
+
+-- buffer diagnostics only
+nmap("<leader>d", vim.diagnostic.setloclist)
+
+nmap("[c", function()
+  vim.diagnostic.goto_prev({ wrap = false })
+end)
+
+nmap("]c", function()
+  vim.diagnostic.goto_next({ wrap = false })
+end)
+
+-- Example mappings for usage with nvim-dap. If you don't use that, you can
+-- skip these
+nmap("<leader>dc", function()
+  require("dap").continue()
+end)
+
+nmap("<leader>dr", function()
+  require("dap").repl.toggle()
+end)
+
+nmap("<leader>dK", function()
+  require("dap.ui.widgets").hover()
+end)
+
+nmap("<leader>dt", function()
+  require("dap").toggle_breakpoint()
+end)
+
+nmap("<leader>dso", function()
+  require("dap").step_over()
+end)
+
+nmap("<leader>dsi", function()
+  require("dap").step_into()
+end)
+
+nmap("<leader>dl", function()
+  require("dap").run_last()
+end)

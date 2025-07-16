@@ -21,3 +21,11 @@ Layers:
 + shell utilities
   + [dave-cli](https://github.com/davehughes/dave-cli)
 + editor (nvim)
+
+
+Updating:
+---------
+```
+nix flake update
+hm switch
+```

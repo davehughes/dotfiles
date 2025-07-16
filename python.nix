@@ -1,7 +1,7 @@
 { pkgs, lib, ... }:
 
 let
-  dave-cli = with pkgs.python3Packages; buildPythonPackage {
+  dave-cli = with pkgs.python312Packages; buildPythonPackage {
     name = "dave-cli";
     version = "v0.1.2";
     format = "pyproject";
@@ -15,7 +15,7 @@ let
     propagatedBuildInputs = [ setuptools tabulate pyyaml ];
   };
 
-  pyprojroot = with pkgs.python3Packages; buildPythonPackage {
+  pyprojroot = with pkgs.python312Packages; buildPythonPackage {
     name = "pyprojroot";
     version = "0.0.1";
     format = "pyproject";
@@ -29,7 +29,7 @@ let
     propagatedBuildInputs = [ setuptools typing-extensions ];
   };
 
-  autoimport = with pkgs.python3Packages; buildPythonPackage {
+  autoimport = with pkgs.python312Packages; buildPythonPackage {
     name = "autoimport";
     version = "1.5.0";
     format = "pyproject";

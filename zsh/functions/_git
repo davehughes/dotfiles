@@ -154,6 +154,12 @@ __git_complete_command ()
 	fi
 }
 
+__git_aliased_command() {
+    local word cmdline=$(git config --get "alias.$1")
+    [[ -n "$cmdline" ]] && word=${cmdline%% *}
+    echo $word
+}
+
 __git_zsh_bash_func ()
 {
 	emulate -L ksh
