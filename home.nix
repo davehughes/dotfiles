@@ -56,6 +56,7 @@ in
     ripgrep
     jq
     yq
+    json2hcl
     jet
     tree
     ctags
@@ -65,6 +66,7 @@ in
     graphviz
     gnused
     curl
+    grpcurl
     wget
 
     mitmproxy
@@ -90,6 +92,7 @@ in
     sqlite
     duckdb
     postgresql
+    libpq
     redis
     # iredis
     # snowsql # TODO: 'unfree' package, need to figure out how to set this up
@@ -114,6 +117,7 @@ in
     luarocks
     jdk24
     fennel-ls
+    thrift
 
     # linters, formatters, fixers, and other things to wrap with nvim's null-ls "LSP"
     nixpkgs-fmt
@@ -142,6 +146,8 @@ in
     docker-compose
     podman
     minikube
+    wireshark
+    qemu
     # Switching to per-project node_modules install because I can't figure out how to upgrade the
     # woefully out-of-date version home-manager is installing
     graphite-cli
@@ -286,8 +292,11 @@ in
 
       pg-list = "dave pg-list";
       pg-edit = "$EDITOR ~/.pgpass";
+
+      ss = "cd ~/projects/source && source .localdev/rc";
     };
 
+    # initContent = ''
     initExtra = ''
       # apply emacs keymap
       bindkey -e

@@ -238,6 +238,9 @@ local lazy_plugins = {
   "sainnhe/gruvbox-material",
   "maxmx03/fluoromachine.nvim",
 
+  -- ansi colors
+  "powerman/vim-plugin-AnsiEsc",
+
   -- interfaces to external systems --
   "davehughes/vim-ai-lolmax",
   "tpope/vim-dadbod",
@@ -410,11 +413,12 @@ require("oil").setup({
   view_options = {
     show_hidden = true,
   },
+  -- see :help oil-columns
   columns = {
     "icon",
-    "permissions",
-    "size",
-    "mtime",
+    -- "permissions",
+    -- "size",
+    -- "mtime",
   },
   keymaps = {
     ["g?"] = "actions.show_help",
@@ -492,20 +496,14 @@ require("mason-nvim-dap").setup({
 require("mason-lspconfig").setup({
   ensure_installed = {
     "lua_ls",
-    "pylsp",
+    "python-lsp-server",
     "ruby_lsp",
     "clojure_lsp",
     "fennel_language_server",
   },
 })
 
-
 local lsp_attach = function(client, bufnr)
-  nmap("K", function() vim.lsp.buf.hover() end)
-  nmap("grr", function() vim.lsp.buf.references() end)
-  nmap("grn", function() vim.lsp.buf.rename() end)
-  nmap("gra", function() vim.lsp.buf.code_action() end)
-  imap("<C-s>", function() vim.lsp.buf.signature_help() end)
 end
 
 local lspconfig = require 'lspconfig'
@@ -1094,9 +1092,9 @@ vim.g.vim_ai_debug = 1
 vim.g.vim_ai_debug_log_file = "/tmp/vim-ai.log"
 vim.g.vim_ai_model = "claude-4-sonnet"
 vim.g.lolmax_root_url = "http://localhost:8000"
-nmap("<Leader>ai", ":set noautoindent<CR>:AIChat<CR>")
-vmap("<Leader>ai", ":AI<CR>")
-nmap("<Leader>ait", ":Telescope vim_ai_lolmax<CR>")
+-- nmap("<Leader>ai", ":set noautoindent<CR>:AIChat<CR>")
+-- vmap("<Leader>ai", ":AI<CR>")
+-- nmap("<Leader>ait", ":Telescope vim_ai_lolmax<CR>")
 
 -- Highlights
 -- Customization for Pmenu (used by nvim-cmp)
@@ -1268,4 +1266,31 @@ end)
 
 nmap("<leader>dl", function()
   require("dap").run_last()
+end)
+
+-- "watch mode" for refreshing/tailing files
+local watch = require('local.watch')
+
+-- Commands
+vim.api.nvim_create_user_command('Watch', function(opts)
+  local follow = vim.tbl_contains(opts.fargs, 'follow')
+  watch.watch_mode({ follow = follow })
+end, { nargs = '*' })
+
+vim.api.nvim_create_user_command('WatchOff', function()
+  watch.unwatch_mode()
+end, {})
+
+vim.api.nvim_create_user_command('WatchToggle', function(opts)
+  local follow = vim.tbl_contains(opts.fargs, 'follow')
+  watch.toggle_watch_mode({ follow = follow })
+end, { nargs = '*' })
+
+-- Optional keymaps
+nmap('<leader>ww', function()
+  watch.toggle_watch_mode()
+end)
+
+nmap('<leader>wf', function()
+  watch.watch_mode({ follow = true })
 end)

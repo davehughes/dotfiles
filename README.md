@@ -29,3 +29,16 @@ Updating:
 nix flake update
 hm switch
 ```
+
+Recovering:
+-----------
+Because OSX is horrendous dogshit, system upgrades love to overwrite essential sections of the system
+default rc files, including the bits that we need for home-manager to work. (Re)add the following lines
+to restore:
+```
+# Nix
+if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+  . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+fi
+# End Nix
+```
