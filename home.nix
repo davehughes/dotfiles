@@ -1,4 +1,4 @@
-{ 
+{
   config,
   lib,
   system, 
@@ -43,6 +43,8 @@ in
     # nix-related tools
     cachix
     nix-prefetch
+
+    firefox
 
     bash
     babashka
@@ -142,7 +144,6 @@ in
     terraform
     awscli2
     azure-storage-azcopy
-    docker
     docker-compose
     podman
     minikube
@@ -215,7 +216,7 @@ in
     extraConfig = ''
       # rebind prefix key
       # (use Karabiner-Elements to send the prefix when 'caps lock' is pressed)
-      set -g prefix M-x
+      set -g prefix C-Space
       unbind C-b
 
       # split windows with mnemonic characters
@@ -261,7 +262,7 @@ in
 
   programs.zsh = {
     enable = true;
-    dotDir = ".config/zsh";
+    dotDir = "${config.home.homeDirectory}/.config/zsh";
 
     shellAliases = {
       # Always load tmux in 256 color mode
@@ -317,7 +318,8 @@ in
         path-append path-prepend path-edit path-ls \
         palette \
         pg-connect \
-        snowsql-json
+        snowsql-json \
+        build-nix-osx-app-symlinks
 
       compinit
 
@@ -355,6 +357,7 @@ in
 
   programs.kitty = {
     enable = true;
+    shellIntegration.enableZshIntegration = true;
     # use `kitty +kitten themes` to browse
     themeFile = "SoftServer";
     font = {
@@ -365,9 +368,11 @@ in
       enable_audio_bell = false;
       background_opacity = "0.9";
       clear_all_shortcuts = "yes";
+      hide_window_decorations = "yes";
+      macos_quit_when_last_window_closed = "yes";
     };
     keybindings = {
-      # Meta-C/Meta-V are preferable but don't seem to work properly here. An skhd rule should work though.
+      # skhd maps Meta-C/Meta-V to copy/paste in kitty below, which is preferable to the settings below
       "ctrl+shift+c" = "copy_to_clipboard";
       "ctrl+shift+v" = "paste_from_clipboard";
     };

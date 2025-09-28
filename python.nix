@@ -44,6 +44,5 @@ let
   };
 in
 {
-  inherit dave-cli;
-  inherit autoimport;
+  inherit dave-cli autoimport;
 }
