@@ -63,13 +63,8 @@ local lazy_plugins = {
     dependencies = { "nvim-tree/nvim-web-devicons" },
   },
   {
-    "refractalize/oil-git-status.nvim",
-
-    dependencies = {
-      "stevearc/oil.nvim",
-    },
-
-    config = true,
+    url = "refractalize/oil-git-status.nvim",
+    dependencies = { "stevearc/oil.nvim" },
   },
   "vim-scripts/sudo.vim",
   "janko/vim-test",
@@ -315,7 +310,7 @@ vim.opt.hlsearch = true
 vim.opt.guicursor = ""
 vim.opt.tags = ".tags,tags,env/lib/tags,env/src/tags"
 vim.opt.clipboard = "unnamed"
-vim.opt.signcolumn = "yes"
+vim.opt.signcolumn = "auto:2"
 -- vim.opt.wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
 -- vim.g.mapleader = "\\"
 vim.g.mapleader = ","
@@ -427,9 +422,11 @@ require("oil").setup({
     ["<C-r>"] = "actions.refresh",
   },
   win_options = {
-    signcolumn = "yes:2",
+    signcolumn = "auto:2",
   },
 })
+
+require("oil-git-status").setup()
 
 -- Treesitter
 require("nvim-treesitter.configs").setup({
@@ -496,7 +493,7 @@ require("mason-nvim-dap").setup({
 require("mason-lspconfig").setup({
   ensure_installed = {
     "lua_ls",
-    "python-lsp-server",
+    "pylsp",
     "ruby_lsp",
     "clojure_lsp",
     "fennel_language_server",
@@ -506,9 +503,8 @@ require("mason-lspconfig").setup({
 local lsp_attach = function(client, bufnr)
 end
 
-local lspconfig = require 'lspconfig'
 local lsp_capabilities = require("cmp_nvim_lsp").default_capabilities()
-lspconfig.lua_ls.setup {
+vim.lsp.config("lua_ls", {
   on_attach = lsp_attach,
   on_init = function(client)
     local path = client.workspace_folders[1].name
@@ -544,23 +540,23 @@ lspconfig.lua_ls.setup {
     },
   },
   capabilities = lsp_capabilities,
-}
+})
 
--- require('lspconfig').bazel.setup {
+-- vim.lsp.config("bazel", {
 --   cmd = { "bazel-bsp" },
 --   root_dir = function(fname)
---     return require('lspconfig').util.root_pattern('WORKSPACE', 'WORKSPACE.bazel')(fname)
+--     return vim.lsp.config.util.root_pattern('WORKSPACE', 'WORKSPACE.bazel')(fname)
 --   end,
--- }
+-- })
 
--- require('lspconfig.configs').fennel_language_server = {
+-- vim.lsp.config.configs.fennel_language_server = {
 --   default_config = {
 --     -- replace it with true path
 --     cmd = { 'fennel-language-server' },
 --     filetypes = { 'fennel' },
 --     single_file_support = true,
 --     -- source code resides in directory `fnl/`
---     root_dir = lspconfig.util.root_pattern("fnl", "lua"),
+--     root_dir = vim.lsp.config.util.root_pattern("fnl", "lua"),
 --     settings = {
 --       fennel = {
 --         workspace = {
@@ -576,7 +572,7 @@ lspconfig.lua_ls.setup {
 --   },
 -- }
 
--- lspconfig.fennel_language_server.setup {
+-- vim.lsp.config.fennel_language_server.setup {
 --   on_attach = lsp_attach,
 -- }
 
@@ -624,7 +620,7 @@ end
 
 vim.cmd('command! PylspInstallPlugins lua installPylspPlugins()')
 
-lspconfig.pylsp.setup({
+vim.lsp.config("pylsp", {
   on_attach = lsp_attach,
   capabilities = lsp_capabilities,
   settings = {
@@ -632,7 +628,10 @@ lspconfig.pylsp.setup({
       plugins = {
         autoimport = { enabled = false },
         isort = { enabled = false },
-        black = { enabled = true },
+        black = {
+          enabled = true,
+          line_length = 120,
+        },
         ruff = { enabled = false },
         mypy = { enabled = true },
 
@@ -651,23 +650,23 @@ lspconfig.pylsp.setup({
   },
 })
 
-lspconfig.sorbet.setup({
+vim.lsp.config("sorbet", {
   on_attach = lsp_attach,
   capabilities = lsp_capabilities,
 })
 
-lspconfig.syntax_tree.setup({
+vim.lsp.config("syntax_tree", {
   on_attach = lsp_attach,
   capabilities = lsp_capabilities,
 })
 
-lspconfig.ruby_lsp.setup({
+vim.lsp.config("ruby_lsp", {
   on_attach = lsp_attach,
   capabilities = lsp_capabilities,
 })
 
 
-lspconfig.clojure_lsp.setup({
+vim.lsp.config("clojure_lsp", {
   on_attach = lsp_attach,
   capabilities = lsp_capabilities,
 })
@@ -959,6 +958,14 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   end,
 })
 
+-- open python wheel files as zip files
+vim.api.nvim_create_autocmd({ "BufReadCmd" }, {
+  pattern = { "*.whl" },
+  callback = function()
+    vim.fn["zip#Browse"](vim.fn.expand("<amatch>"))
+  end,
+})
+
 -- Completion
 local cmp = require("cmp")
 local luasnip = require("luasnip")
@@ -1085,6 +1092,12 @@ nmap("<Leader>CC", function()
   require("copilot.suggestion").toggle_auto_trigger()
 end)
 nmap("<Leader>CCC", toggle_cmp_completion)
+imap("<M-i>", function()
+  return require("copilot.suggestion").accept_word()
+end)
+imap("<M-l>", function()
+  return require("copilot.suggestion").accept()
+end)
 
 
 -- AI setup

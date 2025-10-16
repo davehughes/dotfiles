@@ -44,8 +44,6 @@ in
     cachix
     nix-prefetch
 
-    firefox
-
     bash
     babashka
     neovim
@@ -58,7 +56,6 @@ in
     ripgrep
     jq
     yq
-    json2hcl
     jet
     tree
     ctags
@@ -94,9 +91,8 @@ in
     sqlite
     duckdb
     postgresql
-    libpq
     redis
-    # iredis
+    iredis
     # snowsql # TODO: 'unfree' package, need to figure out how to set this up
 
     clojure
@@ -114,7 +110,6 @@ in
     regctl
     scala
     scalafmt
-    # ammonite
     lua5_1
     luarocks
     jdk24
@@ -145,16 +140,14 @@ in
     awscli2
     azure-storage-azcopy
     docker-compose
-    podman
-    minikube
-    wireshark
-    qemu
     # Switching to per-project node_modules install because I can't figure out how to upgrade the
     # woefully out-of-date version home-manager is installing
     graphite-cli
-    obsidian
     sl
     cowsay
+    ollama
+    wireshark
+    qemu
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -250,6 +243,7 @@ in
       set-window-option -g automatic-rename off
       set -s set-clipboard on
       set -as terminal-overrides ',xterm*:Smul=\E[4m'
+      set -g xterm-keys on
       set-environment -g COLORTERM "truecolor"
 
       # get rid of annoying lag when pressing Esc in vims
@@ -297,8 +291,7 @@ in
       ss = "cd ~/projects/source && source .localdev/rc";
     };
 
-    # initContent = ''
-    initExtra = ''
+    initContent = ''
       # apply emacs keymap
       bindkey -e
       unsetopt correct_all
@@ -370,6 +363,7 @@ in
       clear_all_shortcuts = "yes";
       hide_window_decorations = "yes";
       macos_quit_when_last_window_closed = "yes";
+      macos_option_as_alt = "yes";
     };
     keybindings = {
       # skhd maps Meta-C/Meta-V to copy/paste in kitty below, which is preferable to the settings below
@@ -569,6 +563,11 @@ in
     cmd - v [
       "kitty" : skhd -k "ctrl + shift - v"
       ".kitty-wrapped" : skhd -k "ctrl + shift - v"
+    ]
+
+    cmd - l [
+      "kitty" : skhd -k "alt - l"
+      ".kitty-wrapped" : skhd -k "alt - l"
     ]
 
     # Experimental
