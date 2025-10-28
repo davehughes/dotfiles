@@ -67,6 +67,7 @@ in
     curl
     grpcurl
     wget
+    atuin
 
     mitmproxy
     oath-toolkit
@@ -301,6 +302,9 @@ in
 
       # set up fasd
       eval "$(fasd --init auto zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zshwcomp-install)"
+
+      # initialize atuin shell integration
+      eval "$(atuin init zsh)"
 
       fpath=(~/.config/zsh/functions "$fpath[@]")
       autoload -Uz \
