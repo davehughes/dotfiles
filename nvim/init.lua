@@ -311,6 +311,9 @@ vim.opt.guicursor = ""
 vim.opt.tags = ".tags,tags,env/lib/tags,env/src/tags"
 vim.opt.clipboard = "unnamed"
 vim.opt.signcolumn = "auto:2"
+-- show trailing whitespace
+vim.opt_local.list = true
+vim.opt_local.listchars = { trail = "♦" }
 -- vim.opt.wildignore+=*.o,*.obj,.git,*.pyc,*.egg-info,*.vim,*/htmlcov/*,*/vendor/*
 -- vim.g.mapleader = "\\"
 vim.g.mapleader = ","
@@ -398,6 +401,7 @@ nmap("<C-p>", ":Telescope git_files<CR>")
 -- nmap("<C-o>", ":Telescope frecency<CR>")
 nmap("<C-o>", ":Telescope oldfiles<CR>")
 nmap("<C-i>", ":Telescope live_grep<CR>")
+-- nmap("<C-u>", ":Telescope buffers<CR>")
 -- nmap("<C-c>", ":Telescope aichats<CR>")
 -- nmap("<C-m>", ":Telescope marks<CR>")
 
@@ -865,6 +869,14 @@ require("gitsigns").setup {
   linehl = false,
 }
 
+-- highlight trailing whitespace in certain filetypes
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "python", "scala", "thrift", "lua", "ruby", "clojure", "fennel", "hcl", "terraform" },
+  callback = function()
+    vim.fn.matchadd("Error", [[\s\+$]])
+  end,
+})
+
 -- customize gitsigns icons
 local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " " }
 for type, icon in pairs(signs) do
@@ -960,7 +972,7 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 
 -- open python wheel files as zip files
 vim.api.nvim_create_autocmd({ "BufReadCmd" }, {
-  pattern = { "*.whl" },
+  pattern = { "*.whl", "*.srcjar" },
   callback = function()
     vim.fn["zip#Browse"](vim.fn.expand("<amatch>"))
   end,
@@ -1103,7 +1115,7 @@ end)
 -- AI setup
 vim.g.vim_ai_debug = 1
 vim.g.vim_ai_debug_log_file = "/tmp/vim-ai.log"
-vim.g.vim_ai_model = "claude-4-sonnet"
+vim.g.vim_ai_model = "claude-opus-4-5"
 vim.g.lolmax_root_url = "http://localhost:8000"
 -- nmap("<Leader>ai", ":set noautoindent<CR>:AIChat<CR>")
 -- vmap("<Leader>ai", ":AI<CR>")

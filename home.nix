@@ -113,7 +113,8 @@ in
     scalafmt
     lua5_1
     luarocks
-    jdk24
+    jdk17
+    # jdk24
     fennel-ls
     thrift
 
@@ -149,6 +150,7 @@ in
     ollama
     wireshark
     qemu
+    mermaid-cli
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -169,7 +171,7 @@ in
     DISABLE_AUTO_TITLE = "true";
     VIRTUAL_ENV_DISABLE_PROMPT = "true";
 
-    JAVA_HOME = "${pkgs.jdk24}/lib/openjdk";
+    JAVA_HOME = "${pkgs.jdk17}";
   };
 
   # NOTE: changes here require a session restart via e.g. rebooting or killing the WindowServer
