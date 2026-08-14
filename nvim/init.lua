@@ -81,13 +81,14 @@ local lazy_plugins = {
   {
     'nvim-orgmode/orgmode',
     event = 'VeryLazy',
-    ft = { 'org' },
     config = function()
       -- Setup orgmode
       require('orgmode').setup({
-        org_agenda_files = '~/notes/**/*',
-        org_default_notes_file = '~/notes/refile.org',
+        org_agenda_files = '~/notes/orgfiles/**/*',
+        org_default_notes_file = '~/notes/orgfiles/refile.org',
       })
+      -- Experimental LSP support
+      vim.lsp.enable('org')
     end,
   },
 
@@ -191,11 +192,11 @@ local lazy_plugins = {
   "hrsh7th/cmp-cmdline",
   "kristijanhusak/vim-dadbod-completion",
   "alexander-born/cmp-bazel",
-  "zbirenbaum/copilot.lua",
-  {
-    "zbirenbaum/copilot-cmp",
-    dependencies = "zbirenbaum/copilot.lua",
-  },
+  -- "zbirenbaum/copilot.lua",
+  -- {
+  --   "zbirenbaum/copilot-cmp",
+  --   dependencies = "zbirenbaum/copilot.lua",
+  -- },
   {
     "saadparwaiz1/cmp_luasnip",
     dependencies = "L3MON4D3/LuaSnip",
@@ -397,16 +398,16 @@ require("telescope").load_extension("recent_files")
 require("telescope").load_extension("frecency")
 require("lsp-toggle").setup({ telescope = true })
 
-nmap("<C-p>", ":Telescope git_files<CR>")
--- nmap("<C-o>", ":Telescope frecency<CR>")
-nmap("<C-o>", ":Telescope oldfiles<CR>")
-nmap("<C-i>", ":Telescope live_grep<CR>")
--- nmap("<C-u>", ":Telescope buffers<CR>")
--- nmap("<C-c>", ":Telescope aichats<CR>")
--- nmap("<C-m>", ":Telescope marks<CR>")
+nmap("<leader>l", ":Telescope buffers<CR>")
+nmap("<leader>L", ":Telescope git_files<CR>")
+nmap("<leader>/", ":Telescope live_grep<CR>")
+-- nmap("<leader>lo", ":Telescope oldfiles<CR>")
+-- nmap("<leader>lf", ":Telescope frecency<CR>")
+-- nmap("<leader>lm", ":Telescope marks<CR>")
+-- nmap("<leader>la", ":Telescope aichats<CR>")
 
 -- Oil
-nmap("<Leader>.", ":Oil<CR>")
+nmap("<leader>.", ":Oil<CR>")
 
 require("oil").setup({
   view_options = {
@@ -615,7 +616,7 @@ _G.installPylspPlugins = function()
     -- "pylsp-rope",
     -- "python-lsp-ruff",
     "python-lsp-black",
-    "python-lsp-autoimport"
+    -- "python-lsp-autoimport"
   }
   for _, plugin in ipairs(plugins) do
     vim.cmd("PylspInstall " .. plugin)
@@ -1085,31 +1086,31 @@ keymap({ "i", "s" }, "<C-h>", function()
 end)
 
 -- Copilot
-require("copilot").setup({
-  panel = {
-    enabled = false,
-  },
-  suggestion = {
-    enabled = true,
-    auto_trigger = true,
-  },
-})
+-- require("copilot").setup({
+--   panel = {
+--     enabled = false,
+--   },
+--   suggestion = {
+--     enabled = true,
+--     auto_trigger = true,
+--   },
+-- })
 -- require("copilot_cmp").setup()
 
-nmap("<Leader>C", function()
-  require("copilot.suggestion").toggle_auto_trigger()
-  toggle_cmp_completion()
-end)
-nmap("<Leader>CC", function()
-  require("copilot.suggestion").toggle_auto_trigger()
-end)
-nmap("<Leader>CCC", toggle_cmp_completion)
-imap("<M-i>", function()
-  return require("copilot.suggestion").accept_word()
-end)
-imap("<M-l>", function()
-  return require("copilot.suggestion").accept()
-end)
+-- nmap("<Leader>C", function()
+--   require("copilot.suggestion").toggle_auto_trigger()
+--   toggle_cmp_completion()
+-- end)
+-- nmap("<Leader>CC", function()
+--   require("copilot.suggestion").toggle_auto_trigger()
+-- end)
+-- nmap("<Leader>CCC", toggle_cmp_completion)
+-- imap("<M-i>", function()
+--   return require("copilot.suggestion").accept_word()
+-- end)
+-- imap("<M-l>", function()
+--   return require("copilot.suggestion").accept()
+-- end)
 
 
 -- AI setup
@@ -1214,7 +1215,7 @@ vim.fn.sign_define("DiagnosticSignInfo", { text = "ℹ", texthl = "DiagnosticSig
 vim.fn.sign_define("DiagnosticSignHint", { text = "➤", texthl = "DiagnosticSignHint" })
 
 -- LSP bindings
-nmap("gD", vim.lsp.buf.definition)
+nmap("gd", vim.lsp.buf.definition)
 nmap("K", vim.lsp.buf.hover)
 nmap("gi", vim.lsp.buf.implementation)
 nmap("gr", vim.lsp.buf.references)

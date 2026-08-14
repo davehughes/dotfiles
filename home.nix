@@ -46,11 +46,16 @@ in
 
     bash
     babashka
-    neovim
     cmake
+    pkgconf
+    openssl.dev
     bazelisk
     bazel-buildtools
 
+    git
+    git-filter-repo
+    gh
+    tuicr
     fasd
     fd
     ripgrep
@@ -68,6 +73,7 @@ in
     grpcurl
     wget
     atuin
+    opencode
 
     mitmproxy
     oath-toolkit
@@ -94,6 +100,7 @@ in
     postgresql
     redis
     iredis
+    libmaxminddb
     # snowsql # TODO: 'unfree' package, need to figure out how to set this up
 
     clojure
@@ -142,6 +149,7 @@ in
     awscli2
     azure-storage-azcopy
     docker-compose
+    oras
     # Switching to per-project node_modules install because I can't figure out how to upgrade the
     # woefully out-of-date version home-manager is installing
     graphite-cli
@@ -151,6 +159,22 @@ in
     wireshark
     qemu
     mermaid-cli
+    graph-easy
+    pandoc
+    # pdflatex
+    texliveMedium
+
+    # music tools
+    # dexed  # broken: JUCE requires macOS 10.10 but build targets 10.9
+    reaper
+    # lowfi
+    ffmpeg
+
+    # out-of-band packages
+    # cs launch org.virtuslab:bazel-bsp:4.0.2 -M org.jetbrains.bsp.bazel.install.Install
+    # (older way: cs launch org.jetbrains.bsp:bazel-bsp:3.2.0 -M org.jetbrains.bsp.bazel.install.Install)
+
+    # cargo install ck-search
 
     # # You can also create simple shell scripts directly inside your
     # # configuration. For example, this adds a command 'my-hello' to your
@@ -172,6 +196,12 @@ in
     VIRTUAL_ENV_DISABLE_PROMPT = "true";
 
     JAVA_HOME = "${pkgs.jdk17}";
+
+    PI_CODING_AGENT_DIR = "$HOME/.config/pi/agent";
+
+    # Keep Claude Code's output in the normal scrollback buffer rather than the
+    # terminal's alternate screen, so the session stays scrollable afterwards.
+    CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN = "1";
   };
 
   # NOTE: changes here require a session restart via e.g. rebooting or killing the WindowServer
@@ -184,9 +214,42 @@ in
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  programs.neovim = {
+    enable = true;
+    extraPackages = [ pkgs.jdk17 ];
+
+    # Adopt the post-26.05 defaults. These control the *remote plugin* providers
+    # (:ruby / :rubyfile, and pynvim-based rplugins), which nothing in nvim/ uses.
+    # Unrelated to treesitter parsers, ruby_lsp, or the debugpy DAP adapter --
+    # that resolves python3 from PATH, not from the provider.
+    withRuby = false;
+    withPython3 = false;
+  };
+
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
+
+    # Helpers available to every .envrc (written to ~/.config/direnv/direnvrc).
+    stdlib = ''
+      # Export secrets from the macOS Keychain by name, so an .envrc names keys
+      # rather than values and stays safe to commit. Store one first with:
+      #   security add-generic-password -a "$USER" -s MY_TOKEN -w
+      # (the bare -w prompts, keeping the value out of shell history)
+      #
+      # Usage in .envrc:  use_keychain ANTHROPIC_API_KEY DATABRICKS_TOKEN
+      use_keychain() {
+        local k v
+        for k in "$@"; do
+          if ! v="$(security find-generic-password -a "$USER" -s "$k" -w 2>/dev/null)"; then
+            log_error "use_keychain: no Keychain item '$k' for account '$USER'"
+            log_error "  add it with: security add-generic-password -a \"$USER\" -s $k -w"
+            continue
+          fi
+          export "$k"="$v"
+        done
+      }
+    '';
   };
 
   # NOTE: I've seen some weird interactions where tmux settings don't get applied until the tmux server is killed
@@ -251,6 +314,10 @@ in
 
       # get rid of annoying lag when pressing Esc in vims
       set -s escape-time 0
+
+      # force tmux to forward extended keys (like Shift+Enter) unconditionally
+      set -s extended-keys always
+      set -as terminal-features 'xterm*:extkeys'
     '';
   };
 
@@ -286,12 +353,12 @@ in
       ":ai" = "nvim +:AIChat +:only +:set noautoindent";
       vim = "nvim"; # until I can learn...
       bazel = "bazelisk";
-      kubectl = "minikube kubectl --";
+      cc = "claude";
 
       pg-list = "dave pg-list";
       pg-edit = "$EDITOR ~/.pgpass";
 
-      ss = "cd ~/projects/source && source .localdev/rc";
+      ss = "source $HOME/projects/yobi-localdev/rc";
     };
 
     initContent = ''
@@ -313,6 +380,7 @@ in
         compinit \
         edit-interactive \
         findenv mkenv \
+        gs \
         kill-spotify \
         path-append path-prepend path-edit path-ls \
         palette \
@@ -323,6 +391,28 @@ in
       compinit
 
       zstyle ':completion:*:*:git:*' script ~/.zsh/git-completion.bash
+
+      # load 'wt' worktree manager autocomplete
+      source ~/.local/.venv/bin/activate
+      eval "$(register-python-argcomplete wt)"
+    '';
+
+    # Written to ~/.config/zsh/.zshenv, so it applies to non-interactive shells
+    # and scripts too -- not just interactive ones like initContent.
+    envExtra = ''
+      # Machine-local environment, deliberately NOT managed by Nix and NOT in
+      # the (public) dotfiles repo. Edit it directly; no rebuild needed, picked
+      # up by the next shell. Keep real secrets in the Keychain instead --
+      # see `use_keychain` in programs.direnv.stdlib.
+      [[ -f ''${HOME}/.config/zsh/local.zsh ]] && source ''${HOME}/.config/zsh/local.zsh
+
+      # Long-lived parents (tmux server, kitty) cache __HM_SESS_VARS_SOURCED and
+      # block the guarded source above. Re-apply from the stable profile path.
+      if [[ -r ''${HOME}/.nix-profile/etc/profile.d/hm-session-vars.sh ]]; then
+        unset __HM_SESS_VARS_SOURCED
+        . ''${HOME}/.nix-profile/etc/profile.d/hm-session-vars.sh
+      fi
+      typeset -U path fpath manpath
     '';
 
     # TODO: peruse https://github.com/unixorn/awesome-zsh-plugins and add anything that looks useful
@@ -371,6 +461,7 @@ in
       macos_quit_when_last_window_closed = "yes";
       macos_option_as_alt = "yes";
     };
+
     keybindings = {
       # skhd maps Meta-C/Meta-V to copy/paste in kitty below, which is preferable to the settings below
       "ctrl+shift+c" = "copy_to_clipboard";
@@ -468,22 +559,14 @@ in
   # Configure programs; https://rycee.gitlab.io/home-manager/options.html to see options
   programs.git = {
     enable = true;
-    userEmail = "d@vidhughes.com";
-    userName = "David Hughes";
     signing.key = "D9DAFC63";
-    extraConfig = {
-      commit = {
-        gpgSign = true;
-      };
-      tag = {
-        gpgSign = true;
-      };
-      init = {
-        defaultBranch = "main";
-      };
-      rebase = {
-        autosquash = true;
-      };
+    settings = {
+      user.email = "d@vidhughes.com";
+      user.name = "David Hughes";
+      commit.gpgSign = true;
+      tag.gpgSign = true;
+      init.defaultBranch = "main";
+      rebase.autosquash = true;
     };
   };
 
@@ -501,6 +584,7 @@ in
   home.file.".config/zsh/scripts/rust.zsh".text = ''
     # Load PATH and any other environment updates from rustup/cargo
     test -f ''${HOME}/.cargo/env && source ''${HOME}/.cargo/env
+    path-append ''${HOME}/.cargo/bin
   '';
 
   home.file.".config/zsh/scripts/golang.zsh".text = ''

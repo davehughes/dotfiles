@@ -1,0 +1,14 @@
+NIX_APPS_DIR="$HOME/.nix-profile/Applications"
+SYSTEM_APPS_DIR="/Applications"
+
+if [ -d "$NIX_APPS_DIR" ]; then
+    for app in "$NIX_APPS_DIR"/*.app; do
+        if [ -d "$app" ]; then
+            app_name=$(basename "$app")
+            if [ ! -e "$SYSTEM_APPS_DIR/$app_name" ]; then
+                ln -s "$app" "$SYSTEM_APPS_DIR/$app_name"
+                echo "Linked $app_name"
+            fi
+        fi
+    done
+fi

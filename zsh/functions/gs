@@ -1,0 +1,62 @@
+# gs — shorthand wrapper around `gh stack`, using `gt`-style subcommand letters.
+#
+# Each shorthand echoes the canonical `gh stack ...` command to stderr before
+# running it, so the aliases can be dropped once the real commands stick.
+# Set GS_QUIET=1 to silence the echo.
+#
+# Note: `gh stack modify` is NOT an amend — it opens a restructure TUI.
+# The amend-and-restack loop (old `gt m`) is `gs m` below.
+
+gs-run() {
+  if [[ -z "$GS_QUIET" ]]; then
+    # (q-) re-quotes each argument so the printed line is copy-pasteable
+    local line="${(j: :)${(q-)@}}"
+    if [[ -t 2 ]]; then
+      printf '\033[2m→ %s\033[0m\n' "$line" >&2
+    else
+      printf '→ %s\n' "$line" >&2
+    fi
+  fi
+  "$@"
+}
+
+local sub="$1"; shift 2>/dev/null
+
+case "$sub" in
+  # amend current commit + restack everything above  (old `gt m`)
+  m)
+    if [[ "$1" == "-e" || "$1" == "--edit" ]]; then
+      gs-run git commit -a --amend && gs-run gh stack rebase --upstack
+    else
+      gs-run git commit -aq --amend --no-edit && gs-run gh stack rebase --upstack
+    fi
+    ;;
+
+  s)    gs-run gh stack submit "$@" ;;
+  co)   gs-run gh stack switch "$@" ;;          # in-stack picker
+  cot)  gs-run gh stack checkout "$@" ;;        # cross-stack / by PR number
+
+  # create: init if we're not in a stack yet, otherwise add
+  c)
+    if gh stack view --short >/dev/null 2>&1; then
+      gs-run gh stack add "$@"
+    else
+      gs-run gh stack init "$@"
+    fi
+    ;;
+
+  ls)   gs-run gh stack view --short "$@" ;;
+  l)    gs-run gh stack view "$@" ;;
+  u)    gs-run gh stack up "$@" ;;
+  d)    gs-run gh stack down "$@" ;;
+  t)    gs-run gh stack trunk ;;
+  top)  gs-run gh stack top ;;
+  bot)  gs-run gh stack bottom ;;
+  r)    gs-run gh stack rebase "$@" ;;
+  cont) gs-run gh stack rebase --continue "$@" ;;
+  sync) gs-run gh stack sync "$@" ;;
+  mod)  gs-run gh stack modify "$@" ;;
+
+  "")   gs-run gh stack view ;;
+  *)    gh stack "$sub" "$@" ;;                 # passthrough — already canonical
+esac
