@@ -223,7 +223,7 @@ in
     # Unrelated to treesitter parsers, ruby_lsp, or the debugpy DAP adapter --
     # that resolves python3 from PATH, not from the provider.
     withRuby = false;
-    withPython3 = false;
+    withPython3 = true;
   };
 
   programs.direnv = {
@@ -318,6 +318,19 @@ in
       # force tmux to forward extended keys (like Shift+Enter) unconditionally
       set -s extended-keys always
       set -as terminal-features 'xterm*:extkeys'
+
+      # forward OSC 8 hyperlinks to the outer terminal. kitty supports them, but
+      # the xterm-kitty terminfo entry installed here has no Hls capability, so
+      # tmux assumes the outer terminal can't render them and strips them.
+      set -as terminal-features 'xterm*:hyperlinks'
+
+      # in copy-mode, act on the OSC 8 hyperlink under the cursor: o opens it,
+      # Y copies it. Works on markdown-style links where the URL is an attribute
+      # on the cells rather than visible text, so hint/regex pickers can't see it.
+      bind -T copy-mode-vi o if -F '#{copy_cursor_hyperlink}' 'run-shell -b "open -- #{q:copy_cursor_hyperlink}"' 'display-message "no hyperlink under cursor"'
+      # set-buffer does not expand formats (it has no -F), so the copy has to go
+      # through run-shell, which does. run-shell is also why o works directly.
+      bind -T copy-mode-vi Y if -F '#{copy_cursor_hyperlink}' 'run-shell -b "tmux set-buffer -w -- #{q:copy_cursor_hyperlink}" ; display-message "copied hyperlink"' 'display-message "no hyperlink under cursor"'
     '';
   };
 
@@ -466,6 +479,12 @@ in
       # skhd maps Meta-C/Meta-V to copy/paste in kitty below, which is preferable to the settings below
       "ctrl+shift+c" = "copy_to_clipboard";
       "ctrl+shift+v" = "paste_from_clipboard";
+
+      # hint embedded OSC 8 hyperlinks: o opens, y yanks. Matches the hyperlink
+      # attribute on the cells, so it finds links whose URL is never rendered as
+      # text (markdown-style labels, and gh/git/delta output).
+      "ctrl+shift+f" = "kitten hints --type hyperlink";
+      "ctrl+shift+y" = "kitten hints --type hyperlink --program @";
     };
   };
 
