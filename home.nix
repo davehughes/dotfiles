@@ -218,12 +218,21 @@ in
     enable = true;
     extraPackages = [ pkgs.jdk17 ];
 
-    # Adopt the post-26.05 defaults. These control the *remote plugin* providers
-    # (:ruby / :rubyfile, and pynvim-based rplugins), which nothing in nvim/ uses.
-    # Unrelated to treesitter parsers, ruby_lsp, or the debugpy DAP adapter --
-    # that resolves python3 from PATH, not from the provider.
+    # Nothing here uses :ruby, but vim-ai calls py3eval/:python3 directly, so it
+    # needs a python3 provider (an interpreter with pynvim). Unrelated to
+    # treesitter parsers, ruby_lsp, or the debugpy DAP adapter -- that resolves
+    # python3 from PATH, not from the provider.
     withRuby = false;
     withPython3 = true;
+
+    # The provider is configured by a g:python3_host_prog line that home-manager
+    # puts in the init.lua it generates at ~/.config/nvim/init.lua. home.file
+    # below already owns that path, so the generated file loses the overlap and
+    # is dropped, leaving no provider at all. Sideloading passes that same
+    # content to the wrapper as --cmd 'lua dofile(...)' instead: nothing is
+    # written to ~/.config/nvim, so there is no overlap, and it runs before
+    # init.lua -- hence before lazy.nvim sources vim-ai.
+    sideloadInitLua = true;
   };
 
   programs.direnv = {
@@ -333,6 +342,14 @@ in
       bind -T copy-mode-vi Y if -F '#{copy_cursor_hyperlink}' 'run-shell -b "tmux set-buffer -w -- #{q:copy_cursor_hyperlink}" ; display-message "copied hyperlink"' 'display-message "no hyperlink under cursor"'
     '';
   };
+
+  # A recursive home.file over a whole config dir silently beats any module that
+  # writes a single file underneath it -- the default here is "ignore", which
+  # keeps the recursive link, drops the module's file, and only logs one line
+  # mid-switch. That is how the nvim python3 provider went missing. Fail the
+  # build instead. (Not "override": that flips the winner and would clobber
+  # hand-written files with generated ones.)
+  home.fileOverlapResolution = "error";
 
   home.file.".tmuxp" = { source = ./tmuxp; recursive = true; };
   home.file.".config/nvim" = { source = ./nvim; recursive = true; };
