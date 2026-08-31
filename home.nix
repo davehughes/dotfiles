@@ -617,6 +617,15 @@ in
   home.file.".clojure/deps.edn".source = ./clojure-deps.edn;
   home.file.".lein/profiles.clj".source = ./lein-profiles.clj;
 
+  # Claude Code policy. Out-of-store symlinks, deliberately: sessions edit these files
+  # (with approval) as corrections land, so they must stay writable. The repo copy is
+  # the file itself, not a snapshot of it -- edits are visible in git immediately and
+  # take effect without a rebuild.
+  home.file.".claude/CLAUDE.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/home-manager/claude/CLAUDE.md";
+  home.file.".claude/project-notes".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/home-manager/claude/project-notes";
+
   home.file.".config/zsh/scripts/rust.zsh".text = ''
     # Load PATH and any other environment updates from rustup/cargo
     test -f ''${HOME}/.cargo/env && source ''${HOME}/.cargo/env
