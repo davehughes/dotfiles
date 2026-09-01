@@ -47,7 +47,10 @@ in
     bash
     babashka
     cmake
-    pkgconf
+    # pkg-config rather than pkgconf: -sys crates shell out to `pkg-config` by
+    # name, and pkgconf provides no such binary. The two collide in buildEnv
+    # over share/aclocal/pkg.m4, so only one of them can be here.
+    pkg-config
     openssl.dev
     bazelisk
     bazel-buildtools
@@ -74,6 +77,7 @@ in
     wget
     atuin
     opencode
+    glow
 
     mitmproxy
     oath-toolkit
@@ -202,11 +206,13 @@ in
     # Keep Claude Code's output in the normal scrollback buffer rather than the
     # terminal's alternate screen, so the session stays scrollable afterwards.
     CLAUDE_CODE_DISABLE_ALTERNATE_SCREEN = "1";
+
+    PKG_CONFIG_PATH = "${config.home.profileDirectory}/lib/pkgconfig";
   };
 
   # NOTE: changes here require a session restart via e.g. rebooting or killing the WindowServer
   home.sessionPath = [
-    "./node_modules/.bin"
+    "$HOME/.cargo/bin"
     "$HOME/.local/node_modules/.bin"
     "$HOME/.local/share/nvim/mason/bin"
   ];
@@ -382,6 +388,7 @@ in
       ":/" = "nvim +'Telescope live_grep'";
       ":ai" = "nvim +:AIChat +:only +:set noautoindent";
       vim = "nvim"; # until I can learn...
+      gs = "git stack";
       bazel = "bazelisk";
       cc = "claude";
 
@@ -410,7 +417,6 @@ in
         compinit \
         edit-interactive \
         findenv mkenv \
-        gs \
         kill-spotify \
         path-append path-prepend path-edit path-ls \
         palette \
