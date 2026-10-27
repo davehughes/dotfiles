@@ -56,6 +56,7 @@ in
     bazel-buildtools
 
     git
+    git-spice
     git-filter-repo
     gh
     tuicr
@@ -151,12 +152,10 @@ in
 
     terraform
     awscli2
+    s5cmd
     azure-storage-azcopy
     docker-compose
     oras
-    # Switching to per-project node_modules install because I can't figure out how to upgrade the
-    # woefully out-of-date version home-manager is installing
-    graphite-cli
     sl
     cowsay
     ollama
@@ -212,6 +211,7 @@ in
 
   # NOTE: changes here require a session restart via e.g. rebooting or killing the WindowServer
   home.sessionPath = [
+    "$HOME/.local/bin"
     "$HOME/.cargo/bin"
     "$HOME/.local/node_modules/.bin"
     "$HOME/.local/share/nvim/mason/bin"
@@ -386,11 +386,12 @@ in
       ":e" = "$EDITOR";
       ":q" = "exit";
       ":/" = "nvim +'Telescope live_grep'";
-      ":ai" = "nvim +:AIChat +:only +:set noautoindent";
       vim = "nvim"; # until I can learn...
-      gs = "git stack";
+      # gs = "git stack";
       bazel = "bazelisk";
       cc = "claude";
+      gls = "git log --oneline --stat";
+      glp = "git log --oneline --patch";
 
       pg-list = "dave pg-list";
       pg-edit = "$EDITOR ~/.pgpass";
@@ -412,6 +413,9 @@ in
       # initialize atuin shell integration
       eval "$(atuin init zsh)"
 
+      # initialize workenv shell integration
+      eval "$(we shell zsh)"
+
       fpath=(~/.config/zsh/functions "$fpath[@]")
       autoload -Uz \
         compinit \
@@ -427,6 +431,8 @@ in
       compinit
 
       zstyle ':completion:*:*:git:*' script ~/.zsh/git-completion.bash
+
+      eval "$(gs shell completion zsh)"
 
       # load 'wt' worktree manager autocomplete
       source ~/.local/.venv/bin/activate

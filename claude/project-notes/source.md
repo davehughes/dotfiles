@@ -57,3 +57,17 @@ file to add them without being asked.
 - **Identity naming**: user-assigned identities are `{cluster}-{role}`, federated credentials
   `{cluster}-{role}-federated`, the k8s service account just `{role}`
   (`yobi-aks-useast2-otel-collector` / `...-federated` / `otel-collector`).
+
+## Stacked branches: git-spice
+
+Every stacking, restacking and PR operation goes through git-spice, `gs` (`~/.nix-profile/bin/gs`).
+Its tracked base is what sets PR bases on GitHub, so no other stacking tool or skill is run in this
+repo's worktrees, even read-only: a second tool asserting bases is how #8058 kept snapping back to
+`main` (2026-10-08). The repo is initialised and GitHub auth is in place.
+
+- `gs ls` for the tree; `gs branch track <branch> --base <parent>` for a branch created outside
+  git-spice, including one checked out in another worktree.
+- `gs repo sync` after a merge, then `gs upstack restack`. A branch held by another worktree is
+  skipped; restack it with `gs branch restack` from there.
+- `gs branch submit --fill --no-prompt` opens a ready PR titled from the first commit; set the
+  body afterwards with `gh pr edit`.

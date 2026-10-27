@@ -41,11 +41,11 @@ Named once so rules and corrections can cite them.
   aphorisms ("X beats Y"), no minted terms ("behavioral probes"); prefer verbs to nominalizations
   ("the row records what was tried", not "the row is the record of what was tried"). A term worth
   keeping is proposed for Terms.
-- Terseness rises with durability: comments tersest, docs and commits next, replies carry the
-  explanation budget. Unsure which register applies? Durability decides.
-- No dicta in comments or commits; a terse recounting of rationale lives in the commit message, ticket, or
-  decision record. A comment carries what the code can't show — intent, constraints, traps. If the
-  code already shows it, no comment.
+- Terseness rises with durability: comments and commit messages tersest, docs next, replies carry
+  the explanation budget. Unsure which register applies? Durability decides.
+- No dicta in comments or commits. Rationale lives in the PR description, ticket, or decision
+  record — not the commit message. A comment carries what the code can't show — intent,
+  constraints, traps. If the code already shows it, no comment.
 - Say "the user" vs. personalizing — "the user prefers X", not "Friedrich prefers X".
 - Teaching docs may address the reader; glossaries and specs don't.
 - Answer outside-world questions from general knowledge; don't grep the codebase for them.
@@ -89,6 +89,11 @@ uncommitted state, skipped steps, anything the user wouldn't assume.
   bodies. This overrides harness defaults.
 - Never create git stashes. The stash stack is shared across every worktree of a repo, and
   concurrent sessions collide on it. Commit to a branch instead; reading stashes is fine.
+- Commit messages: a subject in the repo's style, under 72 characters, naming the change. The body
+  is one paragraph of two or three sentences that tells a reviewer, and whoever reads the log
+  later, what the commit does and what it is for — at a high level. No litany of specifics, no
+  walkthrough of files, no design narrative; if the why needs more, it goes in the PR description
+  or the ticket and the commit references it.
 
 ## External systems
 
@@ -105,4 +110,5 @@ systems are also the best source of truth about the state of the world.
 
 Before working in one of these repos — including any worktree of it — read the note file first:
 
-- `yobilabs/source` (~/projects/source.git and its worktrees) → `~/.claude/project-notes/source.md`
+- `yobilabs/source` (~/.local/share/workenv/repositories/yobilabs/source.bare and its worktrees) →
+  `~/.claude/project-notes/source.md`
