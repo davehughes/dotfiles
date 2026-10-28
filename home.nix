@@ -139,17 +139,10 @@ in
     ];
 
     python = [
-      python312
-      pyenv
-      # (pkgs.python312.withPackages (p: with p; [
-      #   pip
-      #   poetry-core
-      #   ipython
-      #   ipdb
-      #   debugpy
-      #   dave-cli
-      #   autoimport
-      # ]))
+      python314
+      uv
+      # To pull in additional packages (e.g. custom packages from python.nix):
+      # (pkgs.python312.withPackages (p: with p; [ pkg1, pkg2, ... ]))
     ];
 
     lua = [
