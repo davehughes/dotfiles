@@ -493,6 +493,12 @@ in
     # the source-built `ghostty` package is Linux-only
     package = pkgs.ghostty-bin;
     settings = {
+      theme = "Soft Server";
+      font-family = "SauceCodePro NF";
+      font-size = 12;
+      background-opacity = 0.9;
+      macos-option-as-alt = true;
+      quit-after-last-window-closed = true;
       macos-titlebar-style = "hidden";
       # square corners; also drops the border, shadow, and native tabs
       window-decoration = "none";
