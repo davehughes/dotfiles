@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  nixpkgs,
   system, 
   pkgs ? import <nixpkgs> {},
   # (builtins.fetchTarball {
@@ -18,6 +19,9 @@ in
     allowUnfree = true;
   };
   nixpkgs.overlays = [ (import ./overlay.nix) ];
+
+  # Pin `nixpkgs#` in nix shell/run to the input this host builds from
+  nix.registry.nixpkgs.flake = nixpkgs;
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
