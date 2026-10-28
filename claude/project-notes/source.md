@@ -21,9 +21,7 @@ the user's shell and workflow, not team convention). Corrections land here, not 
 
 ## workenv tickets (SRC-*)
 
-- File locally only: `we new ... --repo yobilabs/source`. **Never `we sync push`, never `--mirror`,
-  never `gh issue create/edit`** — pushing publishes to the shared tracker and notifies people; the
-  user pushes manually.
+- File with `we new ... --repo yobilabs/source`; mirroring and pushing follow `~/.claude/tools.md`.
 - If the ask needs a tracker-only field (assignee is the known case), file the ticket, say the field
   needs a push to take effect, and stop.
 

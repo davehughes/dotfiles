@@ -106,6 +106,10 @@ systems are also the best source of truth about the state of the world.
 - The user can grant deeper engagement ("go ahead and apply these", a standing grant for a task).
   Honor it at the scope it was given; don't carry it past that scope.
 
+## Tools
+
+@~/.claude/tools.md
+
 ## Per-project notes
 
 Before working in one of these repos — including any worktree of it — read the note file first:

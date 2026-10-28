@@ -654,6 +654,8 @@ in
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/home-manager/claude/CLAUDE.md";
   home.file.".claude/project-notes".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/home-manager/claude/project-notes";
+  home.file.".claude/tools.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.config/home-manager/claude/tools.md";
 
   home.file.".config/zsh/scripts/rust.zsh".text = ''
     # Load PATH and any other environment updates from rustup/cargo
