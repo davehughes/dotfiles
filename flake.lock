@@ -41,6 +41,27 @@
         "type": "github"
       }
     },
+    "home-manager-intel": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-intel"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792818383,
+        "narHash": "sha256-199i7ubVSXTMl+0AAlL7cVCXSjcI+jWByMcimYjeMX0=",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "24f2190587513b9c2f73db112a17844ae912d965",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "release-26.05",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1792773339,
@@ -53,6 +74,22 @@
       "original": {
         "owner": "nixos",
         "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs-intel": {
+      "locked": {
+        "lastModified": 1793064696,
+        "narHash": "sha256-IuHLjgL4i3x3q5VjIpVzRq3kI2kJqq1ogNTjOMQomHQ=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "4fb45a87dacd6124244d97a70dd04d0419964c33",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-26.05-darwin",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -81,7 +118,9 @@
     "root": {
       "inputs": {
         "home-manager": "home-manager",
+        "home-manager-intel": "home-manager-intel",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-intel": "nixpkgs-intel",
         "nur": "nur"
       }
     }

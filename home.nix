@@ -17,6 +17,7 @@ in
   nixpkgs.config = {
     allowUnfree = true;
   };
+  nixpkgs.overlays = [ (import ./overlay.nix) ];
 
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
@@ -45,7 +46,6 @@ in
     nix-prefetch
 
     bash
-    babashka
     cmake
     # pkg-config rather than pkgconf: -sys crates shell out to `pkg-config` by
     # name, and pkgconf provides no such binary. The two collide in buildEnv
@@ -65,7 +65,6 @@ in
     ripgrep
     jq
     yq
-    jet
     tree
     ctags
     gnupg
@@ -90,15 +89,10 @@ in
     wmctrl
     # solvespace
 
-    # Due to the particulars of how yabai's scripting addition integrates with the system, this setup
-    # needs frequent tweaking for new versions. Primarily, an updated sudoers entry needs to be created
-    # for each new binary according to this page:
-    # https://github.com/koekeishiya/yabai/wiki/Installing-yabai-(latest-release)#configure-scripting-addition
-    # (pkgs.callPackage ./yabai.nix { })
-    yabai
     karabiner-elements
     skhd
     terminal-notifier
+    ghostty-bin
 
     sqlite
     duckdb
@@ -185,7 +179,12 @@ in
     # (pkgs.writeShellScriptBin "my-hello" ''
     #   echo "Hello, ${config.home.username}!"
     # '')
-  ];
+  ]
+  # GraalVM native images, unavailable on x86_64-darwin
+  ++ builtins.filter (lib.meta.availableOn pkgs.stdenv.hostPlatform) (with pkgs; [
+    babashka
+    jet
+  ]);
 
   # NOTE: there's a bootstrapping problem here...
   # home.file.".config/nix/nix.conf".source = nix/nix.conf;

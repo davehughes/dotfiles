@@ -14,7 +14,7 @@ home-manager switch
 
 Layers:
 -------
-+ desktop -> [skhd](https://github.com/koekeishiya/skhd) + [yabai](https://github.com/koekeishiya/yabai)
++ desktop -> [skhd](https://github.com/koekeishiya/skhd)
 + terminal -> [kitty](https://sw.kovidgoyal.net/kitty/)
 + [tmux](https://github.com/tmux/tmux/wiki) + [nord theme](https://www.nordtheme.com/ports/tmux)
 + shell -> zsh + [Starship](https://starship.rs)-based prompt theme
