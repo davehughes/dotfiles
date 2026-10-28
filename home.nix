@@ -44,151 +44,183 @@ in
   # which seems to be related to OSX upgrades removing PATH entries, and the
   # solution is given in this comment:
   # https://github.com/NixOS/nix/issues/3616#issuecomment-903869569
-  home.packages = with pkgs; [
+  home.packages = with pkgs; lib.concatLists (lib.attrValues {
+    nixTools = [
+      cachix
+      nix-prefetch
+      nixpkgs-fmt
+    ];
 
-    # nix-related tools
-    cachix
-    nix-prefetch
+    buildTools = [
+      cmake
+      # pkg-config rather than pkgconf: -sys crates shell out to `pkg-config` by
+      # name, and pkgconf provides no such binary. The two collide in buildEnv
+      # over share/aclocal/pkg.m4, so only one of them can be here.
+      pkg-config
+      openssl.dev
+      bazelisk
+      bazel-buildtools
+      thrift
+    ];
 
-    bash
-    cmake
-    # pkg-config rather than pkgconf: -sys crates shell out to `pkg-config` by
-    # name, and pkgconf provides no such binary. The two collide in buildEnv
-    # over share/aclocal/pkg.m4, so only one of them can be here.
-    pkg-config
-    openssl.dev
-    bazelisk
-    bazel-buildtools
+    # git itself comes from programs.git
+    gitTools = [
+      git-spice
+      git-filter-repo
+      gh
+      tuicr
+    ];
 
-    git
-    git-spice
-    git-filter-repo
-    gh
-    tuicr
-    fasd
-    fd
-    ripgrep
-    jq
-    yq
-    tree
-    ctags
-    gnupg
-    pwgen
-    rlwrap
-    graphviz
-    gnused
-    curl
-    grpcurl
-    wget
-    atuin
-    opencode
-    glow
+    shellUtils = [
+      bash
+      gnused
+      fasd
+      fd
+      ripgrep
+      jq
+      yq
+      tree
+      ctags
+      rlwrap
+      atuin
+      shellcheck
+    ];
 
-    mitmproxy
-    oath-toolkit
-    btop
-    htop
-    ncdu
-    shellcheck
-    brotab
-    wmctrl
-    # solvespace
+    networking = [
+      curl
+      wget
+      grpcurl
+      mitmproxy
+      wireshark
+    ];
 
-    karabiner-elements
-    skhd
-    terminal-notifier
+    secrets = [
+      gnupg
+      oath-toolkit
+      pwgen
+    ];
 
-    sqlite
-    duckdb
-    postgresql
-    redis
-    iredis
-    libmaxminddb
-    # snowsql # TODO: 'unfree' package, need to figure out how to set this up
+    monitoring = [
+      btop
+      htop
+      ncdu
+    ];
 
-    clojure
-    # go
-    leiningen
-    python312
-    pyenv
-    # racket
-    ruby
-    rustup
-    nodejs
-    sbt
-    coursier
-    maven3
-    regctl
-    scala
-    scalafmt
-    lua5_1
-    luarocks
-    jdk17
-    # jdk24
-    fennel-ls
-    thrift
+    macDesktop = [
+      karabiner-elements
+      skhd
+      terminal-notifier
+      brotab
+    ];
 
-    # linters, formatters, fixers, and other things to wrap with nvim's null-ls "LSP"
-    nixpkgs-fmt
-    selene
+    data = [
+      sqlite
+      duckdb
+      postgresql
+      redis
+      iredis
+      libmaxminddb
+    ];
+
+    jvm = [
+      jdk17
+      # jdk24
+      clojure
+      leiningen
+      sbt
+      scala
+      scalafmt
+      coursier
+      maven3
+    ];
+
+    python = [
+      python312
+      pyenv
+      # (pkgs.python312.withPackages (p: with p; [
+      #   pip
+      #   poetry-core
+      #   ipython
+      #   ipdb
+      #   debugpy
+      #   dave-cli
+      #   autoimport
+      # ]))
+    ];
+
+    lua = [
+      lua5_1
+      luarocks
+      fennel-ls
+      selene
+    ];
+
+    otherLangs = [
+      # ruby
+      rustup
+      nodejs
+      go
+      racket
+    ];
+
+    infra = [
+      terraform
+      awscli2
+      s5cmd
+      azure-storage-azcopy
+      docker-compose
+      oras
+      regctl
+      qemu
+    ];
+
+    docs = [
+      pandoc
+      # pdflatex
+      texliveMedium
+      glow
+      graphviz
+      mermaid-cli
+      graph-easy
+    ];
+
+    ai = [
+      opencode
+      ollama
+    ];
+
+    media = [
+      ffmpeg
+      reaper
+      dexed
+      # lowfi
+      # solvespace
+    ];
 
     # browse options at https://www.nerdfonts.com/font-downloads
-    nerd-fonts.fantasque-sans-mono
-    nerd-fonts.inconsolata
-    nerd-fonts.intone-mono
-    nerd-fonts.sauce-code-pro
+    fonts = [
+      nerd-fonts.fantasque-sans-mono
+      nerd-fonts.inconsolata
+      nerd-fonts.intone-mono
+      nerd-fonts.sauce-code-pro
+    ];
 
-    # (pkgs.python312.withPackages (p: with p; [
-    #   pip
-    #   poetry-core
-    #   ipython
-    #   ipdb
-    #   debugpy
-    #   dave-cli
-    #   autoimport
-    # ]))
+    toys = [
+      sl
+      cowsay
+    ];
 
-    terraform
-    awscli2
-    s5cmd
-    azure-storage-azcopy
-    docker-compose
-    oras
-    sl
-    cowsay
-    ollama
-    wireshark
-    qemu
-    mermaid-cli
-    graph-easy
-    pandoc
-    # pdflatex
-    texliveMedium
-
-    # music tools
-    # dexed  # broken: JUCE requires macOS 10.10 but build targets 10.9
-    reaper
-    # lowfi
-    ffmpeg
+    # GraalVM native images, unavailable on x86_64-darwin
+    graalNative = builtins.filter (lib.meta.availableOn stdenv.hostPlatform) [
+      babashka
+      jet
+    ];
 
     # out-of-band packages
     # cs launch org.virtuslab:bazel-bsp:4.0.2 -M org.jetbrains.bsp.bazel.install.Install
     # (older way: cs launch org.jetbrains.bsp:bazel-bsp:3.2.0 -M org.jetbrains.bsp.bazel.install.Install)
-
     # cargo install ck-search
-
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-  ]
-  # GraalVM native images, unavailable on x86_64-darwin
-  ++ builtins.filter (lib.meta.availableOn pkgs.stdenv.hostPlatform) (with pkgs; [
-    babashka
-    jet
-  ]);
+  });
 
   # NOTE: there's a bootstrapping problem here...
   # home.file.".config/nix/nix.conf".source = nix/nix.conf;
