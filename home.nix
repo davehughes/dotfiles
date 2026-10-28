@@ -526,6 +526,7 @@ in
       theme = "Soft Server";
       font-family = "SauceCodePro NF";
       font-size = 12;
+      font-thicken = true;
       background-opacity = 0.9;
       macos-option-as-alt = true;
       quit-after-last-window-closed = true;
