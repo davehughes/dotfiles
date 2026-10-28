@@ -190,6 +190,7 @@ in
       ffmpeg
       reaper
       dexed
+      vcv-rack
       # lowfi
       # solvespace
     ];
