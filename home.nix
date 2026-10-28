@@ -337,9 +337,8 @@ in
       set -s extended-keys always
       set -as terminal-features 'xterm*:extkeys'
 
-      # forward OSC 8 hyperlinks to the outer terminal. kitty supports them, but
-      # the xterm-kitty terminfo entry installed here has no Hls capability, so
-      # tmux assumes the outer terminal can't render them and strips them.
+      # forward OSC 8 hyperlinks to the outer terminal. Without an Hls capability
+      # in its terminfo entry, tmux assumes it can't render them and strips them.
       set -as terminal-features 'xterm*:hyperlinks'
 
       # in copy-mode, act on the OSC 8 hyperlink under the cursor: o opens it,
@@ -451,7 +450,7 @@ in
       # see `use_keychain` in programs.direnv.stdlib.
       [[ -f ''${HOME}/.config/zsh/local.zsh ]] && source ''${HOME}/.config/zsh/local.zsh
 
-      # Long-lived parents (tmux server, kitty) cache __HM_SESS_VARS_SOURCED and
+      # Long-lived parents (tmux server, terminal) cache __HM_SESS_VARS_SOURCED and
       # block the guarded source above. Re-apply from the stable profile path.
       if [[ -r ''${HOME}/.nix-profile/etc/profile.d/hm-session-vars.sh ]]; then
         unset __HM_SESS_VARS_SOURCED
@@ -488,37 +487,6 @@ in
   home.file.".config/zsh/scripts"   = { source = zsh/scripts; recursive = true; };
   home.file.".config/zsh/themes"    = { source = zsh/themes; recursive = true; };
   home.file.".config/zsh/functions" = { source = zsh/functions; recursive = true; };
-
-  programs.kitty = {
-    enable = true;
-    shellIntegration.enableZshIntegration = true;
-    # use `kitty +kitten themes` to browse
-    themeFile = "SoftServer";
-    font = {
-      name = "SauceCodePro";
-      size = 12;
-    };
-    settings = {
-      enable_audio_bell = false;
-      background_opacity = "0.9";
-      clear_all_shortcuts = "yes";
-      hide_window_decorations = "yes";
-      macos_quit_when_last_window_closed = "yes";
-      macos_option_as_alt = "yes";
-    };
-
-    keybindings = {
-      # skhd maps Meta-C/Meta-V to copy/paste in kitty below, which is preferable to the settings below
-      "ctrl+shift+c" = "copy_to_clipboard";
-      "ctrl+shift+v" = "paste_from_clipboard";
-
-      # hint embedded OSC 8 hyperlinks: o opens, y yanks. Matches the hyperlink
-      # attribute on the cells, so it finds links whose URL is never rendered as
-      # text (markdown-style labels, and gh/git/delta output).
-      "ctrl+shift+f" = "kitten hints --type hyperlink";
-      "ctrl+shift+y" = "kitten hints --type hyperlink --program @";
-    };
-  };
 
   programs.ghostty = {
     enable = true;
@@ -713,22 +681,6 @@ in
     ]
     ctrl - l [
       "Firefox" : skhd -k "cmd - l"
-    ]
-
-    # Map meta-c/meta-v to copy and paste in kitty
-    cmd - c [
-      "kitty" : skhd -k "ctrl + shift - c"
-      ".kitty-wrapped" : skhd -k "ctrl + shift - c"
-    ]
-
-    cmd - v [
-      "kitty" : skhd -k "ctrl + shift - v"
-      ".kitty-wrapped" : skhd -k "ctrl + shift - v"
-    ]
-
-    cmd - l [
-      "kitty" : skhd -k "alt - l"
-      ".kitty-wrapped" : skhd -k "alt - l"
     ]
 
     # Experimental
