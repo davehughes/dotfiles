@@ -33,6 +33,11 @@ in
   # release notes.
   home.stateVersion = "23.05"; # Please read the comment before changing.
 
+  # Spotlight skips symlinked .app bundles; copy them instead. Defaults to this
+  # from stateVersion 25.11.
+  targets.darwin.linkApps.enable = false;
+  targets.darwin.copyApps.enable = true;
+
   # Install packages in the environment.
   #
   # I've encountered [this issue](https://github.com/NixOS/nix/issues/3616),
@@ -92,7 +97,6 @@ in
     karabiner-elements
     skhd
     terminal-notifier
-    ghostty-bin
 
     sqlite
     duckdb
@@ -513,6 +517,17 @@ in
       # text (markdown-style labels, and gh/git/delta output).
       "ctrl+shift+f" = "kitten hints --type hyperlink";
       "ctrl+shift+y" = "kitten hints --type hyperlink --program @";
+    };
+  };
+
+  programs.ghostty = {
+    enable = true;
+    # the source-built `ghostty` package is Linux-only
+    package = pkgs.ghostty-bin;
+    settings = {
+      macos-titlebar-style = "hidden";
+      # square corners; also drops the border, shadow, and native tabs
+      window-decoration = "none";
     };
   };
 
